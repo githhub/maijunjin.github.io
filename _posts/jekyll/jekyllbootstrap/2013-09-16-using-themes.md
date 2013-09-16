@@ -44,7 +44,7 @@ Once your themes are installed you can switch between them via rake task:
     $ rake theme:switch name="the-program"
    # for 0.1.0 users `rake switch_theme` still works.
 
-<H2>Customize Themes<H2>
+<H2>Customize Themes</H2>
 
 Theme layouts are contained in ./_includes/themes/THEME-NAME. It is important that you edit files in the theme directory rather than _layouts because switching themes will overwrite files in the _layout directory and you will lose your changes. The main point here is keeping themes modular; this way editing one does not affect the other.
 
