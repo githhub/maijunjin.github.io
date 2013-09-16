@@ -4,9 +4,9 @@
 <html lang="zh-CN" xmlns:wb="http://open.weibo.com/wb">
   <head profile="http://gmpg.org/xfn/11">
     <meta charset="utf-8">
-    <title>Zero to Hosted Jekyll Blog in 3 Minutes</title>
-    <meta name="description" content="jekyllbootstrap">
-    <meta name="keywords" content="jekyllbootstrapjekyll">
+    <title>[修改jekyllbootstrap的rakefile文件，让其可以指定创建的目录]</title>
+    
+    
     <meta name="author" content="STUDY LEARN">
     <meta name="wumiiVerification" content="5e61b30c-07ae-45a9-8a2d-dc7b52683aa3" />
     <meta name="ujianVerification" content="10497f60005071e8ef216ef19a1b4ca5" />
@@ -18,10 +18,8 @@
     
     <link rel="index" title="STUDY LEARN" href="/" />
     
-    <link rel="prev" href="//jekyll/2013/09/16/jekyllbootstrap-Jekyll-Quick-Start.html" title="Jekyll Quick Start" />
+    <link rel="prev" href="//jekyll/2013/09/16/jekyllbootstrap-Zero-to-Hosted-Jekyll-Blog-in-3-Minutes.html" title="Zero to Hosted Jekyll Blog in 3 Minutes" />
     
-    
-    <link rel="next" href="//2013/09/16/jekyllbootstraprakefile.html" title="[修改jekyllbootstrap的rakefile文件，让其可以指定创建的目录]" />
     
     
   </head>
@@ -56,54 +54,52 @@
     <link href="/assets/css/jquery.tocify.css" rel="stylesheet">
 
 <div class="page-header">
-  <h1>Zero to Hosted Jekyll Blog in 3 Minutes <small></small></h1>
+  <h1>[修改jekyllbootstrap的rakefile文件，让其可以指定创建的目录] <small></small></h1>
 </div>
 <div class="row-fluid">
   <div class="span8">  
     <div id="article">
-    <p><a href="http://jekyllbootstrap.com/">原文</a></p>
+    <p>jekyllbootstrap中使用rake很不错，但是jekyll bootstrap提供的rake post命令却无法指定目录，实在是
+太不方便（也许有吧），所以修改了一下jekyllbootstrap的Rakefile:</p>
 
-<H2>1-reate a New Repository</H2>
-
-
-<p>Go to your https://github.com and create a new repository named USERNAME.github.io</p>
-
-<H2>2 - Install Jekyll-Bootstrap</H2>
-
-
-<pre><code>$ git clone https://github.com/plusjade/jekyll-bootstrap.git USERNAME.github.io
-$ cd USERNAME.github.io
-$ git remote set-url origin git@github.com:USERNAME/USERNAME.github.com.git
-$ git push origin master
+<pre><code># Usage: rake post title="A Title"
+desc "Begin a new post in #{CONFIG['posts']}"
+task :post do
+  abort("rake aborted: '#{CONFIG['posts']}' directory not found.") unless FileTest.directory?(CONFIG['posts'])
+  title = ENV["title"] || "new-post"
+#path创建的目录 Usage:rake post tile="A Title" path="directory/directory2" 
+  path = ENV["path"] || ""
+#去掉目录中的特殊字符，除了/之外，去掉所有的特殊字符
+  path = File.join(CONFIG['posts'],path.gsub(/[^\w\/]/,''))
+#除了-之外去掉所有的字符
+  slug = title.downcase.strip.gsub(' ', '-').gsub(/[^\w-]/, '')
+#把path目录添加进去
+  filename = File.join(path,"#{Time.now.strftime('%Y-%m-%d')}-#{slug}.#{CONFIG['post_ext']}")
+  if File.exist?(filename)
+    abort("rake aborted!") if ask("#{filename} already exists. Do you want to overwrite?", ['y', 'n']) == 'n'
+  end
+  FileUtils.mkdir_p(path) unless Dir.exists?(path)
+  puts "Creating new post: #{filename}"
+  open(filename, 'w') do |post|
+    post.puts "---"
+    post.puts "layout: post"
+    post.puts "title: \"#{title.gsub(/-/,' ')}\""
+    post.puts "category: "
+    post.puts "tags: []"
+    post.puts "---"
+    post.puts "
 </code></pre>
 
-<H2>3 - Profit(收益)</H2>
-
-
-<p>After GitHub has a couple minutes to do its magic your blog will be publicly available at http://USERNAME.github.io
-<br/>
-*Already have your blog on GitHub?</p>
-
-<p>I'll assume you have the Jekyll gem installed on your local machine. Run J￥ekyll-Bootstrap-Core locally to see what all the fuss is about:fuss</p>
-
-<pre><code>$ git clone https://github.com/plusjade/jekyll-bootstrap.git
-$ cd jekyll-bootstrap
-$ jekyll --server
-</code></pre>
-
-<p>See it in action at http://localhost:4000.</p>
-
-<p>Next Steps
-<a href="http://jekyllbootstrap.com/usage/jekyll-quick-start.html">Jekyll Quick Start</a></p>
+<p>"
+      end
+    end # task :post</p>
     
     </div>  
     <div>
 		   
-			   上一篇： <a href="/jekyll/2013/09/16/jekyllbootstrap-Jekyll-Quick-Start.html">Jekyll Quick Start</a><br/>
+			   上一篇： <a href="/jekyll/2013/09/16/jekyllbootstrap-Zero-to-Hosted-Jekyll-Blog-in-3-Minutes.html">Zero to Hosted Jekyll Blog in 3 Minutes</a><br/>
 		   
 			    
-			 
-				下一篇： <a href="/2013/09/16/jekyllbootstraprakefile.html">[修改jekyllbootstrap的rakefile文件，让其可以指定创建的目录]</a>
 			 
 	  </div>
     <hr/>

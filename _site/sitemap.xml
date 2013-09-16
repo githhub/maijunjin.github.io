@@ -2,14 +2,14 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 	<url>
-		<loc>/archive.html</loc>
+		<loc>/atom.xml</loc>
 		<lastmod></lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
 	</url>
 
 	<url>
-		<loc>/atom.xml</loc>
+		<loc>/archive.html</loc>
 		<lastmod></lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
@@ -43,6 +43,13 @@
 		<priority>0.6</priority>
 	</url>
 
+
+	<url>
+		<loc>/2013/09/16/jekyllbootstraprakefile.html</loc>
+		<lastmod>2013-09-16</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
 
 	<url>
 		<loc>/jekyll/2013/09/16/jekyllbootstrap-Zero-to-Hosted-Jekyll-Blog-in-3-Minutes.html</loc>
