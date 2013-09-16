@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[修改jekyllbootstrap的rakefile文件，让其可以指定创建的目录]"
+title: "修改jekyllbootstrap的rakefile文件，让其可以指定创建的目录"
 category: 
 tags: [jekyllbootstrap,rakefile]
 ---
