@@ -7,7 +7,7 @@ category : git
 tags: [msysgit,git]
 ---
 <h1>通过通过控制台的menu菜单</h1>
-<img src="/mjj/assets/images/git/msysgit/1.jpg">
+<img src="/assets/images/git/msysgit/1.jpg">
 <br/>可以选择标记，用鼠标选中要复制的代码，右键
 <h1>通过快捷键</h1>
 要插入内容到bash，可以按insert<br/>

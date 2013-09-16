@@ -193,7 +193,7 @@ Run the following code to copy the key to your clipboard.
 <LI>Confirm the action by entering your GitHub password</LI>
 我的操作：
 <br/>
-<img src="/mjj/assets/images/git/github_ssh_setting.png">
+<img src="/assets/images/git/github_ssh_setting.png">
 <H1>Step 4: Test everything out</H1>
 
 To make sure everything is working you'll now SSH to GitHub. When you do this, you will be asked to authenticate this action using your password, which for this purpose is the passphrase you created earlier. Don't change the git@github.com part. That's supposed to be there.
