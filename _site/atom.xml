@@ -4,7 +4,7 @@
  <title>STUDY LEARN</title>
  <link href="/atom.xml" rel="self"/>
  <link href=""/>
- <updated>2013-09-16T21:00:40+08:00</updated>
+ <updated>2013-09-17T01:01:46+08:00</updated>
  <id></id>
  <author>
    <name>STUDY LEARN</name>
@@ -13,54 +13,180 @@
 
  
  <entry>
-   <title>[修改jekyllbootstrap的rakefile文件，让其可以指定创建的目录]</title>
-   <link href="/2013/09/16/jekyllbootstraprakefile.html"/>
+   <title>Using Themes</title>
+   <link href="/blog/2013/09/16/using-themes"/>
    <updated>2013-09-16T00:00:00+08:00</updated>
-   <id>/2013/09/16/jekyllbootstraprakefile</id>
+   <id>/blog/2013/09/16/using-themes</id>
    <content type="html">
-   	&lt;p&gt;jekyllbootstrap中使用rake很不错，但是jekyll bootstrap提供的rake post命令却无法指定目录，实在是
-太不方便（也许有吧），所以修改了一下jekyllbootstrap的Rakefile:&lt;/p&gt;
+   	&lt;p&gt;&lt;a href=&quot;http://jekyllbootstrap.com/usage/jekyll-theming.html&quot;&gt;原文&lt;/a&gt;&lt;br/&gt;
+Learn how to install, switch between, and edit themes in Jekyll Bootstrap.&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;# Usage: rake post title=&quot;A Title&quot;
-desc &quot;Begin a new post in #{CONFIG[&#39;posts&#39;]}&quot;
-task :post do
-  abort(&quot;rake aborted: &#39;#{CONFIG[&#39;posts&#39;]}&#39; directory not found.&quot;) unless FileTest.directory?(CONFIG[&#39;posts&#39;])
-  title = ENV[&quot;title&quot;] || &quot;new-post&quot;
-#path创建的目录 Usage:rake post tile=&quot;A Title&quot; path=&quot;directory/directory2&quot; 
-  path = ENV[&quot;path&quot;] || &quot;&quot;
-#去掉目录中的特殊字符，除了/之外，去掉所有的特殊字符
-  path = File.join(CONFIG[&#39;posts&#39;],path.gsub(/[^\w\/]/,&#39;&#39;))
-#除了-之外去掉所有的字符
-  slug = title.downcase.strip.gsub(&#39; &#39;, &#39;-&#39;).gsub(/[^\w-]/, &#39;&#39;)
-#把path目录添加进去
-  filename = File.join(path,&quot;#{Time.now.strftime(&#39;%Y-%m-%d&#39;)}-#{slug}.#{CONFIG[&#39;post_ext&#39;]}&quot;)
-  if File.exist?(filename)
-    abort(&quot;rake aborted!&quot;) if ask(&quot;#{filename} already exists. Do you want to overwrite?&quot;, [&#39;y&#39;, &#39;n&#39;]) == &#39;n&#39;
-  end
-  FileUtils.mkdir_p(path) unless Dir.exists?(path)
-  puts &quot;Creating new post: #{filename}&quot;
-  open(filename, &#39;w&#39;) do |post|
-    post.puts &quot;---&quot;
-    post.puts &quot;layout: post&quot;
-    post.puts &quot;title: \&quot;#{title.gsub(/-/,&#39; &#39;)}\&quot;&quot;
-    post.puts &quot;category: &quot;
-    post.puts &quot;tags: []&quot;
-    post.puts &quot;---&quot;
-    post.puts &quot;
+&lt;H2&gt;Introduction&lt;/H2&gt;
+
+
+&lt;p&gt;As of(自……起) JB version 0.2.x themes are now entirely modular. They are tracked and versioned individually as Theme Packages. This allows everyone to publish and share themes freely.&lt;/p&gt;
+
+&lt;p&gt;Jekyll-Bootstrap v 0.2.x ships with only the stock “twitter” theme. Additional themes need to be “installed” as outlined below.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&quot;label notice&quot;&gt;NOTE&lt;/span&gt;&lt;br/&gt;
+Jekyll-Bootstrap uses &lt;code&gt;rake tasks&lt;/code&gt; to implement much of its functionality. If you are new to &lt;code&gt;rake&lt;/code&gt; a rake task is just a ruby method that can be run in the base-directory of Jekyll-Bootstrap. You should never run arbitrary(任意的；武断的；专制的) server side code on your system without first reviewing the source! View the Rakefile source.&lt;/p&gt;
+
+&lt;H2&gt;Find Themes&lt;/H2&gt;
+
+
+&lt;p&gt;You can find and browse the latest official themes in the Theme Explorer(http://themes.jekyllbootstrap.com/). The theme explorer is still a work in progress; it shows full-website previews of all available themes.&lt;/p&gt;
+
+&lt;h2&gt; Launch Theme Explorer&lt;/H2&gt;
+
+
+&lt;p&gt;Additionally, designers are free to publish their own themes as long as they are packaged appropriately. You can then use the same installation method outlined below to install the theme.&lt;/p&gt;
+
+&lt;p&gt;Directly browse current Theme Packages on GitHub:&lt;a href=&quot;https://github.com/jekyllbootstrap&quot;&gt;https://github.com/jekyllbootstrap&lt;/a&gt;&lt;/p&gt;
+
+&lt;H2&gt;Install Themes&lt;/H2&gt;
+
+
+&lt;p&gt;Install a theme by using the rake task and passing in the theme’s git url.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ rake theme:install git=&quot;https://github.com/jekyllbootstrap/theme-the-program.git&quot;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&quot;
-      end
-    end # task :post&lt;/p&gt;
+&lt;p&gt;The installer uses git to download the Theme Package and then installs it. If you have obtained a Theme Package in another way, such as zip download, you can manually place it into your ./_theme_packages folder and then run the installer with the name of the theme.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ rake theme:install name=&quot;THEME-NAME&quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As a convenience, after the install is successful, the task will ask you if you’d like to switch to the newly installed theme. Type ‘y’ and enter to switch!&lt;/p&gt;
+
+&lt;H2&gt;Switch Themes&lt;/H2&gt;
+
+
+&lt;p&gt;Once your themes are installed you can switch between them via rake task:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ rake theme:switch name=&quot;the-program&quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;   # for 0.1.0 users &lt;code&gt;rake switch_theme&lt;/code&gt; still works.&lt;/p&gt;
+
+&lt;H2&gt;Customize Themes&lt;/H2&gt;
+
+
+&lt;p&gt;Theme layouts are contained in ./&lt;em&gt;includes/themes/THEME-NAME. It is important that you edit files in the theme directory rather than &lt;/em&gt;layouts because switching themes will overwrite files in the _layout directory and you will lose your changes. The main point here is keeping themes modular; this way editing one does not affect the other.&lt;/p&gt;
+
+&lt;H2&gt;Adding Templates&lt;/H2&gt;
+
+
+&lt;p&gt;You are free add extra template files to _layouts in order to customize your blog.&lt;/p&gt;
+
+&lt;p&gt;However if you want to add theme-specific layouts you should add them to the theme’s directory in _includes. After your files are added make sure to run the switcher again:&lt;/p&gt;
+
+&lt;p&gt;$ rake theme:switch name=&quot;the-minimum&quot;&lt;/p&gt;
+
+&lt;h2&gt;Static Assets&lt;/h2&gt;
+
+
+&lt;p&gt;Static assets are name-spaced for each theme. They are available at ./assets/themes/THEME-NAME. Make sure you edit and add assets in this directory. All themes are provided with the liquid variable: ASSET_PATH which trace back to the aforementioned directory.&lt;/p&gt;
+
+&lt;H2&gt;Add Your Own Theme&lt;/H2&gt;
+
+
+&lt;p&gt;Read the Theme API Documentation for instructions on how to build and publish custom themes for Jekyll Bootstrap.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://jekyllbootstrap.com/usage/blog-configuration.html&quot;&gt;Next Step: Blog Configuration&lt;/a&gt;&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>NSA Revelations Cast Doubt on the Entire Tech Industry</title>
+   <link href="/blog/2013/09/16/nsa-revelations-cast-doubt-on-the-entire-tech-industry"/>
+   <updated>2013-09-16T00:00:00+08:00</updated>
+   <id>/blog/2013/09/16/nsa-revelations-cast-doubt-on-the-entire-tech-industry</id>
+   <content type="html">
+   	&lt;p&gt;&lt;a href=&quot;http://xue.youdao.com/biarticle.a?articleId=856819385276378169&amp;amp;date=2013-09-16&amp;amp;position=read&amp;amp;channelType=personal&quot;&gt;NSA Revelations（揭露出来的真相；暴露的内幕；新发现） Cast Doubt on the Entire Tech Industry&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;国家安全局的揭露信息给整个科技行业布满疑云&lt;/p&gt;
+
+&lt;p&gt;Six years ago, two Microsoft cryptography researchers discovered some weirdness(古怪) in an obscure(晦涩的) cryptography standard authored by the National Security Agency. There was a bug in a government-standard random number generator that could be used to encrypt data.&lt;/p&gt;
+
+&lt;p&gt;六年前，两个微软的密码研究者在由国家安全局编制的晦涩密码标准中发现了一些古怪。在这个政府编制的标准随机数生成器中包含了一个漏洞，它可以用来加密数据。&lt;/p&gt;
+
+&lt;p&gt;The researchers, Dan Shumow and Niels Ferguson, found that the number generator appeared to have been built with a backdoor — it came with a secret numeric key that could allow a third party to decrypt code that it helped generate.&lt;/p&gt;
+
+&lt;p&gt;两个叫Dan Shumow 和 Niels Ferguson的研究者发现，该数字发生器似乎安装了后门：它带有一个数字秘钥，允许第三方破解它所生成的编码。&lt;/p&gt;
+
+&lt;p&gt;According to Thursday’s reports by the ProPublica, the Guardian, and The New York Times, classified documents leaked by NSA whistleblower(告发者；检举者) Edward Snowden appear to confirm what everyone suspected: that the backdoor was engineered（n.工程师 vt.设计） by the NSA. Worse still, a top-secret NSA document published with the reports says that the NSA has worked with industry partners to “covertly(秘密地) influence” technology products.&lt;/p&gt;
+
+&lt;p&gt;据ProPublica，卫报及纽约时报周四报道，由安全局告发者爱德华·斯诺登泄露的机密文件证实了大家的怀疑：即研究者发现的后门是安全局一手策划的。更糟糕的是，与报道一同发表的一份安全局绝密文件显示，安全局正和它的行业合作伙伴一同暗中操纵科技产品。&lt;/p&gt;
+
+&lt;p&gt;That sounds bad, but so far, there’s not much hard evidence about what exactly has been compromised(危及). No company is named in the new allegations(指控). The details of the reported modifications are murky(不可告人的). So while much of the internet’s security systems appear to be broken, it’s unclear where the problems lie.&lt;/p&gt;
+
+&lt;p&gt;这听起来很糟，然而到目前为止，还没有确凿的证据说明这危害到底有多大。新指控中也并未透露任何公司的名字。该报道细节模糊。虽然看上去许多互联网的安全系统遭到破坏，但问题具体在哪则依然不清楚。&lt;/p&gt;
+
+&lt;p&gt;The result is that the trustworthiness of the systems we used to communicate on the internet is in doubt. “I think all companies have a little bit of taint(污点) after this, ” says Christopher Soghoian, a technologist with the American Civil(公民) Liberties(自由) Union.&lt;/p&gt;
+
+&lt;p&gt;这给互联网交流的可信任度投下了阴影。“这让所有的公司多少都有一点污点”，一位来自美国公民自由联盟的技术人员Christopher Soghoian说。&lt;/p&gt;
+
+&lt;p&gt;The latest documents show that the NSA has vast crypto-cracking resources, a database of secretly held encryption keys used to decrypt private communications, and an ability to crack(破解) cryptography in certain VPN encryption chips. Its goal: to crack in a widespread way the internet’s security tools and protocols.&lt;/p&gt;
+
+&lt;p&gt;最新的资料显示，国安局拥有海量的解密资源，他们有一个秘密的数据库存放秘钥用以解密私人通信，他们还可以破解一些VPN加密芯片。他们的目标是：实现因特网安全工具和协议的普遍破解。&lt;/p&gt;
+
+&lt;p&gt;David Dampier, the director of the Center for Computer Security Research at Mississippi State University, says it’s “wrong” for companies to add backdoors. But he added that the latest revelations of the government’s alleged(宣称) decryption capabilities aren’t surprising.&lt;/p&gt;
+
+&lt;p&gt;密西西比州立大学计算机安全研究中心主任David Dampier 指出，公司给产品加上后门是不应该的。但对于最新披露出的对政府破解能力的指控，他并不吃惊。&lt;/p&gt;
+
+&lt;p&gt;“I think that no encryption created by anyone is going to protect you from everyone. The stronger the encryption the harder they are going to work to decrypt it, ” he said. “I don’t care what company is selling you encryption software. Whatever they are going to sell you, it can be decrypted. There’s nothing that is infallible(infallible).”&lt;/p&gt;
+
+&lt;p&gt;“我认为没有人破解不了的密码，密码越复杂，破解它就要下更大的功夫而已，”他说，“不管哪个公司卖给你的加密软件，也不管它卖什么给你，它都是可以被破解的。绝对可靠的东西是不存在的。”&lt;/p&gt;
+
+&lt;p&gt;The reports talk about the NSA’s attempts to exploit(vt. 开发) software bugs, break codes and accumulate encryption keys — this is all stuff that most security experts expected the surveillance(监督) agency to be doing. But here’s the most unsettling(adj. 使人不安的) part: A leaked excerpt(n. 摘录，引用) from the agency’s 2013 budget request talks about the NSA working with “US and foreign IT industries to covertly influence and/or overtly leverage their commercial products designs.” The document explicitly says: “These design changes make the systems in question exploitable.”&lt;/p&gt;
+
+&lt;p&gt;报道还谈到了安全局试图找寻软件漏洞，破解代码和收集秘钥——多数安全专家对这些监督机构做的事情并不意外。但是最让人不安的地方在于：部分泄露的安全局2013年预算请求显示，安全局与“美国和其他国家IT行业暗中操控，甚至公然插手他们的商业产品设计”。该资料明确表明：”这些改变的设计使得系统可被利用。“&lt;/p&gt;
+
+&lt;p&gt;Daniel Castro, a senior analyst with the Information Technology and Innovation Foundation, calls(认为) the latest leaks disturbing. “We went through this debate with the Clipper Chip, and it was clear where public opinion stood, ” he says, referring to a backdoor technology the NSA wanted to install in all encryption two decades ago.&lt;/p&gt;
+
+&lt;p&gt;信息技术与创新基金会的高级分析师Daniel Castro指出最新的披露让人不安。”我们经历了加密芯片的争论，公众的立场是显而易见的“，他指的是二十年前国安局想在所有加密芯片中植入后门技术的争论。&lt;/p&gt;
+
+&lt;p&gt;“If these claims are true, and the NSA introduced backdoors into global security standards, this seems like a clear perversion of democracy(n. 民主), ” Castro added. “This just further erodes(erode) the competitiveness(competitiveness) of U.S. tech companies. In particular, I think this enlarges the scope of companies that will suffer backlash(n. 反冲；强烈抵制) since cryptographic standards are often embedded in hardware.”&lt;/p&gt;
+
+&lt;p&gt;”如果这些传闻属实，国安局确实在全球安全标准中植入了后门，那这便是民主政治的堕落，“他补充说。&#39;这进一步侵蚀了美国科技公司的竞争力。特别是，更多的公司将遭受抵制，因为密码标准经常嵌入在硬件中。&quot;&lt;/p&gt;
+
+&lt;p&gt;Castro wrote a report last month predicting that Snowden’s PRISM revelations could cost the U.S. cloud-computing industry as much as $35 billion over the next three years as companies shied away(回避；避开) from U.S. internet service providers, which are said to be providing government access to their servers.&lt;/p&gt;
+
+&lt;p&gt;Castro上个月为斯诺登棱镜泄密事件撰写了一份报告，报告称美国云计算业未来需长于3年的时间来避开国内那些为政府开辟通道的互联网服务供应商，这带来的损失可能多达350亿美元。&lt;/p&gt;
+
+&lt;p&gt;You’ll hear much the same from Dave Jevans, the founder of Marble Security, an enterprise mobile security provider and the former chief executive of IronKey, He says that it “would be extremely bad” for a tech company to give the government a backdoor.&lt;/p&gt;
+
+&lt;p&gt;Dave Jevans基本赞同Castro的判断。他是Marble Security 的创始人，这是一家移动安全的供应商，在此之前，他是IronKey的首席执行官。他说，科技公司给政府开后门”将非常糟糕“。&lt;/p&gt;
+
+&lt;p&gt;“It may not be the death knell(n. 丧钟声), ” he added, referring to Crypto AG, a Swiss encryption companies alleged(被说成的) to have rigged their machines for the NSA in the 1990s. ”They’re still around, but barely.”&lt;/p&gt;
+
+&lt;p&gt;&quot;这可能不是最致命的地方，&quot;他补充说，Crypto AG这个瑞士的加密公司在上世纪90年代曾被指控为安全局提供问题设备。”这种现象并未绝迹“。&lt;/p&gt;
+
+&lt;p&gt;But not everyone thinks that U.S. competitiveness(竞争力) will be hit. The documents talk about the NSA working with foreign companies too. “I don’t think there’s going to be any direct major impact because there aren’t any other countries that are cherubs(天使) in all this either, ” says Paul Kocher, president of Cryptography Research.&lt;/p&gt;
+
+&lt;p&gt;然而并非所有人都认为美国的竞争力会受到冲击。资料还提到国安局和国外的公司合作。”我认为这不会带来任何直接重要的冲击，因为没有任何国家在这一方面纯洁得像个天使，“Cryptography Research公司总裁Paul Kocher说。&lt;/p&gt;
+
+&lt;p&gt;The number generator found in 2007 — called Dual_EC_RNG — was hardly a technical triumph(成功). It was clumsy and slow and never widely used, but it is supported in Microsoft’s Windows operating system.&lt;/p&gt;
+
+&lt;p&gt;被称为Dual_EC_RNG 的数字生成器创设于2007年，它很难称得上是一次技术的成功。它笨拙，速度慢，并且从未被广泛使用，但是它在微软Windows操作系统中得到了支持。&lt;/p&gt;
+
+&lt;p&gt;Microsoft has said in the past that it does not provide the government with “direct and unfettered(adj. 无拘无束的)” access to customer data, and it says much the same today. “We have significant concerns about the allegations(n. 主张，断言；辩解) of government activity reported yesterday and will be pressing the government for an explanation, ” the company said Friday.&lt;/p&gt;
+
+&lt;p&gt;微软过去已经公开声明从未给政府提供对用户数据的”直接不受约束“通道，今天他们依然这样宣称。”我们严重关切昨天报道中对政府行为的指控，并将责成政府给出解释“微软公司周五宣称。&lt;/p&gt;
+
+&lt;p&gt;But the doubt is still there. And that’s the problem.&lt;/p&gt;
+
+&lt;p&gt;但依然疑云密布，这就是问题所在。&lt;/p&gt;
 
    </content>
  </entry>
  
  <entry>
    <title>Zero to Hosted Jekyll Blog in 3 Minutes</title>
-   <link href="/jekyll/2013/09/16/jekyllbootstrap-Zero-to-Hosted-Jekyll-Blog-in-3-Minutes.html"/>
+   <link href="/blog/2013/09/16/jekyllbootstrap-Zero-to-Hosted-Jekyll-Blog-in-3-Minutes"/>
    <updated>2013-09-16T00:00:00+08:00</updated>
-   <id>/jekyll/2013/09/16/jekyllbootstrap-Zero-to-Hosted-Jekyll-Blog-in-3-Minutes</id>
+   <id>/blog/2013/09/16/jekyllbootstrap-Zero-to-Hosted-Jekyll-Blog-in-3-Minutes</id>
    <content type="html">
    	&lt;p&gt;&lt;a href=&quot;http://jekyllbootstrap.com/&quot;&gt;原文&lt;/a&gt;&lt;/p&gt;
 
@@ -102,9 +228,9 @@ $ jekyll --server
  
  <entry>
    <title>Jekyll Quick Start</title>
-   <link href="/jekyll/2013/09/16/jekyllbootstrap-Jekyll-Quick-Start.html"/>
+   <link href="/blog/2013/09/16/jekyllbootstrap-Jekyll-Quick-Start"/>
    <updated>2013-09-16T00:00:00+08:00</updated>
-   <id>/jekyll/2013/09/16/jekyllbootstrap-Jekyll-Quick-Start</id>
+   <id>/blog/2013/09/16/jekyllbootstrap-Jekyll-Quick-Start</id>
    <content type="html">
    	&lt;p&gt;&lt;a href=&quot;http://jekyllbootstrap.com/usage/jekyll-quick-start.html&quot;&gt;原文&lt;/a&gt;
 &lt;br/&gt;&lt;/p&gt;
@@ -233,9 +359,9 @@ I highly recommend reading the Jekyll Introduction if you plan to customize your
  
  <entry>
    <title>jekyll newline</title>
-   <link href="/2013/09/16/jekyll-newline.html"/>
+   <link href="/blog/2013/09/16/jekyll-newline"/>
    <updated>2013-09-16T00:00:00+08:00</updated>
-   <id>/2013/09/16/jekyll-newline</id>
+   <id>/blog/2013/09/16/jekyll-newline</id>
    <content type="html">
    	&lt;p&gt;&lt;a href=&quot;http://mccxj.github.io/blog/20120629_problem-about-jekyll-and-markdown.html&quot;&gt;原文&lt;/a&gt;
 在段落中硬换行&lt;br/&gt;
@@ -245,10 +371,174 @@ I highly recommend reading the Jekyll Introduction if you plan to customize your
  </entry>
  
  <entry>
+   <title>修改jekyllbootstrap的rakefile文件，让其可以指定创建的目录</title>
+   <link href="/blog/2013/09/16/jekyll-bootstrap-rakefile"/>
+   <updated>2013-09-16T00:00:00+08:00</updated>
+   <id>/blog/2013/09/16/jekyll-bootstrap-rakefile</id>
+   <content type="html">
+   	&lt;p&gt;jekyllbootstrap中使用rake很不错，但是jekyll bootstrap提供的rake post命令却无法指定目录，实在是
+太不方便（也许有吧），所以修改了一下jekyllbootstrap的Rakefile:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# Usage: rake post title=&quot;A Title&quot;
+desc &quot;Begin a new post in #{CONFIG[&#39;posts&#39;]}&quot;
+task :post do
+  abort(&quot;rake aborted: &#39;#{CONFIG[&#39;posts&#39;]}&#39; directory not found.&quot;) unless FileTest.directory?(CONFIG[&#39;posts&#39;])
+  title = ENV[&quot;title&quot;] || &quot;new-post&quot;
+#path创建的目录 Usage:rake post tile=&quot;A Title&quot; path=&quot;directory/directory2&quot; 
+  path = ENV[&quot;path&quot;] || &quot;&quot;
+#去掉目录中的特殊字符，除了/之外，去掉所有的特殊字符
+  path = File.join(CONFIG[&#39;posts&#39;],path.gsub(/[^\w\/]/,&#39;&#39;))
+#除了-之外去掉所有的字符
+  slug = title.downcase.strip.gsub(&#39; &#39;, &#39;-&#39;).gsub(/[^\w-]/, &#39;&#39;)
+#把path目录添加进去
+  filename = File.join(path,&quot;#{Time.now.strftime(&#39;%Y-%m-%d&#39;)}-#{slug}.#{CONFIG[&#39;post_ext&#39;]}&quot;)
+  if File.exist?(filename)
+    abort(&quot;rake aborted!&quot;) if ask(&quot;#{filename} already exists. Do you want to overwrite?&quot;, [&#39;y&#39;, &#39;n&#39;]) == &#39;n&#39;
+  end
+  FileUtils.mkdir_p(path) unless Dir.exists?(path)
+  puts &quot;Creating new post: #{filename}&quot;
+  open(filename, &#39;w&#39;) do |post|
+    post.puts &quot;---&quot;
+    post.puts &quot;layout: post&quot;
+    post.puts &quot;title: \&quot;#{title.gsub(/-/,&#39; &#39;)}\&quot;&quot;
+    post.puts &quot;category: &quot;
+    post.puts &quot;tags: []&quot;
+    post.puts &quot;---&quot;
+    post.puts &quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&quot;
+      end
+    end # task :post&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>Jeff Shell's Promotion At Universal Shows Hollywood's Shifting Priorities</title>
+   <link href="/blog/2013/09/16/jeff-shells-promotion-at-universal-shows-hollywoods-shifting-priorities"/>
+   <updated>2013-09-16T00:00:00+08:00</updated>
+   <id>/blog/2013/09/16/jeff-shells-promotion-at-universal-shows-hollywoods-shifting-priorities</id>
+   <content type="html">
+   	&lt;p&gt;&lt;a href=&quot;http://xue.youdao.com/biarticle.a?articleId=-5592324489959049538&amp;amp;date=2013-09-16&amp;amp;position=read&amp;amp;channelType=personal&quot;&gt;Jeff Shell&#39;s Promotion At Universal Shows Hollywood&#39;s Shifting Priorities（转移重点）&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;环球影业高层变动 好莱坞重心出现转移&lt;/p&gt;
+
+&lt;p&gt;Many in Hollywood were caught off-guard(毫无准备) earlier this week when Universal Studio head Adam Fogelson was ousted(免去…的职务) and Jeff Shell, until a few days ago the chairman of NBC Universal, was brought in as his replacement.&lt;/p&gt;
+
+&lt;p&gt;本周初，环球影业（Universal Studio）的总裁亚当•弗格森（Adam Fogelson）闪电离职，而直到几天前还是NBC环球（NBC Universal）公司董事长的杰夫•希尔（Jeff Shell）立刻取而代之，这一切让好莱坞的许多人都有些猝不及防。&lt;/p&gt;
+
+&lt;p&gt;Fogelson grew up in the movie business. Since 1998 he had worked in Universal’s marketing division devising(策划) campaigns for films like The Fast and the Furious and Notting Hill. He was elevated to the post(岗位) of Universal Pictures Chairman in 2009 and this past year saw the studio execute a major turnaround. Thanks to movies like Despicable Me 2, Fast and Furious 6 and Identity Thief, Universal is currently the second-highest grossing studio (domestically) in Hollywood.&lt;/p&gt;
+
+&lt;p&gt;弗格森在电影行业摸爬滚打多年。自1998年以来，他一直在环球的营销部门工作，为电影《速度与激情》（The Fast and the Furious）以及《诺丁山》（Notting Hill）策划了宣传活动。2009年，他被提拔为环球影业的董事长，而且在过去一年里目睹了环球影业的重大转变。凭借《卑鄙的我2》（Despicable Me 2）、《速度与激情6》（Fast and Furious 6）以及《身份窃贼》（Identity Thief）等热门影片，环球目前是好莱坞第二大赚钱的电影公司。&lt;/p&gt;
+
+&lt;p&gt;Fox Cable Network Group before he took over as CEO of TV Guide International. From there he moved to Comcast&lt;/p&gt;
+
+&lt;p&gt;杰夫•希尔则是一个电视人。有着哈佛大学MBA学历的希尔在接任电视指南国际（TV Guide International）首席执行官（CEO）之前曾是福克斯有线电视网络集团（Fox Cable Network Group）的总裁。后来他又从电视指南国际跳到了康卡斯特（Comcast），最近他在伦敦驻地负责监管NBC环球的所有国际业务。&lt;/p&gt;
+
+&lt;p&gt;The different experiences of the two men might not seem like a big deal outside of L.A., but in Hollywood, it’s huge. For most of the history of Hollywood, movie studios were run by the men with the best connections to the town’s talent pool. Valuable leaders were the people who could get big stars and directors together to make huge hits.&lt;/p&gt;
+
+&lt;p&gt;在圈外人眼中，弗格森和希尔的不同经历似乎没什么大不了的，但对好莱坞而言却事关重大。在好莱坞的历史上，电影公司在大多数时候都是由与这里的人才库联系最密切的人经营打理。非常宝贵的是那些人脉广阔的领导者，他们能将巨星和导演聚到一起打造出一炮而红的影片。&lt;/p&gt;
+
+&lt;p&gt;Today, the studios are increasingly being run by clear-eyed executives who see the dramatic changes happening in the industry as our viewing habits shift from theaters to the home. Studios, which are all now parts of larger media conglomerates, don’t need creative geniuses at the top. Underlings can build relationship with CAA and WME. These public companies need strategic thinkers who won’t be afraid to make big changes that might shake Hollywood’s understanding of how movies are made, where they get seen and how they make money.&lt;/p&gt;
+
+&lt;p&gt;如今，电影公司越来越多的被一些眼光敏锐的高管执掌着，随着我们的观影习惯从影院转移到家中，他们看到了发生在该行业的巨大变化。现在都已隶属于更大媒体集团的电影公司不需要在高层中吸纳创造性天才。下级员工就能与CAA和WME两大经纪人公司建立联系。这些上市公司需要不惧于做出重大改变的战略思考者来撼动好莱坞对于如何制作电影、哪里看电影以及如何赚钱等的看法。&lt;/p&gt;
+
+&lt;p&gt;“It’s a recognition that distribution of entertainment is fragmenting, ” says Amir Malin, founder of Qualia Capital and former CEO of Artisan Entertainment. “It’s critical to have an executive in charge who has a keen understanding of changing market conditions so that you can respond and re-position your content investment stratgey.”&lt;/p&gt;
+
+&lt;p&gt;“大家已经认识到，娱乐发行正呈现碎片化。”投资公司Qualia Capital的创始人、艺匠娱乐公司（Artisan Entertainment）前首席执行官米尔•马林（Amir Malin）说道，“让一位对变化多端的市场有着敏锐嗅觉的高管来负责公司，这一点非常关键，这样你就能够快速反应并重新定位内容投资战略。”&lt;/p&gt;
+
+&lt;p&gt;Shell is only the latest executive to take over a movie studio with little or no experience developing and distributing movies. In January, Kevin Tsujihara was named the head of Warner Bros. studio. Tsujihara previously ran the studio’s home video division. He won a grueling three-way race for the top position against Bruce Rosenblum, who ran TV, and Jeff Robinov from the film studio.&lt;/p&gt;
+
+&lt;p&gt;一些鲜少或者毫无电影制作与发行经验的高管接掌了电影公司，希尔只是最近的一例。今年1月，凯文•特苏哈拉（Kevin Tsujihara）被任命为华纳兄弟娱乐公司（Warner Bros.）的首席执行官。特苏哈拉之前分管该公司的家庭娱乐部门。他在一场胶着的三方角逐中，打败了负责电视业务的布鲁斯•罗森布鲁姆（Bruce Rosenblum）和来自电影部门的杰夫•罗宾诺夫（Jeff Robinov），最终坐上头把交椅。&lt;/p&gt;
+
+&lt;p&gt;Office politics have a lot to do with any of these decisions. Tsujihara is reportedly well-liked by Warner Bros. employees and Fogelson was reportedly engaged in some ugly backroom maneuvering trying to oust his co-chair, Donna Langley. She still has her job after the shakeout.&lt;/p&gt;
+
+&lt;p&gt;这些决定都与职场争斗有着很大关系。据悉，特苏哈拉深得华纳兄弟员工的拥戴，而弗格森为排挤与自己共担要职的唐娜•兰格利（Donna Langley），参与了一些恶劣的幕后操纵。此次高层震动后，兰格利仍留任高管。&lt;/p&gt;
+
+&lt;p&gt;But the new leaders show where companies like Comcast and Time Warner&lt;/p&gt;
+
+&lt;p&gt;但是新的领导班子向世人显示，如康卡斯特和时代华纳（Time Warner）等公司看到了他们的当务之急在哪里。迪士尼（Disney）在罗伯特•伊格（Robert Iger）的领导下已经取得了惊人的成功。在迪士尼公司中一路高升之前，伊格有着美国广播公司（ABC）的工作背景。&lt;/p&gt;
+
+&lt;p&gt;“Iger knew how to expand Disney’s scope of vision, eyeing potential sources of new entertainment properties from anywhere in the company, ” says Jeff Gomez, CEO of Starlight Runner Entertainment, a company that helps studios translate their intellectual property to different platforms.&lt;/p&gt;
+
+&lt;p&gt;“伊格知道如何扩大迪斯尼的视野，在公司中四处寻觅新娱乐业务的潜在资源。”星光娱乐公司（Starlight Runner Entertainment）首席执行官杰夫•戈麦斯（Jeff Gomez）表示，该公司帮助电影公司把知识产权转化到各个平台。&lt;/p&gt;
+
+&lt;p&gt;The biggest change we’re likely to see from these new leaders? Expect the window between when a film hits theater and when it hits home viewing to shrink dramatically.&lt;/p&gt;
+
+&lt;p&gt;从这些新领导者身上我们可能看到的最大挑战是什么？电影从影院上映到走进家庭的窗口期预计会大大缩短。&lt;/p&gt;
+
+&lt;p&gt;“At some point, that four month window has to be evaporated, ” says Richard Greenfield, media analyst at BTIG. “Maybe there’s a reason to have some window but a movie basically plays for four weeks in theaters and then it’s left sitting there for four months. It doesn’t make any sense.”&lt;/p&gt;
+
+&lt;p&gt;“未来，这四个月的窗口期不得不消失。”市场研究公司BTIG的媒体分析师理查德•格林菲尔德（Richard Greenfield）说道。“也许留有少许窗口期是有意义的，但一部电影基本上只在影院上映四周，然后会被晾足四个月。这毫无道理可言。”&lt;/p&gt;
+
+&lt;p&gt;Traditional Hollywood, afraid of rocking the boat with the theater owners, has so far resisted this kind of change. But the town may not have a choice for much longer. Men like Shell and Tsujihara were put in charge to squeeze every possible penny out of each studio’s intellectual property. That might not mean better movies but it’s sure to mean smarter business.&lt;/p&gt;
+
+&lt;p&gt;传统好莱坞害怕破坏与影院老板们的关系，目前仍抵制这种改变。但再过一段时间，好莱坞可能会别无选择。让希尔和特苏哈拉等人来执掌电影公司就是为了充分挖掘每家公司知识产权的盈利潜能。这可能不意味着会有更好的电影，但一定意味着会有更精明的业务。&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>一行git所有的更新</title>
+   <link href="/blog/2013/09/16/git"/>
+   <updated>2013-09-16T00:00:00+08:00</updated>
+   <id>/blog/2013/09/16/git</id>
+   <content type="html">
+   	&lt;p&gt;&lt;a href=&quot;https://coderwall.com/p/vej4iw&quot;&gt;Quicker Git Add Commit Push&lt;/a&gt;&lt;br/&gt;
+ Add this to your .bash_profile:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;function gcp () {
+    if [ -z &quot;$1&quot; ]
+    then
+        read -p &quot;Commit Message:&quot; MSG
+    else
+        MSG=&quot;$1&quot;
+    fi
+    git add .
+    git commit -am &quot;$MSG&quot;
+    git push
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;now whenever you want to commit and push just execute&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;gcp &quot;This is the comment&quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;if you don&#39;t supply a commit message it will prompt you for one.&lt;/p&gt;
+
+&lt;p&gt;If you&#39;d rather git open your default editor to comment, use this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;function gcp () {
+    git add .
+    git commit -a
+    git push
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;but you can get the best of both worlds, one-liner messages, OR editor messages with something like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;function gcp() {
+    git add .
+    if [ -z &quot;$1&quot; ]
+    then
+        git commit -a
+    else
+        git commit -am &quot;$1&quot;
+    fi
+    git push
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
    <title>UE（ultraEdit）设置不产生.bak文件(内含中英文版本)</title>
-   <link href="/ultraedit/2013/09/15/ultraedit-not-backups.html"/>
+   <link href="/blog/2013/09/15/ultraedit-not-backups"/>
    <updated>2013-09-15T00:00:00+08:00</updated>
-   <id>/ultraedit/2013/09/15/ultraedit-not-backups</id>
+   <id>/blog/2013/09/15/ultraedit-not-backups</id>
    <content type="html">
    	&lt;p&gt;&lt;a href=&quot;http://blog.csdn.net/snowseabye/article/details/7239952&quot;&gt;原文&lt;/a&gt;
 英文版按照如下顺序设置：
@@ -262,9 +552,9 @@ Menu: Advanced --&gt; Confiugration --&gt; File Handling --&gt; Backup --&gt; Se
  
  <entry>
    <title>使用UltraEdit编辑jekyll文章</title>
-   <link href="/jekyll/2013/09/15/ultraedit-edit-jekyll-post.html"/>
+   <link href="/blog/2013/09/15/ultraedit-edit-jekyll-post"/>
    <updated>2013-09-15T00:00:00+08:00</updated>
-   <id>/jekyll/2013/09/15/ultraedit-edit-jekyll-post</id>
+   <id>/blog/2013/09/15/ultraedit-edit-jekyll-post</id>
    <content type="html">
    	&lt;p&gt;在windows下保存文章的时候，需要保存为utf-8无BOM格式
 &lt;img src=&quot;/assets/images/jekyll/ultraEdit_save_jekyll_post.jpg&quot;&gt;&lt;/p&gt;
@@ -274,9 +564,9 @@ Menu: Advanced --&gt; Confiugration --&gt; File Handling --&gt; Backup --&gt; Se
  
  <entry>
    <title>jekyll server报cannot load such file -- posix_spawn_ext (LoadError)</title>
-   <link href="/jekyll/2013/09/15/jekyll-server-cannot-load-such-file-posix-spawn-ext.html"/>
+   <link href="/blog/2013/09/15/jekyll-server-cannot-load-such-file-posix-spawn-ext"/>
    <updated>2013-09-15T00:00:00+08:00</updated>
-   <id>/jekyll/2013/09/15/jekyll-server-cannot-load-such-file-posix-spawn-ext</id>
+   <id>/blog/2013/09/15/jekyll-server-cannot-load-such-file-posix-spawn-ext</id>
    <content type="html">
    	&lt;p&gt;想要git clone &lt;a href=&quot;https://github.com/realjenius/realjenius.com&quot;&gt;realjenius&lt;/a&gt;的jekyll项目来研究研究，但是jekyll server的时候报如下的错误：&lt;/p&gt;
 
@@ -330,9 +620,9 @@ from /usr/local/lib/ruby/site_ruby/2.0.0/rubygems/core_ext/kernel_require.rb:53:
  
  <entry>
    <title>载入 jQuery 库的最佳方法</title>
-   <link href="/jquery/2013/09/15/include-jquery-best-way.html"/>
+   <link href="/blog/2013/09/15/include-jquery-best-way"/>
    <updated>2013-09-15T00:00:00+08:00</updated>
-   <id>/jquery/2013/09/15/include-jquery-best-way</id>
+   <id>/blog/2013/09/15/include-jquery-best-way</id>
    <content type="html">
    	&lt;p&gt;&lt;a href=&quot;http://lightcss.com/best-way-to-include-jquery/&quot;&gt;原文&lt;/a&gt;
 在网站开发的项目中使用Google CDN的jQuery库虽然加载速度很快，但调用本地服务器的库才可以确保万无一失。&lt;/p&gt;
@@ -373,9 +663,9 @@ Google CDN 库的地址采用了协议相对路径，它可以很好的解决 ht
  
  <entry>
    <title>html中/，没有斜杆，//的区别</title>
-   <link href="/html/2013/09/15/html-diagonal.html"/>
+   <link href="/blog/2013/09/15/html-diagonal"/>
    <updated>2013-09-15T00:00:00+08:00</updated>
-   <id>/html/2013/09/15/html-diagonal</id>
+   <id>/blog/2013/09/15/html-diagonal</id>
    <content type="html">
    	url 没有斜杆 当前网址+url&lt;br/&gt;
 /url http://localhost:8080/123/223.html  http://localhost:8080/url&lt;br/&gt;
@@ -385,9 +675,9 @@ Google CDN 库的地址采用了协议相对路径，它可以很好的解决 ht
  
  <entry>
    <title>github如何删除一个库</title>
-   <link href="/git/2013/09/15/github-delete-repository.html"/>
+   <link href="/blog/2013/09/15/github-delete-repository"/>
    <updated>2013-09-15T00:00:00+08:00</updated>
-   <id>/git/2013/09/15/github-delete-repository</id>
+   <id>/blog/2013/09/15/github-delete-repository</id>
    <content type="html">
    	&lt;p&gt;一定要先进入一个库之后才有删除库的选项
 &lt;img src=&quot;/assets/images/git/github/github_delete_repository.png&quot;/&gt;
@@ -398,9 +688,9 @@ Google CDN 库的地址采用了协议相对路径，它可以很好的解决 ht
  
  <entry>
    <title>在安装rdiscount的报错</title>
-   <link href="/ruby/2013/09/15/gem-install-rdiscount-error.html"/>
+   <link href="/blog/2013/09/15/gem-install-rdiscount-error"/>
    <updated>2013-09-15T00:00:00+08:00</updated>
-   <id>/ruby/2013/09/15/gem-install-rdiscount-error</id>
+   <id>/blog/2013/09/15/gem-install-rdiscount-error</id>
    <content type="html">
    	&lt;p&gt;&lt;a href=&quot;https://github.com/brianmario/mysql2/issues/371&quot;&gt;source&lt;/a&gt;&lt;/p&gt;
 
@@ -441,9 +731,9 @@ mes-MacBook-Pro:~ me$
  
  <entry>
    <title>gem install jekyll报instance of Date needs to have method marshal_load</title>
-   <link href="/jekyll/2013/09/15/gem-install-jekyll-instance-of-Date-needs-to-have-method-marshal_load.html"/>
+   <link href="/blog/2013/09/15/gem-install-jekyll-instance-of-Date-needs-to-have-method-marshal_load"/>
    <updated>2013-09-15T00:00:00+08:00</updated>
-   <id>/jekyll/2013/09/15/gem-install-jekyll-instance-of-Date-needs-to-have-method-marshal_load</id>
+   <id>/blog/2013/09/15/gem-install-jekyll-instance-of-Date-needs-to-have-method-marshal_load</id>
    <content type="html">
    	&lt;pre&gt;&lt;code&gt;$ ruby -v
 ruby 1.8.7 (2011-06-30 patchlevel 352) [i686-linux]
@@ -464,9 +754,9 @@ ERROR:  While executing gem ... (TypeError)
  
  <entry>
    <title>US and UK spy agencies defeat privacy and security on the internet</title>
-   <link href="/english/2013/09/15/english-US-and-UK-spy-agencies-defeat-privacy-and-security-on-the-internet.html"/>
+   <link href="/blog/2013/09/15/english-US-and-UK-spy-agencies-defeat-privacy-and-security-on-the-internet"/>
    <updated>2013-09-15T00:00:00+08:00</updated>
-   <id>/english/2013/09/15/english-US-and-UK-spy-agencies-defeat-privacy-and-security-on-the-internet</id>
+   <id>/blog/2013/09/15/english-US-and-UK-spy-agencies-defeat-privacy-and-security-on-the-internet</id>
    <content type="html">
    	&lt;p&gt;&lt;a href=&quot;http://xue.youdao.com/biarticle.a?articleId=-825172592751556828&amp;amp;date=2013-09-14&amp;amp;position=read&amp;amp;channelType=personal&quot;&gt;文章来源&lt;/a&gt;&lt;BR/&gt;
 US and UK spy agencies defeat privacy and security on the internet&lt;br/&gt;
@@ -683,9 +973,9 @@ This was a view echoed in a recent paper by Stephanie Pell, a former prosecutor 
  
  <entry>
    <title>Centos 6.4 64位系统安装截图软件shutter</title>
-   <link href="/centos/2013/09/15/Install-shuttter-centos-64bit.html"/>
+   <link href="/blog/2013/09/15/Install-shuttter-centos-64bit"/>
    <updated>2013-09-15T00:00:00+08:00</updated>
-   <id>/centos/2013/09/15/Install-shuttter-centos-64bit</id>
+   <id>/blog/2013/09/15/Install-shuttter-centos-64bit</id>
    <content type="html">
    	&lt;pre&gt;&lt;code&gt;[root@localhost yum.repos.d]# rpm -Uvh http://li.nux.ro/download/nux/dextop/el6/x86_64/nux-dextop-release-0-1.el6.nux.noarch.rpm
 Retrieving http://li.nux.ro/download/nux/dextop/el6/x86_64/nux-dextop-release-0-1.el6.nux.noarch.rpm
@@ -699,9 +989,9 @@ package nux-dextop-release-0-1.el6.nux.noarch is already installed
  
  <entry>
    <title>Google Chrome 29 Released – Install on RHEL/CentOS 6 and Fedora 19/15</title>
-   <link href="/linux/2013/09/15/Install-Google-Chrome-in-Linux.html"/>
+   <link href="/blog/2013/09/15/Install-Google-Chrome-in-Linux"/>
    <updated>2013-09-15T00:00:00+08:00</updated>
-   <id>/linux/2013/09/15/Install-Google-Chrome-in-Linux</id>
+   <id>/blog/2013/09/15/Install-Google-Chrome-in-Linux</id>
    <content type="html">
    	&lt;p&gt;&lt;a href=&quot;http://www.tecmint.com/install-google-chrome-on-redhat-centos-fedora-linux/&quot;&gt;原文&lt;/a&gt;
 Google Chrome is a freeware web browser developed by Google Inc.
@@ -741,7 +1031,7 @@ Luckily, there is a script developed by Richard Lloyd, that automatically downlo
 
 &lt;p&gt;Sample Output
 Google Chrome Installer 2.00 on the i686 platform
-(C) Richard K. Lloyd 2013 &lt;a href=&quot;&amp;#x6d;&amp;#x61;&amp;#x69;&amp;#108;&amp;#x74;&amp;#111;&amp;#x3a;&amp;#x72;&amp;#x6b;&amp;#x6c;&amp;#108;&amp;#x6f;&amp;#121;&amp;#x64;&amp;#64;&amp;#103;&amp;#x6d;&amp;#97;&amp;#x69;&amp;#x6c;&amp;#46;&amp;#99;&amp;#111;&amp;#109;&quot;&gt;&amp;#114;&amp;#107;&amp;#108;&amp;#x6c;&amp;#111;&amp;#121;&amp;#100;&amp;#x40;&amp;#x67;&amp;#109;&amp;#97;&amp;#105;&amp;#108;&amp;#x2e;&amp;#99;&amp;#x6f;&amp;#x6d;&lt;/a&gt;&lt;/p&gt;
+(C) Richard K. Lloyd 2013 &lt;a href=&quot;&amp;#x6d;&amp;#x61;&amp;#x69;&amp;#108;&amp;#116;&amp;#x6f;&amp;#58;&amp;#x72;&amp;#107;&amp;#108;&amp;#108;&amp;#111;&amp;#x79;&amp;#100;&amp;#64;&amp;#x67;&amp;#109;&amp;#97;&amp;#x69;&amp;#x6c;&amp;#46;&amp;#x63;&amp;#111;&amp;#109;&quot;&gt;&amp;#114;&amp;#x6b;&amp;#108;&amp;#108;&amp;#x6f;&amp;#x79;&amp;#100;&amp;#64;&amp;#x67;&amp;#x6d;&amp;#97;&amp;#x69;&amp;#108;&amp;#46;&amp;#x63;&amp;#111;&amp;#109;&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;*** Checking for an update to install_chrome.sh ...&lt;/p&gt;
 
@@ -807,9 +1097,9 @@ A Command Line Web Browsing with Lynx and Links Tools&lt;/p&gt;
  
  <entry>
    <title>msysgit bash的操作，比如复制拷贝</title>
-   <link href="/git/2013/09/14/msysgit-operate.html"/>
+   <link href="/blog/2013/09/14/msysgit-operate"/>
    <updated>2013-09-14T00:00:00+08:00</updated>
-   <id>/git/2013/09/14/msysgit-operate</id>
+   <id>/blog/2013/09/14/msysgit-operate</id>
    <content type="html">
    	&lt;h1&gt;通过通过控制台的menu菜单&lt;/h1&gt;
 
@@ -830,9 +1120,9 @@ Esc是清空已经输入的全部内容&lt;br/&gt;&lt;/p&gt;
  
  <entry>
    <title>INSTALLING RUBY, RUBYGEMS, RAILS, AND MONGREL ON MAC OS X 10.5 (LEOPARD)</title>
-   <link href="/ruby/2013/09/14/INSTALLING-RUBY-RUBYGEMS-RAILS-AND-MONGREL-ON-MAC-OS-X-10.5-%28LEOPARD%29.html"/>
+   <link href="/blog/2013/09/14/INSTALLING-RUBY-RUBYGEMS-RAILS-AND-MONGREL-ON-MAC-OS-X-10.5-%28LEOPARD%29"/>
    <updated>2013-09-14T00:00:00+08:00</updated>
-   <id>/ruby/2013/09/14/INSTALLING-RUBY-RUBYGEMS-RAILS-AND-MONGREL-ON-MAC-OS-X-10.5-(LEOPARD)</id>
+   <id>/blog/2013/09/14/INSTALLING-RUBY-RUBYGEMS-RAILS-AND-MONGREL-ON-MAC-OS-X-10.5-(LEOPARD)</id>
    <content type="html">
    	&lt;p&gt;&lt;a href=&quot;http://hivelogic.com/articles/ruby-rails-leopard&quot;&gt;这篇文章的来源&lt;/a&gt;&lt;br/&gt;&lt;/p&gt;
 
@@ -1084,9 +1374,9 @@ client or run your own MySQL server too.&lt;/p&gt;
  
  <entry>
    <title>git revert (reset) a single file</title>
-   <link href="/git/2013/09/13/git-revert-a-single-file.html"/>
+   <link href="/blog/2013/09/13/git-revert-a-single-file"/>
    <updated>2013-09-13T00:00:00+08:00</updated>
-   <id>/git/2013/09/13/git-revert-a-single-file</id>
+   <id>/blog/2013/09/13/git-revert-a-single-file</id>
    <content type="html">
    	&lt;p&gt;&lt;a href=&quot;http://www.norbauer.com/rails-consulting/notes/git-revert-reset-a-single-file.html&quot;&gt;原文&lt;/a&gt;&lt;/p&gt;
 
@@ -1109,9 +1399,9 @@ client or run your own MySQL server too.&lt;/p&gt;
  
  <entry>
    <title>git push时候出现HTTP request failed</title>
-   <link href="/git/2013/09/13/git-http-request-failed.html"/>
+   <link href="/blog/2013/09/13/git-http-request-failed"/>
    <updated>2013-09-13T00:00:00+08:00</updated>
-   <id>/git/2013/09/13/git-http-request-failed</id>
+   <id>/blog/2013/09/13/git-http-request-failed</id>
    <content type="html">
    	&lt;h1&gt;问题如下：&lt;/h1&gt;
 
@@ -1154,9 +1444,9 @@ To https://username@github.com/username/repositoryname.git
  
  <entry>
    <title>git push采用SSH方式</title>
-   <link href="/git/2013/09/13/git-generate-ssh-key.html"/>
+   <link href="/blog/2013/09/13/git-generate-ssh-key"/>
    <updated>2013-09-13T00:00:00+08:00</updated>
-   <id>/git/2013/09/13/git-generate-ssh-key</id>
+   <id>/blog/2013/09/13/git-generate-ssh-key</id>
    <content type="html">
    	&lt;H1&gt;问题的来源&lt;/H1&gt;
 
