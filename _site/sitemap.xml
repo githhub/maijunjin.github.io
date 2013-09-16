@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+	<url>
+		<loc>/archive.html</loc>
+		<lastmod></lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/atom.xml</loc>
+		<lastmod></lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/categories.html</loc>
+		<lastmod></lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/index.html</loc>
+		<lastmod></lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/sitemap.xml</loc>
+		<lastmod></lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/tags.html</loc>
+		<lastmod></lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+
+	<url>
+		<loc>/jekyll/2013/09/16/jekyllbootstrap-Zero-to-Hosted-Jekyll-Blog-in-3-Minutes.html</loc>
+		<lastmod>2013-09-16</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/jekyll/2013/09/16/jekyllbootstrap-Jekyll-Quick-Start.html</loc>
+		<lastmod>2013-09-16</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/2013/09/16/jekyll-newline.html</loc>
+		<lastmod>2013-09-16</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/ultraedit/2013/09/15/ultraedit-not-backups.html</loc>
+		<lastmod>2013-09-15</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/jekyll/2013/09/15/ultraedit-edit-jekyll-post.html</loc>
+		<lastmod>2013-09-15</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/jekyll/2013/09/15/jekyll-server-cannot-load-such-file-posix-spawn-ext.html</loc>
+		<lastmod>2013-09-15</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/jquery/2013/09/15/include-jquery-best-way.html</loc>
+		<lastmod>2013-09-15</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/html/2013/09/15/html-diagonal.html</loc>
+		<lastmod>2013-09-15</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/git/2013/09/15/github-delete-repository.html</loc>
+		<lastmod>2013-09-15</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/ruby/2013/09/15/gem-install-rdiscount-error.html</loc>
+		<lastmod>2013-09-15</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/jekyll/2013/09/15/gem-install-jekyll-instance-of-Date-needs-to-have-method-marshal_load.html</loc>
+		<lastmod>2013-09-15</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/english/2013/09/15/english-US-and-UK-spy-agencies-defeat-privacy-and-security-on-the-internet.html</loc>
+		<lastmod>2013-09-15</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/centos/2013/09/15/Install-shuttter-centos-64bit.html</loc>
+		<lastmod>2013-09-15</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/linux/2013/09/15/Install-Google-Chrome-in-Linux.html</loc>
+		<lastmod>2013-09-15</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/git/2013/09/14/msysgit-operate.html</loc>
+		<lastmod>2013-09-14</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/ruby/2013/09/14/INSTALLING-RUBY-RUBYGEMS-RAILS-AND-MONGREL-ON-MAC-OS-X-10.5-%28LEOPARD%29.html</loc>
+		<lastmod>2013-09-14</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/git/2013/09/13/git-revert-a-single-file.html</loc>
+		<lastmod>2013-09-13</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/git/2013/09/13/git-http-request-failed.html</loc>
+		<lastmod>2013-09-13</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/git/2013/09/13/git-generate-ssh-key.html</loc>
+		<lastmod>2013-09-13</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+</urlset>

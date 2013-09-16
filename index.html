@@ -1,0 +1,30 @@
+---
+layout: page
+title: STUTY,LEARN
+keywords: STUTY,LEARN
+description: STUTY,LEARN
+tagline: 学习，记录，总结
+---
+{% include JB/setup %}
+
+<div class="row">
+  <div class="span8">
+    {% assign posts_collate = site.posts %}
+    {% include JB/posts_collate %}
+  </div>
+  
+  <aside class="span4">
+    <section>
+    {% unless site.categories == empty %}
+    <h3>分类</h3>
+    <ul class="tag_box">
+      {% assign categories_list = site.categories %}
+      {% include JB/categories_list %}
+    </ul>
+    {% endunless %}  
+    </section>
+    
+  </aside>
+</div>
+
+

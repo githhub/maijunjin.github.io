@@ -1,0 +1,79 @@
+
+    <link href="{{BASE_PATH}}/assets/css/jquery.tocify.css" rel="stylesheet">
+
+<div class="page-header">
+  <h1>{{ page.title }} <small>{{ page.tagline }}</small></h1>
+</div>
+<div class="row-fluid">
+  <div class="span8">  
+    <div id="article">
+    {{ content }}    
+    </div>  
+    <div>
+		   {% if page.previous %}
+			   上一篇： <a href="{{ BASE_PATH }}{{ page.previous.url }}">{{ page.previous.title }}</a><br/>
+		   {% endif %}
+			    
+			 {% if page.next %}
+				下一篇： <a href="{{ BASE_PATH }}{{ page.next.url }}">{{ page.next.title }}</a>
+			 {% endif %}
+	  </div>
+    <hr/>
+  <script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiCategories = []; //请用代码生成文章分类，分类名放在 JSONArray 中，如: ["分类1", "分类2"]
+    var wumiiSitePrefix = "http://maijunjin.github.io/mjj/";
+    var wumiiParams = "&num=5&mode=2&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.cn/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅关联推荐，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>  
+    <hr>
+<!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"hnghnx"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END -->
+<!-- Duoshuo Comment END -->
+  </div>
+  
+  <aside class="span4">
+     <div class="span3">
+       <div id="toc"  style="max-height:60%;width:18%">
+       </div><!--/.well -->
+     </div><!--/span-->
+
+  </aside>
+
+</div>
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{{BASE_PATH}}/assets/js/jquery-1.8.3.min.js"></script>
+    <script src="{{BASE_PATH}}/assets/js/jquery-ui-1.9.1.custom.min.js"></script>
+    <script src="{{BASE_PATH}}/assets/js/bootstrap.js"></script>
+    <script src="{{BASE_PATH}}/assets/js/jquery.tocify.js"></script>
+    <script src="{{BASE_PATH}}/assets/js/prettify.js"></script>
+
+    <script>
+        $(function() {
+
+            var toc = $("#toc").tocify({ selectors: "h2,h3,h4,h5,h6" }).data("toc-tocify");
+
+            prettyPrint();
+            $(".optionName").popover({ trigger: "hover" });
+
+        });
+    </script>
+
