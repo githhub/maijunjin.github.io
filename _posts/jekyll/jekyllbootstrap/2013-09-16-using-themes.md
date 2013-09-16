@@ -13,7 +13,7 @@ As of(自……起) JB version 0.2.x themes are now entirely modular. They are t
 
 Jekyll-Bootstrap v 0.2.x ships with only the stock “twitter” theme. Additional themes need to be “installed” as outlined below.  
 
-<span class="label notice">NOTE</span>
+<span class="label notice">NOTE</span>  
 Jekyll-Bootstrap uses `rake tasks` to implement much of its functionality. If you are new to `rake` a rake task is just a ruby method that can be run in the base-directory of Jekyll-Bootstrap. You should never run arbitrary(任意的；武断的；专制的) server side code on your system without first reviewing the source! View the Rakefile source.
 
 <H2>Find Themes</H2>
