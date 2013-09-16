@@ -44,12 +44,17 @@ desc "Begin a new post in #{CONFIG['posts']}"
 task :post do
   abort("rake aborted: '#{CONFIG['posts']}' directory not found.") unless FileTest.directory?(CONFIG['posts'])
   title = ENV["title"] || "new-post"
-  slug = title.downcase.strip.gsub(' ', '-').gsub(/[^\w-]/, '')
-  filename = File.join(CONFIG['posts'], "#{Time.now.strftime('%Y-%m-%d')}-#{slug}.#{CONFIG['post_ext']}")
+#path创建的目录 Usage:rake post tile="A Title" path="directory/directory2" 
+  path = ENV["path"] || ""
+#去掉目录中的特殊字符
+  path = File.join(CONFIG['posts'],path.gsub(/[^\w\/]/,''))
+  slug = title.downcase.strip.gsub(' ', '-').gsub(/[^\w!]/, '')
+#把path目录添加进去
+  filename = File.join(path,"#{Time.now.strftime('%Y-%m-%d')}-#{slug}.#{CONFIG['post_ext']}")
   if File.exist?(filename)
     abort("rake aborted!") if ask("#{filename} already exists. Do you want to overwrite?", ['y', 'n']) == 'n'
   end
-  
+  FileUtils.mkdir_p(path) unless Dir.exists?(path)  
   puts "Creating new post: #{filename}"
   open(filename, 'w') do |post|
     post.puts "---"
