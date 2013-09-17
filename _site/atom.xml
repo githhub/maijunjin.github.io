@@ -4,7 +4,7 @@
  <title>STUDY LEARN</title>
  <link href="/atom.xml" rel="self"/>
  <link href=""/>
- <updated>2013-09-18T01:55:26+08:00</updated>
+ <updated>2013-09-18T02:48:49+08:00</updated>
  <id></id>
  <author>
    <name>STUDY LEARN</name>
@@ -349,6 +349,413 @@ See the &lt;a href=&quot;_posts/jekyll/2013-09-18-%E5%A6%82%E4%BD%95%E5%9C%A8jek
 
 &lt;p&gt;&lt;LI&gt;单词种别。单词种别表示单词的种类，它是语法分析所需要的信息。一个语言的单词符号如何划分种类、分为几类、如何编码都属于技术性问题，主要取决于处理上的方便。通常让每种单词对应一个整数码，这样可最大限度地把各种单词区别开来。对于保留字，可将其全体视为一种，也可一字一种，采用一字一种的分类方法处理起来比较方便；标识符一般统归为一种，也可按整型、实型、布尔型等分为几种；运算符和界符可采用一符一种的分法，也可统归为一种。&lt;/LI&gt;
 &lt;LI&gt;单词自身的值。单词自身的值是编译中其他阶段所需要的信息。对于单词符号来说，如果一个种别只含有一个单词符号，那么对于这个单词符号，其种别编码就完全代表了它自身的值。如果一个种别含有多个单词符号，那么对于它的单词符号，除了给出种别编码之外还应给出单词符号自身的值，以便把同一种类的单词区别开来。注意，标识符自身的值就是标识符自身的字符串，而常量自身的值是常量本身的二进制数值。此外，&lt;/LI&gt;&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>Liquid使用文档</title>
+   <link href="/jekyll/2013/09/17/liquid%E4%BD%BF%E7%94%A8%E6%96%87%E6%A1%A3.html"/>
+   <updated>2013-09-17T00:00:00+08:00</updated>
+   <id>/jekyll/2013/09/17/liquid使用文档</id>
+   <content type="html">
+   	&lt;p&gt;&lt;a href=&quot;http://wiki.shopify.com/Liquid&quot;&gt;Using liquid markup&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Liquid is the engine of Shopify&#39;s customization. It’s a small and fast template language which is quick to learn but very powerful for full customization.&lt;/p&gt;
+
+&lt;h2&gt;Basics&lt;/h2&gt;
+
+&lt;p&gt;There are two types of markup in liquid: Output and Tag.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Output is surrounded by&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;    {{ two curly brackets }} 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;-Tags are surrounded by&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;   {% a curly bracket and a percent %} 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Output blocks will always be replaced with the data which they reference. If your liquid template has a product object exposed to it you can print the name of the product to the screen by referencing &lt;code&gt;Template:Product.title&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Tags drive the logic of templates. They are responsible for loops and branching logic such as If / Else.&lt;/p&gt;
+
+&lt;h3&gt;Output&lt;/h3&gt;
+
+&lt;p&gt;Here is a simple example of Output:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Hello {{name}}        
+Hello {{user.name}}
+Hello {{ &#39;tobi&#39; }}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4&gt;Filters&lt;/h4&gt;
+
+&lt;p&gt;Output markup takes filters. Filters are simple methods. The first parameter is always the output of the left side of the filter(第一个参数永远是左边filter的输出值). The return value of the filter will be the new left value when the next filter is run. When there are no more filters the template will receive the resulting string.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;The word &quot;tobi&quot; in uppercase: {{ &#39;tobi&#39; | upcase }}
+The word &quot;tobi&quot; has {{ &#39;tobi&#39; | size }} letters!
+Change &quot;Hello world&quot; to &quot;Hi world&quot;: {{ &#39;Hello world&#39; | replace: &#39;Hello&#39;, &#39;Hi&#39; }}
+The date today is {{ &#39;now&#39; | date: &quot;%Y %b %d&quot; }}
+
+![Filterchain](/assets/images/jekyll/Liquid/Filterchain.jpg) 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The code above results in the following:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;The word &quot;tobi&quot; in uppercase: TOBI
+The word &quot;tobi&quot; has 4 letters!
+Change &quot;Hello world!&quot; to &quot;Hi world!&quot;: Hi world
+The date today is 2009 Mar 02 [depends on when you&#39;re viewing this document]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3&gt;Tags&lt;/h3&gt;
+
+&lt;p&gt;Tags are for the logic in your template. Not to be confused with &lt;a href=&quot;http://wiki.shopify.com/Help:Products#Adding_New_Products&quot;&gt;product tags&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Here is a list of currently supported tags:&lt;/p&gt;
+
+&lt;h4&gt;Comments&lt;/h4&gt;
+
+&lt;p&gt;Comments are enclosed with a &quot;{% comment %}&quot; opening tag and a &quot;{% endcomment %}&quot; closing tag. As in other languages, all characters enclosed by these tags are ignored and will not be parsed by the language. These tags also work for multi-line comments. (这个命令也可以用于多行的情况。)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Hello world. {% comment %} Now this is a single-line comment {% endcomment %} &amp;lt;br /&amp;gt;
+Hello world,
+I think I&#39;m gonna be happy today. {% comment %} Now this is a multi-line comment that should be ignored too,
+just like the single-line comment {% endcomment %}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The code above will result in:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Hello world.
+Hello world, I think I&#39;m gonna be happy today.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4&gt;No Liquid Zone: the raw tag&lt;/h4&gt;
+
+&lt;p&gt;Any Liquid tags between a {% raw %} opening tag and a {% endraw %} closing tag will be ignored by the Liquid parser. What is enclosed by the raw tags is sent back to the browser, this differentiates raw tags from comment tags. Use raw tags to wrap JavaScript templates that use curly braces.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;{% raw %}{{ 5 | plus: 6 }}{{ openTag }} endraw %} is equal to {{ 5 | plus: 6 }}.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The code above will result in:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;11 is equal to 11.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4&gt;If / Else / Unless&lt;/h4&gt;
+
+&lt;p&gt;If else should be well known from any language imaginable. Liquid allows you to write simple expressions in the if. Unless is the opposite of If and is useful if you only need to check that something isn&#39;t true.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;PLEASE NOTE: Shopify does not export a user variable. This example is for conditional logic demonstration purposes only.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;{% if user %}
+  Hi {{ user.name }}
+{% endif %}
+
+{% if user.name == &amp;#39;tobi&amp;#39; %}
+  hi tobi
+{% endif %}
+
+{% if user.name != &amp;#39;tobi&amp;#39; %} 
+  hi non-tobi
+{% endif %}
+
+{% unless user.name == &amp;#39;tobi&amp;#39; %} 
+  hi non-tobi
+{% endunless %}
+
+{% if user.name == &amp;#39;tobi&amp;#39; or user.name == &amp;#39;marc&amp;#39; %} 
+  hi marc or tobi
+{% endif %}
+
+{% if user.name == &amp;#39;tobi&amp;#39; and user.last_name == &amp;#39;scottish&amp;#39; %} 
+  hi tobi scottish
+{% endif %}
+
+{% if user.name contains &amp;#39;tobi&amp;#39; %} 
+  hi tobias
+{% endif %}
+
+{% if user.creditcard == nil %}
+   poor sob
+{% endif %}
+
+{% if user.payments == empty %}
+   you haven&amp;#39;t paid yet! 
+{% endif %}
+
+{% if user.age &amp;gt; 18 %}
+   Login here
+{% else %}
+   Sorry, you are too young
+{% endif %}
+
+{% unless user.age &amp;gt; 18 %}
+  Sorry, you are too young
+{% else %}
+  Login here
+{% endunless %}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;Case Statement&lt;/h4&gt;
+
+&lt;p&gt;If you need more than one condition you can use the Case Statement&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;{% case condition %} 
+  {% when 1 %} 
+    hit 1 
+  {% when 2 %} 
+    hit 2 
+  {% else %} 
+    hit else
+{% endcase %} 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Example:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;{% case template %}
+  {% when &amp;#39;index&amp;#39; %}
+     Welcome
+  {% when &amp;#39;product&amp;#39; %}
+     {{ product.vendor | link_to_vendor }} / {{ product.title }}
+  {% else %}
+     {{ page_title }}
+{% endcase %}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;Cycle&lt;/h4&gt;
+
+&lt;p&gt;Often you have to alternate between different colors for similar tasks. Liquid has build in support for such operations using the cycle tag.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;{% cycle &amp;#39;one&amp;#39;, &amp;#39;two&amp;#39;, &amp;#39;three&amp;#39; %}&amp;lt;br /&amp;gt; 
+{% cycle &amp;#39;one&amp;#39;, &amp;#39;two&amp;#39;, &amp;#39;three&amp;#39; %}&amp;lt;br /&amp;gt; 
+{% cycle &amp;#39;one&amp;#39;, &amp;#39;two&amp;#39;, &amp;#39;three&amp;#39; %}&amp;lt;br /&amp;gt; 
+{% cycle &amp;#39;one&amp;#39;, &amp;#39;two&amp;#39;, &amp;#39;three&amp;#39; %} 
+
+will result in 
+
+one
+two
+three
+one
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If no name is supplied for the cycle group then its assumed that multiple calls with the same parameters are one group.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Important&lt;/strong&gt;
+To use many cycle in one template, you must use named groups for predictable results.&lt;/p&gt;
+
+&lt;p&gt;Take this example where we iterate through 2 different collections to output their respective(分别的) products:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;&amp;lt;ul&amp;gt;
+{% for product in collections.collection-1.products %}
+  &amp;lt;li{% cycle &amp;#39; style=&amp;quot;clear:both;&amp;quot;&amp;#39;, &amp;#39;&amp;#39;, &amp;#39;&amp;#39;, &amp;#39; class=&amp;quot;last&amp;quot;&amp;#39; %}&amp;gt;
+    &amp;lt;a href=&amp;quot;{{ product.url | within: collection }}&amp;quot;&amp;gt;
+      &amp;lt;img src=&amp;quot;{{ product.featured_image.src | product_img_url: &amp;quot;medium&amp;quot; }}&amp;quot; alt=&amp;quot;{{ product.featured_image.alt }}&amp;quot; /&amp;gt;
+    &amp;lt;/a&amp;gt;
+  &amp;lt;/li&amp;gt;
+{% endfor %}
+&amp;lt;/ul&amp;gt;
+&amp;lt;ul&amp;gt;
+{% for product in collections.collection-2.products %}
+  &amp;lt;li{% cycle &amp;#39; style=&amp;quot;clear:both;&amp;quot;&amp;#39;, &amp;#39;&amp;#39;, &amp;#39;&amp;#39;, &amp;#39; class=&amp;quot;last&amp;quot;&amp;#39; %}&amp;gt;
+    &amp;lt;a href=&amp;quot;{{ product.url | within: collection }}&amp;quot;&amp;gt;
+      &amp;lt;img src=&amp;quot;{{ product.featured_image.src | product_img_url: &amp;quot;medium&amp;quot; }}&amp;quot; alt=&amp;quot;{{ product.featured_image.alt }}&amp;quot; /&amp;gt;
+    &amp;lt;/a&amp;gt;
+  &amp;lt;/li&amp;gt;
+{% endfor %}
+&amp;lt;/ul&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In the above example, if the first collection only has 2 products in it then the next collection loop will pick up the &#39;cycle&#39; where the first one left off resulting in this undesired output:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;&amp;lt;ul&amp;gt;
+  &amp;lt;li style=&amp;quot;clear:both&amp;quot;&amp;gt;&amp;lt;/li&amp;gt;
+  &amp;lt;li&amp;gt;&amp;lt;/li&amp;gt;
+&amp;lt;/ul&amp;gt;
+&amp;lt;ul&amp;gt;
+  &amp;lt;li&amp;gt;&amp;lt;/li&amp;gt;
+  &amp;lt;li class=&amp;quot;last&amp;quot;&amp;gt;&amp;lt;/li&amp;gt;
+  &amp;lt;li style=&amp;quot;clear:both&amp;quot;&amp;gt;&amp;lt;/li&amp;gt;
+  &amp;lt;li&amp;gt;&amp;lt;/li&amp;gt;
+&amp;lt;/ul&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;To avoid that, you must use a &lt;strong&gt;cycle group&lt;/strong&gt; for each of your loop blocks like so:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;&amp;lt;ul&amp;gt;
+{% for product in collections.collection-1.products %}
+  &amp;lt;li{% cycle &amp;#39;group1&amp;#39;: &amp;#39; style=&amp;quot;clear:both;&amp;quot;&amp;#39;, &amp;#39;&amp;#39;, &amp;#39;&amp;#39;, &amp;#39; class=&amp;quot;last&amp;quot;&amp;#39; %}&amp;gt;
+    &amp;lt;a href=&amp;quot;{{ product.url | within: collection }}&amp;quot;&amp;gt;
+      &amp;lt;img src=&amp;quot;{{ product.featured_image.src | product_img_url: &amp;quot;medium&amp;quot; }}&amp;quot; alt=&amp;quot;{{ product.featured_image.alt }}&amp;quot; /&amp;gt;
+    &amp;lt;/a&amp;gt;
+  &amp;lt;/li&amp;gt;
+{% endfor %}
+&amp;lt;/ul&amp;gt;
+&amp;lt;ul&amp;gt;
+{% for product in collections.collection-2.products %}
+  &amp;lt;li{% cycle &amp;#39;group2&amp;#39;: &amp;#39; style=&amp;quot;clear:both;&amp;quot;&amp;#39;, &amp;#39;&amp;#39;, &amp;#39;&amp;#39;, &amp;#39; class=&amp;quot;last&amp;quot;&amp;#39; %}&amp;gt;
+    &amp;lt;a href=&amp;quot;{{ product.url | within: collection }}&amp;quot;&amp;gt;
+      &amp;lt;img src=&amp;quot;{{ product.featured_image.src | product_img_url: &amp;quot;medium&amp;quot; }}&amp;quot; alt=&amp;quot;{{ product.featured_image.alt }}&amp;quot; /&amp;gt;
+    &amp;lt;/a&amp;gt;
+  &amp;lt;/li&amp;gt;
+{% endfor %}
+&amp;lt;/ul&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With the above code, we now get the desired output as shown below:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;&amp;lt;ul&amp;gt;
+  &amp;lt;li style=&amp;quot;clear:both&amp;quot;&amp;gt;&amp;lt;/li&amp;gt;
+  &amp;lt;li&amp;gt;&amp;lt;/li&amp;gt;
+&amp;lt;/ul&amp;gt;
+&amp;lt;-- new cycle group starts! --&amp;gt;
+&amp;lt;ul&amp;gt;
+  &amp;lt;li style=&amp;quot;clear:both&amp;quot;&amp;gt;&amp;lt;/li&amp;gt;
+  &amp;lt;li&amp;gt;&amp;lt;/li&amp;gt;
+  &amp;lt;li&amp;gt;&amp;lt;/li&amp;gt;
+  &amp;lt;li class=&amp;quot;last&amp;quot;&amp;gt;&amp;lt;/li&amp;gt;
+&amp;lt;/ul&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;For loops&lt;/h4&gt;
+
+&lt;p&gt;Liquid allows for loops over collections&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;   
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;During every for loop there are following helper variables available for extra styling needs:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt; forloop.length       # =&amp;gt; length of the entire for loop
+ forloop.index        # =&amp;gt; index of the current iteration 
+ forloop.index0       # =&amp;gt; index of the current iteration (zero based) 
+ forloop.rindex       # =&amp;gt; how many items are still left?
+ forloop.rindex0      # =&amp;gt; how many items are still left? (zero based)
+ forloop.first        # =&amp;gt; is this the first iteration?
+ forloop.last         # =&amp;gt; is this the last iteration? 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;There are several attributes you can use to influence which items you receive in your loop&lt;/p&gt;
+
+&lt;p&gt;limit lets you restrict how many items you get offset lets you start the collection with the nth item.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;  # array = [1,2,3,4,5,6]
+  {% for item in array limit:2 offset:2 %} 
+    {{ item }}
+  {% endfor %} 
+  # results in 3,4 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Instead of looping over an existing collection, you can define a range of numbers to loop through. The range can be defined by both literal and variable numbers:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;  # if item.quantity is 4...
+  {% for i in (1..item.quantity) %}
+    {{ i }}
+  {% endfor %}
+  # results in 1,2,3,4
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;Tables&lt;/h4&gt;
+
+&lt;p&gt;Liquid can create table rows and cells for you (you still need to wrap a table tag around the tablerow instruction):&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;  {% tablerow item in items cols: 3 limit: 12 %}
+    {{ item.variable }}
+  {% endtablerow %}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You can also find out whether a table cell is the first or last column in a row or directly query the column number:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt; tablerowloop.length       # =&amp;gt; length of the entire for loop
+ tablerowloop.index        # =&amp;gt; index of the current iteration 
+ tablerowloop.index0          # =&amp;gt; index of the current iteration (zero based) 
+ tablerowloop.rindex       # =&amp;gt; how many items are still left?
+ tablerowloop.rindex0      # =&amp;gt; how many items are still left? (zero based)
+ tablerowloop.first        # =&amp;gt; is this the first iteration?
+ tablerowloop.last         # =&amp;gt; is this the last iteration? 
+ tablerowloop.col          # =&amp;gt; index of column in the current row
+ tablerowloop.col0         # =&amp;gt; index of column in the current row (zero based)
+ tablerowloop.col_first    # =&amp;gt; is this the first column in the row?
+ tablerowloop.col_last     # =&amp;gt; is this the last column in the row?
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;  {% tablerow item in items cols: 3 %}
+    {% if tablerowloop.col_first %}
+      First column: {{ item.variable }}
+    {% else %}
+      Different column: {{ item.variable }}
+    {% endif %}
+  {% endtablerow %}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;Variable Assignment&lt;/h4&gt;
+
+&lt;p&gt;You can store data in your own variables, to be used in output or other tags as desired. The simplest way to create a variable is with the assign tag, which has a pretty straightforward syntax:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;{% assign name = &amp;#39;freestyle&amp;#39; %}
+{% for t in collections.tags %}
+    {% if t == name %}
+         &amp;lt;p&amp;gt;Freestyle!&amp;lt;/p&amp;gt;
+    {% endif %}
+{% endfor %}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Another way of doing this would be to assign true/false values to the variable:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;{% assign freestyle = false %}
+{% for t in collections.tags %}
+    {% if t == &amp;#39;freestyle&amp;#39; %}
+      {% assign freestyle = true %}
+    {% endif %}
+{% endfor %}
+{% if freestyle %}
+  &amp;lt;p&amp;gt;Freestyle!&amp;lt;/p&amp;gt;
+{% endif %}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If you want to combine a number of strings into a single string and save it to a variable, you can do that with the capture tag. This tag is a block which &quot;captures&quot; whatever is rendered inside it and assigns it to the given variable instead of rendering it to the screen. Here&#39;s how it works:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text&quot;&gt;  {% capture attribute_name %}{{ item.title | handleize }}-{{ i }}-color{% endcapture %}
+
+  &amp;lt;label for=&amp;quot;{{ attribute_name }}&amp;quot;&amp;gt;Color:&amp;lt;/label&amp;gt;
+  &amp;lt;select name=&amp;quot;attributes[{{ attribute_name }}]&amp;quot; id=&amp;quot;{{ attribute_name }}&amp;quot;&amp;gt;
+    &amp;lt;option value=&amp;quot;red&amp;quot;&amp;gt;Red&amp;lt;/option&amp;gt;
+    &amp;lt;option value=&amp;quot;green&amp;quot;&amp;gt;Green&amp;lt;/option&amp;gt;
+    &amp;lt;option value=&amp;quot;blue&amp;quot;&amp;gt;Blue&amp;lt;/option&amp;gt;
+  &amp;lt;/select&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Include Statement&lt;/h2&gt;
+
+&lt;p&gt;See main article at &lt;a href=&quot;http://wiki.shopify.com/Include_(Liquid_tag&quot;&gt;Include_(Liquid_tag)&lt;/a&gt;)&lt;/p&gt;
 
    </content>
  </entry>
@@ -1512,7 +1919,7 @@ Luckily, there is a script developed by Richard Lloyd, that automatically downlo
 
 &lt;p&gt;Sample Output
 Google Chrome Installer 2.00 on the i686 platform
-(C) Richard K. Lloyd 2013 &lt;a href=&quot;&amp;#109;&amp;#x61;&amp;#x69;&amp;#108;&amp;#x74;&amp;#111;&amp;#58;&amp;#114;&amp;#107;&amp;#x6c;&amp;#x6c;&amp;#x6f;&amp;#x79;&amp;#100;&amp;#64;&amp;#103;&amp;#109;&amp;#x61;&amp;#x69;&amp;#x6c;&amp;#x2e;&amp;#99;&amp;#111;&amp;#109;&quot;&gt;&amp;#114;&amp;#x6b;&amp;#x6c;&amp;#108;&amp;#111;&amp;#121;&amp;#x64;&amp;#64;&amp;#103;&amp;#109;&amp;#97;&amp;#x69;&amp;#108;&amp;#46;&amp;#x63;&amp;#111;&amp;#x6d;&lt;/a&gt;&lt;/p&gt;
+(C) Richard K. Lloyd 2013 &lt;a href=&quot;&amp;#x6d;&amp;#x61;&amp;#105;&amp;#108;&amp;#116;&amp;#x6f;&amp;#58;&amp;#x72;&amp;#107;&amp;#108;&amp;#x6c;&amp;#x6f;&amp;#121;&amp;#100;&amp;#64;&amp;#x67;&amp;#x6d;&amp;#x61;&amp;#105;&amp;#108;&amp;#46;&amp;#x63;&amp;#111;&amp;#109;&quot;&gt;&amp;#x72;&amp;#107;&amp;#x6c;&amp;#x6c;&amp;#111;&amp;#x79;&amp;#x64;&amp;#x40;&amp;#103;&amp;#x6d;&amp;#97;&amp;#105;&amp;#108;&amp;#46;&amp;#x63;&amp;#111;&amp;#109;&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;*** Checking for an update to install_chrome.sh ...&lt;/p&gt;
 

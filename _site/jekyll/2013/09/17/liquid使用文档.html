@@ -1,0 +1,546 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:wb="http://open.weibo.com/wb">
+  <head profile="http://gmpg.org/xfn/11">
+    <meta charset="utf-8">
+    <title>Liquid使用文档</title>
+    <meta name="description" content="如何使用Liquid">
+    
+    <meta name="author" content="STUDY LEARN">
+    <link rel="alternate" title="STUDY LEARN" href="/atom.xml" type="application/rss+xml" />
+
+    <!-- Le styles -->
+    <link href="/assets/themes/twitter/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/assets/themes/twitter/css/style.css?body=1" rel="stylesheet" media="all" />
+    
+    <link rel="index" title="STUDY LEARN" href="/" />
+    
+    <link rel="prev" href="//2013/09/17/jekyll-include.html" title="jekyll include" />
+    
+    
+    <link rel="next" href="//2013/09/17/principles-of-compiling-second-chapter.html" title="编译原理 第二章 词法分析" />
+    
+    
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">STUDY LEARN</a>
+          <ul class="nav">
+            <li><a href="/categories.html">目录</a></li>
+          </ul>
+          <ul>
+<form action="http://google.com/search" method="get" _lpchecked="1">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:maijunjin.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search">
+  </fieldset>
+</form>
+
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="content">
+     	
+
+
+    <link href="/assets/css/jquery.tocify.css" rel="stylesheet">
+
+<div class="page-header">
+  <h1>Liquid使用文档 <small></small></h1>
+</div>
+<div class="row-fluid">
+  <div class="span8">  
+    <div id="article">
+    <p><a href="http://wiki.shopify.com/Liquid">Using liquid markup</a></p>
+
+<p>Liquid is the engine of Shopify's customization. It’s a small and fast template language which is quick to learn but very powerful for full customization.</p>
+
+<h2>Basics</h2>
+
+<p>There are two types of markup in liquid: Output and Tag.</p>
+
+<ul>
+<li>Output is surrounded by</li>
+</ul>
+
+
+<div class="highlight"><pre><code class="text">    {{ two curly brackets }} 
+</code></pre></div>
+
+
+<p>-Tags are surrounded by</p>
+
+<div class="highlight"><pre><code class="text">   {% a curly bracket and a percent %} 
+</code></pre></div>
+
+
+<p>Output blocks will always be replaced with the data which they reference. If your liquid template has a product object exposed to it you can print the name of the product to the screen by referencing <code>Template:Product.title</code>.</p>
+
+<p>Tags drive the logic of templates. They are responsible for loops and branching logic such as If / Else.</p>
+
+<h3>Output</h3>
+
+<p>Here is a simple example of Output:</p>
+
+<pre><code>Hello {{name}}        
+Hello {{user.name}}
+Hello {{ 'tobi' }}
+</code></pre>
+
+<h4>Filters</h4>
+
+<p>Output markup takes filters. Filters are simple methods. The first parameter is always the output of the left side of the filter(第一个参数永远是左边filter的输出值). The return value of the filter will be the new left value when the next filter is run. When there are no more filters the template will receive the resulting string.</p>
+
+<pre><code>The word "tobi" in uppercase: {{ 'tobi' | upcase }}
+The word "tobi" has {{ 'tobi' | size }} letters!
+Change "Hello world" to "Hi world": {{ 'Hello world' | replace: 'Hello', 'Hi' }}
+The date today is {{ 'now' | date: "%Y %b %d" }}
+
+![Filterchain](/assets/images/jekyll/Liquid/Filterchain.jpg) 
+</code></pre>
+
+<p>The code above results in the following:</p>
+
+<pre><code>The word "tobi" in uppercase: TOBI
+The word "tobi" has 4 letters!
+Change "Hello world!" to "Hi world!": Hi world
+The date today is 2009 Mar 02 [depends on when you're viewing this document]
+</code></pre>
+
+<h3>Tags</h3>
+
+<p>Tags are for the logic in your template. Not to be confused with <a href="http://wiki.shopify.com/Help:Products#Adding_New_Products">product tags</a>.</p>
+
+<p>Here is a list of currently supported tags:</p>
+
+<h4>Comments</h4>
+
+<p>Comments are enclosed with a "{% comment %}" opening tag and a "{% endcomment %}" closing tag. As in other languages, all characters enclosed by these tags are ignored and will not be parsed by the language. These tags also work for multi-line comments. (这个命令也可以用于多行的情况。)</p>
+
+<pre><code>Hello world. {% comment %} Now this is a single-line comment {% endcomment %} &lt;br /&gt;
+Hello world,
+I think I'm gonna be happy today. {% comment %} Now this is a multi-line comment that should be ignored too,
+just like the single-line comment {% endcomment %}
+</code></pre>
+
+<p>The code above will result in:</p>
+
+<pre><code>Hello world.
+Hello world, I think I'm gonna be happy today.
+</code></pre>
+
+<h4>No Liquid Zone: the raw tag</h4>
+
+<p>Any Liquid tags between a {% raw %} opening tag and a {% endraw %} closing tag will be ignored by the Liquid parser. What is enclosed by the raw tags is sent back to the browser, this differentiates raw tags from comment tags. Use raw tags to wrap JavaScript templates that use curly braces.</p>
+
+<pre><code>{% raw %}{{ 5 | plus: 6 }}{{ openTag }} endraw %} is equal to {{ 5 | plus: 6 }}.
+</code></pre>
+
+<p>The code above will result in:</p>
+
+<pre><code>11 is equal to 11.
+</code></pre>
+
+<h4>If / Else / Unless</h4>
+
+<p>If else should be well known from any language imaginable. Liquid allows you to write simple expressions in the if. Unless is the opposite of If and is useful if you only need to check that something isn't true.</p>
+
+<p><strong>PLEASE NOTE: Shopify does not export a user variable. This example is for conditional logic demonstration purposes only.</strong></p>
+
+<div class="highlight"><pre><code class="text">{% if user %}
+  Hi {{ user.name }}
+{% endif %}
+
+{% if user.name == &#39;tobi&#39; %}
+  hi tobi
+{% endif %}
+
+{% if user.name != &#39;tobi&#39; %} 
+  hi non-tobi
+{% endif %}
+
+{% unless user.name == &#39;tobi&#39; %} 
+  hi non-tobi
+{% endunless %}
+
+{% if user.name == &#39;tobi&#39; or user.name == &#39;marc&#39; %} 
+  hi marc or tobi
+{% endif %}
+
+{% if user.name == &#39;tobi&#39; and user.last_name == &#39;scottish&#39; %} 
+  hi tobi scottish
+{% endif %}
+
+{% if user.name contains &#39;tobi&#39; %} 
+  hi tobias
+{% endif %}
+
+{% if user.creditcard == nil %}
+   poor sob
+{% endif %}
+
+{% if user.payments == empty %}
+   you haven&#39;t paid yet! 
+{% endif %}
+
+{% if user.age &gt; 18 %}
+   Login here
+{% else %}
+   Sorry, you are too young
+{% endif %}
+
+{% unless user.age &gt; 18 %}
+  Sorry, you are too young
+{% else %}
+  Login here
+{% endunless %}
+</code></pre></div>
+
+
+<h4>Case Statement</h4>
+
+<p>If you need more than one condition you can use the Case Statement</p>
+
+<div class="highlight"><pre><code class="text">{% case condition %} 
+  {% when 1 %} 
+    hit 1 
+  {% when 2 %} 
+    hit 2 
+  {% else %} 
+    hit else
+{% endcase %} 
+</code></pre></div>
+
+
+<p><strong>Example:</strong></p>
+
+<div class="highlight"><pre><code class="text">{% case template %}
+  {% when &#39;index&#39; %}
+     Welcome
+  {% when &#39;product&#39; %}
+     {{ product.vendor | link_to_vendor }} / {{ product.title }}
+  {% else %}
+     {{ page_title }}
+{% endcase %}
+</code></pre></div>
+
+
+<h4>Cycle</h4>
+
+<p>Often you have to alternate between different colors for similar tasks. Liquid has build in support for such operations using the cycle tag.</p>
+
+<div class="highlight"><pre><code class="text">{% cycle &#39;one&#39;, &#39;two&#39;, &#39;three&#39; %}&lt;br /&gt; 
+{% cycle &#39;one&#39;, &#39;two&#39;, &#39;three&#39; %}&lt;br /&gt; 
+{% cycle &#39;one&#39;, &#39;two&#39;, &#39;three&#39; %}&lt;br /&gt; 
+{% cycle &#39;one&#39;, &#39;two&#39;, &#39;three&#39; %} 
+
+will result in 
+
+one
+two
+three
+one
+</code></pre></div>
+
+
+<p>If no name is supplied for the cycle group then its assumed that multiple calls with the same parameters are one group.</p>
+
+<p><strong>Important</strong>
+To use many cycle in one template, you must use named groups for predictable results.</p>
+
+<p>Take this example where we iterate through 2 different collections to output their respective(分别的) products:</p>
+
+<div class="highlight"><pre><code class="text">&lt;ul&gt;
+{% for product in collections.collection-1.products %}
+  &lt;li{% cycle &#39; style=&quot;clear:both;&quot;&#39;, &#39;&#39;, &#39;&#39;, &#39; class=&quot;last&quot;&#39; %}&gt;
+    &lt;a href=&quot;{{ product.url | within: collection }}&quot;&gt;
+      &lt;img src=&quot;{{ product.featured_image.src | product_img_url: &quot;medium&quot; }}&quot; alt=&quot;{{ product.featured_image.alt }}&quot; /&gt;
+    &lt;/a&gt;
+  &lt;/li&gt;
+{% endfor %}
+&lt;/ul&gt;
+&lt;ul&gt;
+{% for product in collections.collection-2.products %}
+  &lt;li{% cycle &#39; style=&quot;clear:both;&quot;&#39;, &#39;&#39;, &#39;&#39;, &#39; class=&quot;last&quot;&#39; %}&gt;
+    &lt;a href=&quot;{{ product.url | within: collection }}&quot;&gt;
+      &lt;img src=&quot;{{ product.featured_image.src | product_img_url: &quot;medium&quot; }}&quot; alt=&quot;{{ product.featured_image.alt }}&quot; /&gt;
+    &lt;/a&gt;
+  &lt;/li&gt;
+{% endfor %}
+&lt;/ul&gt;
+</code></pre></div>
+
+
+<p>In the above example, if the first collection only has 2 products in it then the next collection loop will pick up the 'cycle' where the first one left off resulting in this undesired output:</p>
+
+<div class="highlight"><pre><code class="text">&lt;ul&gt;
+  &lt;li style=&quot;clear:both&quot;&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;/li&gt;
+  &lt;li class=&quot;last&quot;&gt;&lt;/li&gt;
+  &lt;li style=&quot;clear:both&quot;&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</code></pre></div>
+
+
+<p>To avoid that, you must use a <strong>cycle group</strong> for each of your loop blocks like so:</p>
+
+<div class="highlight"><pre><code class="text">&lt;ul&gt;
+{% for product in collections.collection-1.products %}
+  &lt;li{% cycle &#39;group1&#39;: &#39; style=&quot;clear:both;&quot;&#39;, &#39;&#39;, &#39;&#39;, &#39; class=&quot;last&quot;&#39; %}&gt;
+    &lt;a href=&quot;{{ product.url | within: collection }}&quot;&gt;
+      &lt;img src=&quot;{{ product.featured_image.src | product_img_url: &quot;medium&quot; }}&quot; alt=&quot;{{ product.featured_image.alt }}&quot; /&gt;
+    &lt;/a&gt;
+  &lt;/li&gt;
+{% endfor %}
+&lt;/ul&gt;
+&lt;ul&gt;
+{% for product in collections.collection-2.products %}
+  &lt;li{% cycle &#39;group2&#39;: &#39; style=&quot;clear:both;&quot;&#39;, &#39;&#39;, &#39;&#39;, &#39; class=&quot;last&quot;&#39; %}&gt;
+    &lt;a href=&quot;{{ product.url | within: collection }}&quot;&gt;
+      &lt;img src=&quot;{{ product.featured_image.src | product_img_url: &quot;medium&quot; }}&quot; alt=&quot;{{ product.featured_image.alt }}&quot; /&gt;
+    &lt;/a&gt;
+  &lt;/li&gt;
+{% endfor %}
+&lt;/ul&gt;
+</code></pre></div>
+
+
+<p>With the above code, we now get the desired output as shown below:</p>
+
+<div class="highlight"><pre><code class="text">&lt;ul&gt;
+  &lt;li style=&quot;clear:both&quot;&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;-- new cycle group starts! --&gt;
+&lt;ul&gt;
+  &lt;li style=&quot;clear:both&quot;&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;/li&gt;
+  &lt;li class=&quot;last&quot;&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</code></pre></div>
+
+
+<h4>For loops</h4>
+
+<p>Liquid allows for loops over collections</p>
+
+<div class="highlight"><pre><code class="text">   
+</code></pre></div>
+
+
+<p>During every for loop there are following helper variables available for extra styling needs:</p>
+
+<div class="highlight"><pre><code class="text"> forloop.length       # =&gt; length of the entire for loop
+ forloop.index        # =&gt; index of the current iteration 
+ forloop.index0       # =&gt; index of the current iteration (zero based) 
+ forloop.rindex       # =&gt; how many items are still left?
+ forloop.rindex0      # =&gt; how many items are still left? (zero based)
+ forloop.first        # =&gt; is this the first iteration?
+ forloop.last         # =&gt; is this the last iteration? 
+</code></pre></div>
+
+
+<p>There are several attributes you can use to influence which items you receive in your loop</p>
+
+<p>limit lets you restrict how many items you get offset lets you start the collection with the nth item.</p>
+
+<div class="highlight"><pre><code class="text">  # array = [1,2,3,4,5,6]
+  {% for item in array limit:2 offset:2 %} 
+    {{ item }}
+  {% endfor %} 
+  # results in 3,4 
+</code></pre></div>
+
+
+<p>Instead of looping over an existing collection, you can define a range of numbers to loop through. The range can be defined by both literal and variable numbers:</p>
+
+<div class="highlight"><pre><code class="text">  # if item.quantity is 4...
+  {% for i in (1..item.quantity) %}
+    {{ i }}
+  {% endfor %}
+  # results in 1,2,3,4
+</code></pre></div>
+
+
+<h4>Tables</h4>
+
+<p>Liquid can create table rows and cells for you (you still need to wrap a table tag around the tablerow instruction):</p>
+
+<div class="highlight"><pre><code class="text">  {% tablerow item in items cols: 3 limit: 12 %}
+    {{ item.variable }}
+  {% endtablerow %}
+</code></pre></div>
+
+
+<p>You can also find out whether a table cell is the first or last column in a row or directly query the column number:</p>
+
+<div class="highlight"><pre><code class="text"> tablerowloop.length       # =&gt; length of the entire for loop
+ tablerowloop.index        # =&gt; index of the current iteration 
+ tablerowloop.index0          # =&gt; index of the current iteration (zero based) 
+ tablerowloop.rindex       # =&gt; how many items are still left?
+ tablerowloop.rindex0      # =&gt; how many items are still left? (zero based)
+ tablerowloop.first        # =&gt; is this the first iteration?
+ tablerowloop.last         # =&gt; is this the last iteration? 
+ tablerowloop.col          # =&gt; index of column in the current row
+ tablerowloop.col0         # =&gt; index of column in the current row (zero based)
+ tablerowloop.col_first    # =&gt; is this the first column in the row?
+ tablerowloop.col_last     # =&gt; is this the last column in the row?
+</code></pre></div>
+
+
+
+
+<div class="highlight"><pre><code class="text">  {% tablerow item in items cols: 3 %}
+    {% if tablerowloop.col_first %}
+      First column: {{ item.variable }}
+    {% else %}
+      Different column: {{ item.variable }}
+    {% endif %}
+  {% endtablerow %}
+</code></pre></div>
+
+
+<h4>Variable Assignment</h4>
+
+<p>You can store data in your own variables, to be used in output or other tags as desired. The simplest way to create a variable is with the assign tag, which has a pretty straightforward syntax:</p>
+
+<div class="highlight"><pre><code class="text">{% assign name = &#39;freestyle&#39; %}
+{% for t in collections.tags %}
+    {% if t == name %}
+         &lt;p&gt;Freestyle!&lt;/p&gt;
+    {% endif %}
+{% endfor %}
+</code></pre></div>
+
+
+<p>Another way of doing this would be to assign true/false values to the variable:</p>
+
+<div class="highlight"><pre><code class="text">{% assign freestyle = false %}
+{% for t in collections.tags %}
+    {% if t == &#39;freestyle&#39; %}
+      {% assign freestyle = true %}
+    {% endif %}
+{% endfor %}
+{% if freestyle %}
+  &lt;p&gt;Freestyle!&lt;/p&gt;
+{% endif %}
+</code></pre></div>
+
+
+<p>If you want to combine a number of strings into a single string and save it to a variable, you can do that with the capture tag. This tag is a block which "captures" whatever is rendered inside it and assigns it to the given variable instead of rendering it to the screen. Here's how it works:</p>
+
+<div class="highlight"><pre><code class="text">  {% capture attribute_name %}{{ item.title | handleize }}-{{ i }}-color{% endcapture %}
+
+  &lt;label for=&quot;{{ attribute_name }}&quot;&gt;Color:&lt;/label&gt;
+  &lt;select name=&quot;attributes[{{ attribute_name }}]&quot; id=&quot;{{ attribute_name }}&quot;&gt;
+    &lt;option value=&quot;red&quot;&gt;Red&lt;/option&gt;
+    &lt;option value=&quot;green&quot;&gt;Green&lt;/option&gt;
+    &lt;option value=&quot;blue&quot;&gt;Blue&lt;/option&gt;
+  &lt;/select&gt;
+</code></pre></div>
+
+
+<h2>Include Statement</h2>
+
+<p>See main article at <a href="http://wiki.shopify.com/Include_(Liquid_tag">Include_(Liquid_tag)</a>)</p>
+    
+    </div>  
+    <div>
+		   
+			   上一篇： <a href="/2013/09/17/jekyll-include.html">jekyll include</a><br/>
+		   
+			    
+			 
+				下一篇： <a href="/2013/09/17/principles-of-compiling-second-chapter.html">编译原理 第二章 词法分析</a>
+			 
+	  </div>
+    <hr/>
+  <script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiCategories = []; //请用代码生成文章分类，分类名放在 JSONArray 中，如: ["分类1", "分类2"]
+    var wumiiSitePrefix = "http://maijunjin.github.io/";
+    var wumiiParams = "&num=5&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.cn/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅关联推荐，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>   
+ <hr>
+<!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"hnghnx"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END -->
+<!-- Duoshuo Comment END -->
+  </div>
+  
+  <aside class="span4">
+     <div class="span3">
+       <div id="toc"  style="max-height:60%;width:18%">
+       </div><!--/.well -->
+     </div><!--/span-->
+
+  </aside>
+
+</div>
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/assets/js/jquery-1.8.3.min.js"></script>
+    <script src="/assets/js/jquery-ui-1.9.1.custom.min.js"></script>
+    <script src="/assets/js/bootstrap.js"></script>
+    <script src="/assets/js/jquery.tocify.js"></script>
+    <script src="/assets/js/prettify.js"></script>
+
+    <script>
+        $(function() {
+
+            var toc = $("#toc").tocify({ selectors: "h2,h3,h4,h5,h6" }).data("toc-tocify");
+
+            prettyPrint();
+            $(".optionName").popover({ trigger: "hover" });
+
+        });
+    </script>
+
+
+
+      </div>
+
+    </div> <!-- /container -->
+
+    
+<!-- UJian Button BEGIN -->
+<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&fade=1&uid=1840499"></script>
+<a href="http://www.ujian.cc" style="border:0;"><img src="http://img.ujian.cc/pixel.png" alt="友荐云推荐" style="border:0;padding:0;margin:0;" /></a>
+<!-- UJian Button END -->
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F7aa860a60009fb75dc2789a27ff3c98f' type='text/javascript'%3E%3C/script%3E"));
+</script>
+  </body>
+</html>
+
