@@ -4,7 +4,7 @@
 <html lang="zh-CN" xmlns:wb="http://open.weibo.com/wb">
   <head profile="http://gmpg.org/xfn/11">
     <meta charset="utf-8">
-    <title>预测性输入技术公司SwiftKey融资1,760万美元</title>
+    <title>Git</title>
     
     
     <meta name="author" content="STUDY LEARN">
@@ -16,8 +16,10 @@
     
     <link rel="index" title="STUDY LEARN" href="/" />
     
-    <link rel="prev" href="//2013/09/17/principles-of-compiling-second-chapter.html" title="编译原理 第二章 词法分析" />
+    <link rel="prev" href="//ultraedit/2013/09/15/ultraedit-not-backups.html" title="UE（ultraEdit）设置不产生.bak文件(内含中英文版本)" />
     
+    
+    <link rel="next" href="//2013/09/16/jeff-shells-promotion-at-universal-shows-hollywoods-shifting-priorities.html" title="Jeff Shell's Promotion At Universal Shows Hollywood's Shifting Priorities" />
     
     
   </head>
@@ -52,19 +54,85 @@
     <link href="/assets/css/jquery.tocify.css" rel="stylesheet">
 
 <div class="page-header">
-  <h1>预测性输入技术公司SwiftKey融资1,760万美元 <small></small></h1>
+  <h1>Git <small></small></h1>
 </div>
 <div class="row-fluid">
   <div class="span8">  
     <div id="article">
-    
+    <p><a href="https://coderwall.com/p/vej4iw">Quicker Git Add Commit Push</a><br/>
+ Add this to your .bash_profile:</p>
+
+<pre><code>function gcp () {
+    if [ -z "$1" ]
+    then
+        read -p "Commit Message:" MSG
+    else
+        MSG="$1"
+    fi
+    git add .
+    git commit -am "$MSG"
+    git push
+}
+</code></pre>
+
+<p>now whenever you want to commit and push just execute</p>
+
+<pre><code>gcp "This is the comment"
+</code></pre>
+
+<p>if you don't supply a commit message it will prompt you for one.</p>
+
+<p>If you'd rather git open your default editor to comment, use this:</p>
+
+<pre><code>function gcp () {
+    git add .
+    git commit -a
+    git push
+}
+</code></pre>
+
+<p>but you can get the best of both worlds, one-liner messages, OR editor messages with something like this:</p>
+
+<pre><code>function gcp() {
+    git add .
+    if [ -z "$1" ]
+    then
+        git commit -a
+    else
+        git commit -am "$1"
+    fi
+    git push
+}
+</code></pre>
+
+<p>git commit -a的作用是提交所有已经提交到git的文件到本地库<br/>
+git commit帮助文档中如下说：<br/>
+Tell the command to automatically stage files that have been modified and deleted, but new files you have not told git about are not affected.
+有一个文件修改了:</p>
+
+<pre><code>git commit -am "a"
+[master 5ea27a3] a
+1 file changed, 8 insertions(+)
+</code></pre>
+
+<p>没有修改，添加了新文件：<br/>
+    git commit -am "a"
+    # On branch master
+    # Untracked files:
+    #   (use "git add <file>..." to include in what will be committed)
+    #
+    #   "_posts/english/2013-09-17-\351\243\216\351\231\251\346\212\225\350\265\204\350\200\205\346\234\211\346\234\233\344\273\216\346\216\250\347\211\271ipo\344\270\255\350\216\267\347\233\212.md"
+    nothing added to commit but untracked files present (use "git add" to track)
+可以看到新添加的文件并不会提交上去</p>
     
     </div>  
     <div>
 		   
-			   上一篇： <a href="/2013/09/17/principles-of-compiling-second-chapter.html">编译原理 第二章 词法分析</a><br/>
+			   上一篇： <a href="/ultraedit/2013/09/15/ultraedit-not-backups.html">UE（ultraEdit）设置不产生.bak文件(内含中英文版本)</a><br/>
 		   
 			    
+			 
+				下一篇： <a href="/2013/09/16/jeff-shells-promotion-at-universal-shows-hollywoods-shifting-priorities.html">Jeff Shell's Promotion At Universal Shows Hollywood's Shifting Priorities</a>
 			 
 	  </div>
     <hr/>

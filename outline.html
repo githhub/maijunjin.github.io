@@ -1,16 +1,18 @@
 ---
-layout:
-title: Start Blogging
+layout: default
+title: 文章内容概览
 ---
-  {% assign pages_icons = site.categories.git %}
-{% for node in pages_icons %}
-    {% if group == null or group == node.group %}
-      <li class="span3 page_icon">
-        <div class="thumbnail">
-          <h4><a href="{{ BASE_PATH }}{{node.url}}">{{node.title}}</a></h4>
-          <p>{{ node.description }}</p>
-        </div>
-      </li>
+{% assign categories = site.categories %}
+{% for pages_icons in categories%}
+    {% for node in pages_icons[1] %}
+        {% if group == null or group == node.group %}
+          <li class="span3 page_icon">
+            <div class="thumbnail">
+              <h4><a href="{{ BASE_PATH }}{{node.url}}">{{node.title}}</a></h4>
+              <p>{{ node.description }}</p>
+            </div>
+          </li>
     {% endif %}
-  {% endfor %}
-
+    {% endfor %}
+<HR/>
+{% endfor %}

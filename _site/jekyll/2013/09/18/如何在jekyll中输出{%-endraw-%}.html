@@ -1,0 +1,214 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:wb="http://open.weibo.com/wb">
+  <head profile="http://gmpg.org/xfn/11">
+    <meta charset="utf-8">
+    <title>如何在jekyll中输出{% endraw %}</title>
+    <meta name="description" content="如何在jekyll中输出{% endraw %}">
+    
+    <meta name="author" content="STUDY LEARN">
+    <link rel="alternate" title="STUDY LEARN" href="/atom.xml" type="application/rss+xml" />
+
+    <!-- Le styles -->
+    <link href="/assets/themes/twitter/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/assets/themes/twitter/css/style.css?body=1" rel="stylesheet" media="all" />
+    
+    <link rel="index" title="STUDY LEARN" href="/" />
+    
+    <link rel="prev" href="//2013/09/17/%E9%A3%8E%E9%99%A9%E6%8A%95%E8%B5%84%E8%80%85%E6%9C%89%E6%9C%9B%E4%BB%8E%E6%8E%A8%E7%89%B9ipo%E4%B8%AD%E8%8E%B7%E7%9B%8A.html" title="风险投资者有望从推特IPO中获益" />
+    
+    
+    
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">STUDY LEARN</a>
+          <ul class="nav">
+            <li><a href="/categories.html">目录</a></li>
+          </ul>
+          <ul>
+<form action="http://google.com/search" method="get" _lpchecked="1">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:maijunjin.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search">
+  </fieldset>
+</form>
+
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="content">
+     	
+
+
+    <link href="/assets/css/jquery.tocify.css" rel="stylesheet">
+
+<div class="page-header">
+  <h1>如何在jekyll中输出{% endraw %} <small></small></h1>
+</div>
+<div class="row-fluid">
+  <div class="span8">  
+    <div id="article">
+    <p><a href="http://blog.slaks.net/2013-06-10/jekyll-endraw-in-code/">原文</a></p>
+
+<p><a href="#">Last time</a>, we saw how to write about Jekyll tags in Jekyll-based blog posts, using HTML entities or the <code>{% raw %}</code> block.</p>
+
+<p>These techniques cannot be used in syntax-highlighted code blocks (Jekyll's <code>&#123;% higlight %}</code> tag or a Markdown code block), since such blocks are always HTML-escaped.  Instead, you can wrap all of the code in the block with a Liquid <code>&#123;% raw %}</code> tag.  Since the Liquid tag is processed before Markdown or syntax highlighting, this works perfectly.</p>
+
+<div class="jekyll"></div>
+
+
+<pre><code>{% raw %}
+Liquid uses tags like {% if %} or {% for %}.
+It also supports variable interpolation: {{ someVariable }}
+{% endraw %}
+</code></pre>
+
+<p>This approach works wonderfully, until you try to put the <code>&#123;% endraw %}</code> tag in a code block.  You can't put that in a <code>&#123;% raw %}</code> block, because it will close the block.  You can't use entities, because text within highlighted code blocks is always HTML-escaped.</p>
+
+<p>One potential option would be to break apart the tag; something like</p>
+
+<div class="jekyll"></div>
+
+
+<pre><code>{% raw %}
+This is how you show the termination of the `{% raw %}` tag inside itself: 
+{% endraw %}
+</code></pre>
+
+<p>However, due to <a href="https://github.com/Shopify/liquid/issues/204">a bug in Liquid</a>, this doesn't work correctly.  This markup is supposed to mean the following:</p>
+
+<ol>
+<li>Write the literal text <code>{%</code> within the <code>&#123;% raw %}</code> block</li>
+<li>Terminate the <code>&#123;% raw %}</code> block with <code>&#123;% endraw %}</code></li>
+<li>Write the rest of the of the tag (<code>endraw %}</code>)</li>
+<li>Re-enter the  <code>&#123;% raw %}</code> block to continue with other markup</li>
+</ol>
+
+
+<p>What actually happens is that Liquid ignores the actual <code>&#123;% endraw %}</code> command, and treats the entire line as raw text.  In other words, the code you see in the above example is (incorrectly) rendered exactly as written.  The literal text <code>{%</code> before the <code>{% endraw %}</code> causes Liquid to ignore the tag completely, breaking this technique.</p>
+
+<p>To work around this bug, we need to put the <code>{%</code> text outside the <code>{% raw %}</code> block.  However, Liquid does not have any way to escape a <code>{</code>, and we can't use HTML escaping inside the highlighted code block, so there is no obvious way to write the <code>{%</code>  without breaking the parser.</p>
+
+<p>Variables can help here.  We can create a Liquid variable that holds the literal text <code>{%</code>, then interpolate this variable outside the <code>{% raw %}</code> block.
+For example:</p>
+
+<div class="jekyll"></div>
+
+
+<pre><code>{% assign openTag = '{%' %}
+{% raw %}
+This is how you show the termination of the `{% raw %}` tag inside itself: 
+{% endraw %}{{ openTag }} endraw %}{% raw %}
+This content is back inside the {% raw %} block
+{% endraw %}
+</code></pre>
+
+<p>This code is parsed like this:</p>
+
+<ol>
+<li>Terminate the <code>{% raw %}</code> block with <code>{% endraw %}</code></li>
+<li>Write the value of the <code>openTag</code> variable (<code>{%</code>) with <code>{{ openTag }}</code></li>
+<li>Write the remainder of the <code>{% endraw %}</code> tag as literal text with <code>&nbsp;endraw %}</code></li>
+<li>Re-enter the <code>{% raw %}</code> block for additional raw content</li>
+</ol>
+
+
+<p>This technique can also be used to write tags in inline code: <code>&#96;{{ openTag }} sometag %}&#96;</code></p>
+
+<p>If these worksarounds seem completicated, writing this post itself (also in Liquid Markdown!) was even more complicated.<br/>
+See the <a href="_posts/jekyll/2013-09-18-%E5%A6%82%E4%BD%95%E5%9C%A8jekyll%E4%B8%AD%E8%BE%93%E5%87%BA{%-endraw-%}.md">source</a> to see how I did it.</p>
+    
+    </div>  
+    <div>
+		   
+			   上一篇： <a href="/2013/09/17/%E9%A3%8E%E9%99%A9%E6%8A%95%E8%B5%84%E8%80%85%E6%9C%89%E6%9C%9B%E4%BB%8E%E6%8E%A8%E7%89%B9ipo%E4%B8%AD%E8%8E%B7%E7%9B%8A.html">风险投资者有望从推特IPO中获益</a><br/>
+		   
+			    
+			 
+	  </div>
+    <hr/>
+  <script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiCategories = []; //请用代码生成文章分类，分类名放在 JSONArray 中，如: ["分类1", "分类2"]
+    var wumiiSitePrefix = "http://maijunjin.github.io/";
+    var wumiiParams = "&num=5&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.cn/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅关联推荐，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>   
+ <hr>
+<!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"hnghnx"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END -->
+<!-- Duoshuo Comment END -->
+  </div>
+  
+  <aside class="span4">
+     <div class="span3">
+       <div id="toc"  style="max-height:60%;width:18%">
+       </div><!--/.well -->
+     </div><!--/span-->
+
+  </aside>
+
+</div>
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/assets/js/jquery-1.8.3.min.js"></script>
+    <script src="/assets/js/jquery-ui-1.9.1.custom.min.js"></script>
+    <script src="/assets/js/bootstrap.js"></script>
+    <script src="/assets/js/jquery.tocify.js"></script>
+    <script src="/assets/js/prettify.js"></script>
+
+    <script>
+        $(function() {
+
+            var toc = $("#toc").tocify({ selectors: "h2,h3,h4,h5,h6" }).data("toc-tocify");
+
+            prettyPrint();
+            $(".optionName").popover({ trigger: "hover" });
+
+        });
+    </script>
+
+
+
+      </div>
+
+    </div> <!-- /container -->
+
+    
+<!-- UJian Button BEGIN -->
+<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&fade=1&uid=1840499"></script>
+<a href="http://www.ujian.cc" style="border:0;"><img src="http://img.ujian.cc/pixel.png" alt="友荐云推荐" style="border:0;padding:0;margin:0;" /></a>
+<!-- UJian Button END -->
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F7aa860a60009fb75dc2789a27ff3c98f' type='text/javascript'%3E%3C/script%3E"));
+</script>
+  </body>
+</html>
+

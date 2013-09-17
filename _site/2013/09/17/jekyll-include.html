@@ -4,9 +4,9 @@
 <html lang="zh-CN" xmlns:wb="http://open.weibo.com/wb">
   <head profile="http://gmpg.org/xfn/11">
     <meta charset="utf-8">
-    <title>UE（ultraEdit）设置不产生.bak文件(内含中英文版本)</title>
-    <meta name="description" content="UE（ultraEdit）设置不产生.bak文件(内含中英文版本)">
-    <meta name="keywords" content="UltraEdit">
+    <title>jekyll include</title>
+    
+    
     <meta name="author" content="STUDY LEARN">
     <link rel="alternate" title="STUDY LEARN" href="/atom.xml" type="application/rss+xml" />
 
@@ -16,10 +16,10 @@
     
     <link rel="index" title="STUDY LEARN" href="/" />
     
-    <link rel="prev" href="//jekyll/2013/09/15/ultraedit-edit-jekyll-post.html" title="使用UltraEdit编辑jekyll文章" />
+    <link rel="prev" href="//2013/09/17/jekyll-detail.html" title="jekyll细节笔记" />
     
     
-    <link rel="next" href="//git/2013/09/16/git.html" title="Git" />
+    <link rel="next" href="//2013/09/17/principles-of-compiling-second-chapter.html" title="编译原理 第二章 词法分析" />
     
     
   </head>
@@ -54,26 +54,42 @@
     <link href="/assets/css/jquery.tocify.css" rel="stylesheet">
 
 <div class="page-header">
-  <h1>UE（ultraEdit）设置不产生.bak文件(内含中英文版本) <small></small></h1>
+  <h1>jekyll include <small></small></h1>
 </div>
 <div class="row-fluid">
   <div class="span8">  
     <div id="article">
-    <p><a href="http://blog.csdn.net/snowseabye/article/details/7239952">原文</a>
-英文版按照如下顺序设置：
-Menu: Advanced --> Confiugration --> File Handling --> Backup --> Select No Backup option</p>
+    <h2>Includes</h2>
 
-<p>中文版按照如下顺序设置：
-高级--> 配置 --> 文件处理 --> 备份，选择右侧的不备份即可</p>
+<p>If you have small page fragments that you wish to include in multiple places on your site, you can use the include tag.</p>
+
+<pre><code>Included file footer.html not found in _includes directory
+</code></pre>
+
+<p>Jekyll expects all include files to be placed in an _includes directory at the root of your source directory. This will embed the contents of <code>&lt;source&gt;/_includes/footer.html</code> into the calling file.</p>
+
+<p>You can also pass parameters to an include:</p>
+
+<pre><code>Included file footer.html not found in _includes directory
+</code></pre>
+
+<p>These parameters are available via Liquid in the include:</p>
+
+<p>在研究过程中，发现include标签应该是不能够使用变量作为参数的，比如：</p>
+
+<pre><code>Included file pages_icons not found in _includes directory
+</code></pre>
+
+<p>刚开始看不明白，理解成为目录下面的所有文章都被包含进来，后来才明白，<code>Included file pages_icons not found in _includes directory</code>是包含了_include目录下面的pages_icons文件，里面需要用到pages_icons变量</p>
     
     </div>  
     <div>
 		   
-			   上一篇： <a href="/jekyll/2013/09/15/ultraedit-edit-jekyll-post.html">使用UltraEdit编辑jekyll文章</a><br/>
+			   上一篇： <a href="/2013/09/17/jekyll-detail.html">jekyll细节笔记</a><br/>
 		   
 			    
 			 
-				下一篇： <a href="/git/2013/09/16/git.html">Git</a>
+				下一篇： <a href="/2013/09/17/principles-of-compiling-second-chapter.html">编译原理 第二章 词法分析</a>
 			 
 	  </div>
     <hr/>

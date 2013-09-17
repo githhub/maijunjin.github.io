@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+	<url>
+		<loc>/atom.xml</loc>
+		<lastmod></lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/archive.html</loc>
+		<lastmod></lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/categories.html</loc>
+		<lastmod></lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/index.html</loc>
+		<lastmod></lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/sitemap.xml</loc>
+		<lastmod></lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/tags.html</loc>
+		<lastmod></lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/outline.html</loc>
+		<lastmod></lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+
+	<url>
+		<loc>/jekyll/2013/09/18/%E5%A6%82%E4%BD%95%E5%9C%A8jekyll%E4%B8%AD%E8%BE%93%E5%87%BA%7B%25-endraw-%25%7D.html</loc>
+		<lastmod>2013-09-18</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/2013/09/17/%E9%A3%8E%E9%99%A9%E6%8A%95%E8%B5%84%E8%80%85%E6%9C%89%E6%9C%9B%E4%BB%8E%E6%8E%A8%E7%89%B9ipo%E4%B8%AD%E8%8E%B7%E7%9B%8A.html</loc>
+		<lastmod>2013-09-17</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/english/2013/09/17/%E9%A2%84%E6%B5%8B%E6%80%A7%E8%BE%93%E5%85%A5%E6%8A%80%E6%9C%AF%E5%85%AC%E5%8F%B8swiftkey%E8%9E%8D%E8%B5%841%2C760%E4%B8%87%E7%BE%8E%E5%85%83.html</loc>
+		<lastmod>2013-09-17</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/2013/09/17/%E7%A1%85%E5%85%89%E5%AD%A6%E6%9C%89%E6%9C%9B%E6%8E%A8%E5%8A%A8%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83%E8%84%B1%E8%83%8E%E6%8D%A2%E9%AA%A8.html</loc>
+		<lastmod>2013-09-17</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/2013/09/17/principles-of-compiling-second-chapter.html</loc>
+		<lastmod>2013-09-17</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/2013/09/17/jekyll-include.html</loc>
+		<lastmod>2013-09-17</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/2013/09/17/jekyll-detail.html</loc>
+		<lastmod>2013-09-17</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/jekyll/2013/09/17/jekyll-category%E5%8F%98%E9%87%8F.html</loc>
+		<lastmod>2013-09-17</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/jekyll/2013/09/16/using-themes.html</loc>
+		<lastmod>2013-09-16</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/english/2013/09/16/nsa-revelations-cast-doubt-on-the-entire-tech-industry.html</loc>
+		<lastmod>2013-09-16</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/jekyll/2013/09/16/jekyllbootstrap-Zero-to-Hosted-Jekyll-Blog-in-3-Minutes.html</loc>
+		<lastmod>2013-09-16</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/jekyll/2013/09/16/jekyllbootstrap-Jekyll-Quick-Start.html</loc>
+		<lastmod>2013-09-16</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/2013/09/16/jekyll-newline.html</loc>
+		<lastmod>2013-09-16</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/2013/09/16/jekyll-bootstrap-rakefile.html</loc>
+		<lastmod>2013-09-16</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/2013/09/16/jeff-shells-promotion-at-universal-shows-hollywoods-shifting-priorities.html</loc>
+		<lastmod>2013-09-16</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/git/2013/09/16/git.html</loc>
+		<lastmod>2013-09-16</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/ultraedit/2013/09/15/ultraedit-not-backups.html</loc>
+		<lastmod>2013-09-15</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/jekyll/2013/09/15/ultraedit-edit-jekyll-post.html</loc>
+		<lastmod>2013-09-15</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/jekyll/2013/09/15/jekyll-server-cannot-load-such-file-posix-spawn-ext.html</loc>
+		<lastmod>2013-09-15</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/jquery/2013/09/15/include-jquery-best-way.html</loc>
+		<lastmod>2013-09-15</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/html/2013/09/15/html-diagonal.html</loc>
+		<lastmod>2013-09-15</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/git/2013/09/15/github-delete-repository.html</loc>
+		<lastmod>2013-09-15</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/ruby/2013/09/15/gem-install-rdiscount-error.html</loc>
+		<lastmod>2013-09-15</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/jekyll/2013/09/15/gem-install-jekyll-instance-of-Date-needs-to-have-method-marshal_load.html</loc>
+		<lastmod>2013-09-15</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/english/2013/09/15/english-US-and-UK-spy-agencies-defeat-privacy-and-security-on-the-internet.html</loc>
+		<lastmod>2013-09-15</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/centos/2013/09/15/Install-shuttter-centos-64bit.html</loc>
+		<lastmod>2013-09-15</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/linux/2013/09/15/Install-Google-Chrome-in-Linux.html</loc>
+		<lastmod>2013-09-15</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/git/2013/09/14/msysgit-operate.html</loc>
+		<lastmod>2013-09-14</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/ruby/2013/09/14/INSTALLING-RUBY-RUBYGEMS-RAILS-AND-MONGREL-ON-MAC-OS-X-10.5-%28LEOPARD%29.html</loc>
+		<lastmod>2013-09-14</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/git/2013/09/13/git-revert-a-single-file.html</loc>
+		<lastmod>2013-09-13</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/git/2013/09/13/git-http-request-failed.html</loc>
+		<lastmod>2013-09-13</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/git/2013/09/13/git-generate-ssh-key.html</loc>
+		<lastmod>2013-09-13</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+</urlset>

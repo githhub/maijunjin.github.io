@@ -4,9 +4,9 @@
 <html lang="zh-CN" xmlns:wb="http://open.weibo.com/wb">
   <head profile="http://gmpg.org/xfn/11">
     <meta charset="utf-8">
-    <title>UE（ultraEdit）设置不产生.bak文件(内含中英文版本)</title>
-    <meta name="description" content="UE（ultraEdit）设置不产生.bak文件(内含中英文版本)">
-    <meta name="keywords" content="UltraEdit">
+    <title>jekyll细节笔记</title>
+    
+    
     <meta name="author" content="STUDY LEARN">
     <link rel="alternate" title="STUDY LEARN" href="/atom.xml" type="application/rss+xml" />
 
@@ -16,10 +16,10 @@
     
     <link rel="index" title="STUDY LEARN" href="/" />
     
-    <link rel="prev" href="//jekyll/2013/09/15/ultraedit-edit-jekyll-post.html" title="使用UltraEdit编辑jekyll文章" />
+    <link rel="prev" href="//jekyll/2013/09/17/jekyll-category%E5%8F%98%E9%87%8F.html" title="jekyll category变量" />
     
     
-    <link rel="next" href="//git/2013/09/16/git.html" title="Git" />
+    <link rel="next" href="//2013/09/17/jekyll-include.html" title="jekyll include" />
     
     
   </head>
@@ -54,26 +54,62 @@
     <link href="/assets/css/jquery.tocify.css" rel="stylesheet">
 
 <div class="page-header">
-  <h1>UE（ultraEdit）设置不产生.bak文件(内含中英文版本) <small></small></h1>
+  <h1>jekyll细节笔记 <small></small></h1>
 </div>
 <div class="row-fluid">
   <div class="span8">  
     <div id="article">
-    <p><a href="http://blog.csdn.net/snowseabye/article/details/7239952">原文</a>
-英文版按照如下顺序设置：
-Menu: Advanced --> Confiugration --> File Handling --> Backup --> Select No Backup option</p>
+    <h2>h1 to h6 tag</h2>
 
-<p>中文版按照如下顺序设置：
-高级--> 配置 --> 文件处理 --> 备份，选择右侧的不备份即可</p>
+<p>一行以#号开头，可以被解析称H1到H6标签,<code>#</code>表示<code>&lt;H1&gt;&lt;/H1&gt;</code>,<code>##</code>表示<code>&lt;H2&gt;&lt;/H2&gt;</code>以此类推。</p>
+
+<h2>li标签</h2>
+
+<p><strong>空一行</strong>，新行开头<code>-</code>表示<code>li</code>标签</p>
+
+<h2>文字高亮</h2>
+
+<pre><code>{% highlight text %}
+{% endhighlight %}
+</code></pre>
+
+<h2>Liquid不要解析</h2>
+
+<p>就像我上面的代码一样，把代码包围在<code>{% raw %}{% endraw %}</code>中,<a href="/jekyll/2013/09/18/%E5%A6%82%E4%BD%95%E5%9C%A8jekyll%E4%B8%AD%E8%BE%93%E5%87%BA%7B%25-endraw-%25%7D.html">raw的结束标签怎么输出来是技术活</a></p>
+
+<h2>代码格式化</h2>
+
+<p>行首四个空格</p>
+
+<h2>加上代码的样式</h2>
+
+<div>使用`code`</div>
+
+
+<p>
+这也是输出html标签的一种方式</p>
+
+<h2>Markdown不要解析</h2>
+
+<p>Markdown won't process anything in block-level HTML tag，所以就加上<code>&lt;div&gt;&lt;/div&gt;</code>就可以了</p>
+
+<h2>换行</h2>
+
+<p>在行的结尾加上两个空格</p>
+
+<h2>输出文章的地址</h2>
+
+<pre><code>[Last time]({% post_url 2013-06-09-writing-about-jekyll-in-jekyll %})
+</code></pre>
     
     </div>  
     <div>
 		   
-			   上一篇： <a href="/jekyll/2013/09/15/ultraedit-edit-jekyll-post.html">使用UltraEdit编辑jekyll文章</a><br/>
+			   上一篇： <a href="/jekyll/2013/09/17/jekyll-category%E5%8F%98%E9%87%8F.html">jekyll category变量</a><br/>
 		   
 			    
 			 
-				下一篇： <a href="/git/2013/09/16/git.html">Git</a>
+				下一篇： <a href="/2013/09/17/jekyll-include.html">jekyll include</a>
 			 
 	  </div>
     <hr/>

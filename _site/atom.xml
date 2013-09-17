@@ -1,0 +1,2201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+ 
+ <title>STUDY LEARN</title>
+ <link href="/atom.xml" rel="self"/>
+ <link href=""/>
+ <updated>2013-09-18T01:55:26+08:00</updated>
+ <id></id>
+ <author>
+   <name>STUDY LEARN</name>
+   <email>xinllaang@sina.com</email>
+ </author>
+
+ 
+ <entry>
+   <title>如何在jekyll中输出{% endraw %}</title>
+   <link href="/jekyll/2013/09/18/%E5%A6%82%E4%BD%95%E5%9C%A8jekyll%E4%B8%AD%E8%BE%93%E5%87%BA%7B%25-endraw-%25%7D.html"/>
+   <updated>2013-09-18T00:00:00+08:00</updated>
+   <id>/jekyll/2013/09/18/如何在jekyll中输出{%-endraw-%}</id>
+   <content type="html">
+   	&lt;p&gt;&lt;a href=&quot;http://blog.slaks.net/2013-06-10/jekyll-endraw-in-code/&quot;&gt;原文&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;#&quot;&gt;Last time&lt;/a&gt;, we saw how to write about Jekyll tags in Jekyll-based blog posts, using HTML entities or the &lt;code&gt;{% raw %}&lt;/code&gt; block.&lt;/p&gt;
+
+&lt;p&gt;These techniques cannot be used in syntax-highlighted code blocks (Jekyll&#39;s &lt;code&gt;&amp;#123;% higlight %}&lt;/code&gt; tag or a Markdown code block), since such blocks are always HTML-escaped.  Instead, you can wrap all of the code in the block with a Liquid &lt;code&gt;&amp;#123;% raw %}&lt;/code&gt; tag.  Since the Liquid tag is processed before Markdown or syntax highlighting, this works perfectly.&lt;/p&gt;
+
+&lt;div class=&quot;jekyll&quot;&gt;&lt;/div&gt;
+
+
+&lt;pre&gt;&lt;code&gt;{% raw %}
+Liquid uses tags like {% if %} or {% for %}.
+It also supports variable interpolation: {{ someVariable }}
+{% endraw %}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This approach works wonderfully, until you try to put the &lt;code&gt;&amp;#123;% endraw %}&lt;/code&gt; tag in a code block.  You can&#39;t put that in a &lt;code&gt;&amp;#123;% raw %}&lt;/code&gt; block, because it will close the block.  You can&#39;t use entities, because text within highlighted code blocks is always HTML-escaped.&lt;/p&gt;
+
+&lt;p&gt;One potential option would be to break apart the tag; something like&lt;/p&gt;
+
+&lt;div class=&quot;jekyll&quot;&gt;&lt;/div&gt;
+
+
+&lt;pre&gt;&lt;code&gt;{% raw %}
+This is how you show the termination of the `{% raw %}` tag inside itself: 
+{% endraw %}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;However, due to &lt;a href=&quot;https://github.com/Shopify/liquid/issues/204&quot;&gt;a bug in Liquid&lt;/a&gt;, this doesn&#39;t work correctly.  This markup is supposed to mean the following:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Write the literal text &lt;code&gt;{%&lt;/code&gt; within the &lt;code&gt;&amp;#123;% raw %}&lt;/code&gt; block&lt;/li&gt;
+&lt;li&gt;Terminate the &lt;code&gt;&amp;#123;% raw %}&lt;/code&gt; block with &lt;code&gt;&amp;#123;% endraw %}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Write the rest of the of the tag (&lt;code&gt;endraw %}&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;Re-enter the  &lt;code&gt;&amp;#123;% raw %}&lt;/code&gt; block to continue with other markup&lt;/li&gt;
+&lt;/ol&gt;
+
+
+&lt;p&gt;What actually happens is that Liquid ignores the actual &lt;code&gt;&amp;#123;% endraw %}&lt;/code&gt; command, and treats the entire line as raw text.  In other words, the code you see in the above example is (incorrectly) rendered exactly as written.  The literal text &lt;code&gt;{%&lt;/code&gt; before the &lt;code&gt;{% endraw %}&lt;/code&gt; causes Liquid to ignore the tag completely, breaking this technique.&lt;/p&gt;
+
+&lt;p&gt;To work around this bug, we need to put the &lt;code&gt;{%&lt;/code&gt; text outside the &lt;code&gt;{% raw %}&lt;/code&gt; block.  However, Liquid does not have any way to escape a &lt;code&gt;{&lt;/code&gt;, and we can&#39;t use HTML escaping inside the highlighted code block, so there is no obvious way to write the &lt;code&gt;{%&lt;/code&gt;  without breaking the parser.&lt;/p&gt;
+
+&lt;p&gt;Variables can help here.  We can create a Liquid variable that holds the literal text &lt;code&gt;{%&lt;/code&gt;, then interpolate this variable outside the &lt;code&gt;{% raw %}&lt;/code&gt; block.
+For example:&lt;/p&gt;
+
+&lt;div class=&quot;jekyll&quot;&gt;&lt;/div&gt;
+
+
+&lt;pre&gt;&lt;code&gt;{% assign openTag = &#39;{%&#39; %}
+{% raw %}
+This is how you show the termination of the `{% raw %}` tag inside itself: 
+{% endraw %}{{ openTag }} endraw %}{% raw %}
+This content is back inside the {% raw %} block
+{% endraw %}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This code is parsed like this:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Terminate the &lt;code&gt;{% raw %}&lt;/code&gt; block with &lt;code&gt;{% endraw %}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Write the value of the &lt;code&gt;openTag&lt;/code&gt; variable (&lt;code&gt;{%&lt;/code&gt;) with &lt;code&gt;{{ openTag }}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Write the remainder of the &lt;code&gt;{% endraw %}&lt;/code&gt; tag as literal text with &lt;code&gt;&amp;nbsp;endraw %}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Re-enter the &lt;code&gt;{% raw %}&lt;/code&gt; block for additional raw content&lt;/li&gt;
+&lt;/ol&gt;
+
+
+&lt;p&gt;This technique can also be used to write tags in inline code: &lt;code&gt;&amp;#96;{{ openTag }} sometag %}&amp;#96;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;If these worksarounds seem completicated, writing this post itself (also in Liquid Markdown!) was even more complicated.&lt;br/&gt;
+See the &lt;a href=&quot;_posts/jekyll/2013-09-18-%E5%A6%82%E4%BD%95%E5%9C%A8jekyll%E4%B8%AD%E8%BE%93%E5%87%BA{%-endraw-%}.md&quot;&gt;source&lt;/a&gt; to see how I did it.&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>风险投资者有望从推特IPO中获益</title>
+   <link href="/2013/09/17/%E9%A3%8E%E9%99%A9%E6%8A%95%E8%B5%84%E8%80%85%E6%9C%89%E6%9C%9B%E4%BB%8E%E6%8E%A8%E7%89%B9ipo%E4%B8%AD%E8%8E%B7%E7%9B%8A.html"/>
+   <updated>2013-09-17T00:00:00+08:00</updated>
+   <id>/2013/09/17/风险投资者有望从推特ipo中获益</id>
+   <content type="html">
+   	&lt;p&gt;&lt;a href=&quot;http://xue.youdao.com/biarticle.a?articleId=-5217736901027230603&amp;amp;date=2013-09-17&amp;amp;position=read&amp;amp;channelType=personal&quot;&gt;Twitter IPO: Union Square Ventures, Jeff Bezos Firm Among Those That Stand to Gai&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;风险投资者有望从推特IPO中获益&lt;/p&gt;
+
+&lt;p&gt;Twitter today announced--in a tweet, of course--that it has submitted a confidential(adj. 机密的；表示信任的；获信任的) IPO filing, setting in motion plans for the most-anticipated tech offering since Facebook Inc.&lt;/p&gt;
+
+&lt;p&gt;特(Twitter)周四宣布——当然是在一篇推文中——它已秘密提交了首次公开募股(IPO)申请，启动了自Facebook Inc.上市以来外界期待最高的科技公司上市计划。&lt;/p&gt;
+
+&lt;p&gt;Confidential filings were permitted by the 2012 Jumpstart Our Business Startups Act, or JOBS Act, as a way to make going public easier for small companies who wanted to test the waters before publicly disclosing their finances.&lt;/p&gt;
+
+&lt;p&gt;2012年颁布的《创业企业融资法案》(Jumpstart Our Business Startups Act)允许公司秘密提交IPO申请，以便使那些希望在公开披露其财务状况之前试水的小型公司上市变得更加容易。&lt;/p&gt;
+
+&lt;p&gt;One advantage of the secret filings is that companies can work out some of the technical kinks in their IPO plans without revealing any sensitive financial information, like revenue, until they absolutely have to.&lt;/p&gt;
+
+&lt;p&gt;秘密提交申请的好处之一是，在公司确实愿意公开披露相关信息之前，可以在不披露收入等任何敏感的财务信息的情况下，拟定其IPO计划中的一些技术细节。&lt;/p&gt;
+
+&lt;p&gt;Twitter&#39;s revenue is thought be less than $1 billion, since that is the threshold for companies using the confidential IPO filing option.&lt;/p&gt;
+
+&lt;p&gt;据信推特收入不到10亿美元，因为只有收入不超过10亿美元的公司才能秘密提交IPO申请。&lt;/p&gt;
+
+&lt;p&gt;Such filings are secret until the company files its S-1 with the Securities and Exchange Commission. Many companies are thought to have taken advantage of this provision, but most don&#39;t disclose that they have done so.&lt;/p&gt;
+
+&lt;p&gt;在公司向美国证券交易委员会(Securities and Exchange Commission，简称SEC)提交S-1申请之前，IPO初步申请的内容将保密。很多公司被认为利用了这一条款，但大部分公司都不会披露自己曾这样做。&lt;/p&gt;
+
+&lt;p&gt;Short-messaging service Twitter received its first venture backing in 2007 from investors including Union Square Ventures and Charles River Ventures along with angels Marc Andreesen, Ron Conway and Naval Ravikant.&lt;/p&gt;
+
+&lt;p&gt;2007年，短消息服务公司推特从投资者获得了第一笔风投资金，这些投资者包括Union Square Ventures、Charles River Ventures以及天使投资人安德雷森(Marc Andreesen)、康韦(Ron Conway)和拉维坎特(Naval Ravikant)。&lt;/p&gt;
+
+&lt;p&gt;The following year Spark Capital and Bezos Expeditions, the personal investment vehicle of Amazon.com Inc. founder Jeff Bezos, came aboard for Twitter&#39;s second round.&lt;/p&gt;
+
+&lt;p&gt;次年，Spark Capital和亚马逊(Amazon.com Inc.)创始人贝索斯(Jeff Bezos)的个人投资工具Bezos Expeditions成为推特投资者，为其提供了第二轮风投资金。&lt;/p&gt;
+
+&lt;p&gt;Since then, it has raised millions from investors scrambling to be part of one of the world&#39;s hottest Internet companies. Its stock has also traded in secondary sales, reaching valuations of up to $9 billion.&lt;/p&gt;
+
+&lt;p&gt;此后，推特从投资者筹集了数百万美元资金，这些投资者都希望投资全球最热门的互联网公司之一。推特股票也在二级市场交易，估值最高可达90亿美元。&lt;/p&gt;
+
+&lt;p&gt;Other Twitter backers include Benchmark Capital, BlackRock Private Equity Partners, Insight Venture Partners, Institutional Venture Partners, Kleiner Perkins Caufield &amp;amp; Byers and even mutual fund T. Rowe Price.&lt;/p&gt;
+
+&lt;p&gt;推特的其他支持者包括Benchmark Capital、贝莱德私募股权合伙公司(BlackRock Private Equity Partners)、Insight Venture Partners、Institutional Venture Partners、Kleiner Perkins Caufield &amp;amp;Byers，甚至共同基金T. Rowe Price。&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>预测性输入技术公司SwiftKey融资1,760万美元</title>
+   <link href="/english/2013/09/17/%E9%A2%84%E6%B5%8B%E6%80%A7%E8%BE%93%E5%85%A5%E6%8A%80%E6%9C%AF%E5%85%AC%E5%8F%B8swiftkey%E8%9E%8D%E8%B5%841%2C760%E4%B8%87%E7%BE%8E%E5%85%83.html"/>
+   <updated>2013-09-17T00:00:00+08:00</updated>
+   <id>/english/2013/09/17/预测性输入技术公司swiftkey融资1,760万美元</id>
+   <content type="html">
+   	&lt;p&gt;&lt;a href=&quot;http://xue.youdao.com/biarticle.a?articleId=278801475913441280&amp;amp;date=2013-09-17&amp;amp;position=read&amp;amp;channelType=personal&quot;&gt;SwiftKey, The Clairvoyant Keyboard, Raises $17.6 Million&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;预测性输入技术公司SwiftKey融资1,760万美元&lt;/p&gt;
+
+&lt;p&gt;Jon Reynolds and Ben Medlock started SwiftKey in London in 2008 to build a better, smarter mobile keyboard. Five years on they’ve topped app download charts all over the world, raised $17.6 million in growth capital this summer and become standard tech for the world’s biggest phone manufacturer.&lt;/p&gt;
+
+&lt;p&gt;2008年，乔恩•雷诺兹（Jon Reynolds）和本•梅德洛克（Ben Medlock）在伦敦创立了SwiftKey公司，致力于打造更出色、更智能的手机键盘。五年来，他们在全球各地的应用程序下载榜上位居前列，今年夏天筹集了1,760万美元的成长资本，并成为全球最大手机制造商的标准输入技术。&lt;/p&gt;
+
+&lt;p&gt;Your phone or tablet’s keyboard may seem simple to you but to Ben Medlock and Jon Reynolds it’s a universe of mathematics and algorithms. Their company, SwiftKey, has spent the past five years pushing to streamline the texting process using a special typing technology that some say is downright creepy in its ability to figure out what word you’ll type next.&lt;/p&gt;
+
+&lt;p&gt;手机或平板电脑键盘对你来说也许很简单，但是对本•梅德洛克和乔恩•雷诺兹来说，这是数学和算法的浩瀚宇宙。他们创立的SwiftKey公司在过去五年中，采用特殊的打字技术，促成了文本输入过程的简化，有些人表示这种技术让人感到极为震惊，它能够预测你下一步要输入的单词。&lt;/p&gt;
+
+&lt;p&gt;SwiftKey’s been the bestselling productivity app on Google Play for over a year and topped the download charts in 57 countries. This spring the company inked([美国俚语]签署；与…签订合同) a multi-year licensing deal with Samsung to power keyboards on 100 million of the mobile giant’s phones by year’s end (including the Galaxy S4) and just closed(谈妥(交易等)) a $17.6 million series B this July, led by Index Ventures.&lt;/p&gt;
+
+&lt;p&gt;凭借2010年以来高达1,500万次的下载量——以3.99美元的价格下载了300万次—— SwiftKey公司成为谷歌应用商店（Google Play）去年最畅销的应用程序制造商，在57个国家的下载排行榜上荣登首位。这促使该公司和三星公司签署了多年授权协议，在今年年底前为这家手机巨头1亿部手机（包括Galaxy S4手机）的键盘提供技术支持，并且在今年7月由Index Ventures领投，获得了1,760万美元的B轮融资。&lt;/p&gt;
+
+&lt;p&gt;natural language processing from Cambridge, and developed by a SwiftKey staff that boasts(自夸，夸耀) 17 other Ph.Ds in language, machine learning and big data. “If you think about the problem of people trying to type on phones, it’s actually more of a problem about language than it is a problem about keyboards, ” Medlock told FORBES.&lt;/p&gt;
+
+&lt;p&gt;手机和平板电脑的单词预测并不是什么新鲜事，但是SwiftKey的预测性打字技术更胜一筹，由本•梅德洛克研究的机器学习原理所支持，梅德洛克现年34岁，是剑桥大学的自然语言处理学博士，这项技术由SwiftKey公司的员工团队开发，这家公司号称它还拥有另外17位语言、机器学习和大数据领域的博士。梅德洛克向福布斯表示：“如果你思考人们在手机上输入内容的问题，实际上，这更多的涉及语言问题，而不是键盘问题。”&lt;/p&gt;
+
+&lt;p&gt;the SwiftKey algorithm predicts your next words, corrects spelling, traces your finger placement on the screen, detects what language you are typing and snaps to it (60 languages are available), and learns a user’s individual texting quirks. For instance, if you tend to hit the key just to the left of the one you want to, the app will learn that about you.&lt;/p&gt;
+
+&lt;p&gt;SwiftKey公司的算法基于对公开可用的网络文本的分析，可以预测你下一步输入的单词，纠正拼写错误，跟踪你的手指在屏幕上的划动轨迹，检测你书写的是哪种语言并据此进行调整（有60种语言可供选择），并且了解用户的个人文本输入特性。比如说，如果你往往会误点你想要点击的那个键左边的键，应用程序就会识别你的意图。&lt;/p&gt;
+
+&lt;p&gt;Using the software’s Flow feature, you don’t even need to pick your finger up off of the screen. To watch an experienced Swiftkey user type out a text – fingers flying across the screen, sliding through sequences of letters and occasionally tapping a predicted word or phrase – can be a dizzying experience. Check it out in the video below:&lt;/p&gt;
+
+&lt;p&gt;通过使用这款软件的流动（Flow）功能，你甚至不需要让手指离开手机键盘就能完成输入。观察经验丰富的Swiftkey用户输入文本的过程——他们的手指在屏幕上飞舞，连续滑过多个字母，偶尔点击预测的单词或词组——可以说让人目不暇接。&lt;/p&gt;
+
+&lt;p&gt;The result? SwiftKey users type one third fewer keystrokes than they do typing each letter individually. Enterprise users of the SwiftKey Healthcare – which lets medical staff input data at a faster clip –&lt;/p&gt;
+
+&lt;p&gt;结果如何？SwiftKey用户点击按键的次数比他们单独输入每个字母少了三分之一。SwiftKey Healthcare系统的企业用户——这个系统让医务人员以更快地点击速度输入数据——都声称这项应用程序让他们的工作速度提高了一倍。&lt;/p&gt;
+
+&lt;p&gt;The 99-person company is not profitable and CEO Jon Reynolds isn’t worried, saying breaking even could be up to three years away for Swiftkey, which generated under $10 million in revenue last year. Hiring and infrastructure costs will keep profitability at bay for the time being—the company wants to grow its San Francisco office and add new faces to its locations in Beijing and Seoul.&lt;/p&gt;
+
+&lt;p&gt;这家拥有99名员工的公司目前没有盈利，但是首席执行官乔恩•雷诺兹并不为此担心，他表示，Swiftkey公司可能在三年内实现收支平衡，该公司去年产生的营收接近1,000万美元。目前，招聘和基础设施成本让公司盈利能力陷入困境——这家公司希望扩大在旧金山的办公室，并且向北京和首尔的部门增派新员工。&lt;/p&gt;
+
+&lt;p&gt;To Reynolds, shrinking a keyboard without upgrading the experience seemed ridiculous and he called Medlock, a friend from his Cambridge days, who began work on a solution.&lt;/p&gt;
+
+&lt;p&gt;现年27岁的雷诺兹追溯了SwiftKey的起源，他在2008年时还是公务员。在一次会议上，他注意到有位律师在黑莓手机上输入信息，非常笨拙地用手指点击着小小的按钮。对于雷诺兹来说，缩小手机键盘却没有提高体验似乎很荒谬，他打电话给在剑桥大学读书时的朋友梅德洛克，开始研究解决方案。&lt;/p&gt;
+
+&lt;p&gt;The operating system landscape was different in 2009 and SwiftKey had to choose who to develop for. iOS was not an option as Apple doesn’t allow meddling(v. 干预；瞎弄) with its keyboards, Windows phones were uncertain and Symbian was jaunting on to obscurity(默默无闻). Google’s Android was only 1% of the market but drawing interest from manufacturers.&lt;/p&gt;
+
+&lt;p&gt;2009年的操作系统环境完全不同，SwiftKey必须选择为哪家公司开发软件。iOS系统并不是他们的选择，因为苹果公司不允许其他公司插手键盘功能，Windows系统的手机前景不明朗，塞班操作系统渐行渐远。谷歌公司的安卓系统只有1%的市场份额，但是引起了制造商的关注。&lt;/p&gt;
+
+&lt;p&gt;Medlock and Reynolds attended the 2010 Mobile World Congress with an Android-compatible prototype and came away with a contract from UK mobile manufacturer Inq Mobile worth enough to hire a few employees. They released their app in 2010.&lt;/p&gt;
+
+&lt;p&gt;梅德洛克和雷诺兹带着一台兼容安卓系统的原型机参加了2010年全球移动大会（Mobile World Congress），获得了英国手机制造商Inq Mobile公司的合约，这笔收入足够让他们雇佣几名员工。2010年，他们发布了自己的应用程序。&lt;/p&gt;
+
+&lt;p&gt;That iPhones and iPads are off limits to SwiftKey doesn’t sting as much as it used to. iOS was a dominant platform when the company emerged but markets have changed and Android is now the larger player.&lt;/p&gt;
+
+&lt;p&gt;iPhone手机和iPad平板电脑依然严格禁止SwiftKey进入，但是对这家公司的影响没有以前那么大。在这家公司进入市场的时候，iOS系统是主要的平台，但是市场发生了变化，现在安卓系统占据更大的市场份额。&lt;/p&gt;
+
+&lt;p&gt;“Obviously, from our perspective, if (Apple) did open up it would give us much more of an opportunity to get onto that platform, ” said Reynolds. He’s not holding his breath.&lt;/p&gt;
+
+&lt;p&gt;雷诺兹说：“显而易见，从我们的角度来看，如果苹果公司开放的话，会给我们更多的机会进入这个平台。”他并没有屏息以待。&lt;/p&gt;
+
+&lt;p&gt;These days SwiftKey is mulling(仔细考虑) the world’s largest mobile market—China. SwiftKey’s Chinese language app, to be released sometime within the next 12 months, has proved more complex than previous language programs because since Chinese has no spaces in between words, it’s difficult to learn context. The company also rethought its user interface, developing a system of spelling out words that would then be converted into characters.&lt;/p&gt;
+
+&lt;p&gt;目前，SwiftKey正在考虑进入全世界最大的手机市场——中国。SwiftKey的中文版语言应用程序将在未来12个月的某个时刻发布，这个应用程序证明比以往的语言程序更为复杂，因为中文在字与字之间没有空格，很难了解上下文。这家公司还重新构建其用户界面，正在开发能够拼写单词的系统，然后转换成汉字。&lt;/p&gt;
+
+&lt;p&gt;Another solution constructs Chinese characters using a series of lines, or “strokes.” SwiftKey may also use touch-recognition to write out characters onscreen.&lt;/p&gt;
+
+&lt;p&gt;另一种构建中文字符的解决方案使用各种线条进行输入，称为“笔画”。SwiftKey也许会使用触摸识别技术在屏幕上书写汉字。&lt;/p&gt;
+
+&lt;p&gt;Language isn’t the only barrier—China’s market is bloated with local app stores more popular than Google Play and local competition is fierce(凶猛的；猛烈的；暴躁的). “You’ve got the big search engine providers giving away Chinese keyboards for free because they want their individual users to be searching more on their products, ” said Reynolds.&lt;/p&gt;
+
+&lt;p&gt;语言并不是唯一的障碍——中国市场拥有很多比谷歌应用商店更受欢迎的本地应用程序商店，当地的竞争非常激烈。雷诺兹说：“你要通过大型搜索引擎供应商免费提供中文键盘，因为他们希望个人用户通过他们的产品进行更多搜索。”&lt;/p&gt;
+
+&lt;p&gt;Options on the table(被提交讨论中的) for SwiftKey include promoting itself as the best English keyboard app for Chinese texters, or the best bilingual(adj. 双语的) app, said Reynolds. It may also, he said, choose not to place emphasis on the Chinese market. At 90% Android that seems unlikely—there’s just too much money to be made in the long run.&lt;/p&gt;
+
+&lt;p&gt;雷诺兹说，SwiftKey目前的选择包括，向中国文本输入用户宣传该公司拥有最出色的英文键盘应用程序，或者是最出色的双语应用程序。他还表示，也许不会选择把重点放在中国市场。这似乎不太可能，因为安卓系统占据中国市场90%的份额——从长远来看有太多的钱可以赚。&lt;/p&gt;
+
+&lt;p&gt;Check out some stats(=statistic) below on how mobile users in different countries use SwiftKey.&lt;/p&gt;
+
+&lt;p&gt;请查看下面的统计数据，了解不同国家的手机用户是如何使用SwiftKey输入法的。&lt;/p&gt;
+
+&lt;p&gt;SwiftKey By The Numbers&lt;/p&gt;
+
+&lt;p&gt;SwiftKey数字揭秘&lt;/p&gt;
+
+&lt;p&gt;The USA has most SwiftKey users – 42% of Google Play downloads&lt;/p&gt;
+
+&lt;p&gt;• 美国拥有最多的SwiftKey用户——占谷歌应用商店42%的下载量。&lt;/p&gt;
+
+&lt;p&gt;has the most productive typists, each entering 2, 650 characters per day, compared to an average of 1, 794.&lt;/p&gt;
+
+&lt;p&gt;• 墨西哥用户的打字数量最多，每个用户每天输入2,650个字符，相比之下平均水平为1,794个字符。&lt;/p&gt;
+
+&lt;p&gt;is the country with the most efficient typists – the average efficiency there is 37%, compared to 34% overall. One in 15 Danish words is chosen without typing a single letter (6.7%, vs 4.3% on average).&lt;/p&gt;
+
+&lt;p&gt;• 丹麦是用户打字效率最高的国家——平均效率为37%，高于34%的总体水平。每15个丹麦单词中，就有一个单词无需键入一个字母即可选中（6.7%，而平均水平为4.3%）。&lt;/p&gt;
+
+&lt;p&gt;SwiftKey users are the most likely to have two or more languages enabled (60% vs 21% overall) and also the sloppiest(草率的) typists – SwiftKey corrects 10% of all characters typed by users in Greece, compared to 8% overall.&lt;/p&gt;
+
+&lt;p&gt;• 希腊的SwiftKey用户最有可能使用两种以上语言（60%，而总体水平为21%），希腊人也是最散漫的书写者——SwiftKey需要纠正希腊用户输入文字的10%，而总体水平为8%。&lt;/p&gt;
+
+&lt;p&gt;The country with the most tri-lingual users is Switzerland, where 14% of users have three languages enabled (vs 4.3% overall).&lt;/p&gt;
+
+&lt;p&gt;• 拥有最多三语用户的国家是瑞士，其中14%的用户能够使用三种语言（高于总体水平的4.3%）。&lt;/p&gt;
+
+&lt;p&gt;India&lt;/p&gt;
+
+&lt;p&gt;• 印度用户使用SwiftKey滑动输入功能的比例最高，为84%（总体水平为74%）。&lt;/p&gt;
+
+&lt;p&gt;has the highest percentage of users with SwiftKey Flow option turned on at 84% (vs 74% overall).&lt;/p&gt;
+
+&lt;p&gt;• 波兰用户使用滑动输入功能输入近三分之一的文字内容（而不是点击键盘或选择预测），比例高达31%，全球平均水平为24%。&lt;/p&gt;
+
+&lt;p&gt;Polish&lt;/p&gt;
+
+&lt;p&gt;• 加拿大人的“滑动”的距离最长，平均每天为6.4米（总体水平为5.1米）。&lt;/p&gt;
+
+&lt;p&gt;users Flow nearly a third of their text (as opposed to tapping it or choosing predictions), 31% compared to a worldwide average of 24%.&lt;/p&gt;
+
+&lt;p&gt;译 孟洁冰 校 陈岳林&lt;/p&gt;
+
+&lt;p&gt;And Canadians flow the longest distance, at 6.4m/day (vs 5.1m overall).&lt;/p&gt;
+
+&lt;p&gt;本文为福布斯中文网版权所有，未经允许不得转载。如需转载请联系editor@forbeschina.&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>硅光学有望推动数据中心脱胎换骨</title>
+   <link href="/2013/09/17/%E7%A1%85%E5%85%89%E5%AD%A6%E6%9C%89%E6%9C%9B%E6%8E%A8%E5%8A%A8%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83%E8%84%B1%E8%83%8E%E6%8D%A2%E9%AA%A8.html"/>
+   <updated>2013-09-17T00:00:00+08:00</updated>
+   <id>/2013/09/17/硅光学有望推动数据中心脱胎换骨</id>
+   <content type="html">
+   	&lt;p&gt;&lt;a href=&quot;http://xue.youdao.com/biarticle.a?articleId=1152596895491274611&amp;amp;date=2013-09-17&amp;amp;position=read&amp;amp;channelType=personal&quot;&gt;硅光学有望推动数据中心脱胎换骨&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Last week, a research and development effort reaching back(回忆，回顾) well into the last decade came to a head as Intel pulled back the curtain on a new breed(品种；种类，类型) of optical(adj. 光学的) silicon chips that could drastically()dv. 彻底地；激烈地 boost data transmission rates within data centers and hyperscale computing arrays. But in doing so, Intel (INTC) hasn&#39;t just applied light-speed physics to the science of data transmission. Its &quot;silicon photonics&quot; technology could fundamentally upend(颠倒，倒置) the way data centers and high-powered computing facilities are designed and organized, spelling(意味着，等于) big things not only for Intel but for the entire computing enterprise.&lt;/p&gt;
+
+&lt;p&gt;上周，英特尔公司（Intel）揭开了新一代光学硅芯片的面纱，标志着过去十年的研究工作结出了硕果。这种芯片能大幅提高数据中心和超大规模计算机群间的数据传输速率。而在进行这一开发时，英特尔不仅仅是将光速物理学应用于数据传输而已，其“硅光子学”技术将彻底改变数据中心和高能计算设备的设计及架构方式，从而不光是为英特尔本身，而是为整个计算行业开辟宏大的远景。&lt;/p&gt;
+
+&lt;p&gt;The idea behind silicon photonics(n. 光电) is relatively simple: Copper(adj. 铜的) wiring(n. [电] 接线) and other conventional data transmission methods suffer from fundamental limitations on how fast they can transfer a given amount of data, but nothing moves faster than light. If the sprawling(不规则地延伸，蔓延), distributed hardware inside a modern data center or supercomputer could be linked by speed-of-light communications, its speed and efficiency could immediately make a massive(adj. 大量的；巨大的) leap(n. 飞跃) forward. The challenge, which Intel now appears to have overcome, has always been one of miniaturization and complexity.&lt;/p&gt;
+
+&lt;p&gt;硅光学的概念其实并不复杂：铜线和其他传统数据传输载体在传输特定数量的数据时往往具有极大的局限性，而且没有什么能比光速更快。如果数据中心或超级计算机里那些盘根错节、到处蔓延的硬件设备能用光速传输载体相联，其速度和效率将立刻实现飞跃。而相应的挑战一直在于如何实现小型化，同时降低复杂性，这一点英特尔现在似乎已经克服了。&lt;/p&gt;
+
+&lt;p&gt;Simply put(简言之), Intel has figured out a means to package tiny lasers -- as well as receivers and transmitters that can convert electrical signals to optical ones and vice-versa(反之亦然) -- into a silicon chip and develop the technology for mass production. The iteration of silicon photonics unveiled by Intel last week can achieve data rates of 100 gigabits per second, eclipsing(使相形见绌) the standard eight-gigabits-per-second rate of copper PCI-E data cables that connect servers on a rack, or even the Ethernet networking cables that connect the racks together (those cables can generally handle roughly 40 gigabits per second at the high end).&lt;/p&gt;
+
+&lt;p&gt;简单地说，英特尔已经开发出了一种能将极其细微的激光束——以及能在电子信号和光信号之间实现双向转化的接收器和传输器——置入一块硅芯片的手段，同时开发出了大规模生产的技术。两周前面世的这块硅光子芯片传输速度可达到每秒100G，使现有的传输水平立刻相形见绌：现在机架上连接服务器的扩展插槽数据线的标准传输速度为每秒8G，而将机架服务器连接起来的以太网数据线传输速度充其量也就是每秒40G。&lt;/p&gt;
+
+&lt;p&gt;The story here, then, is one of faster data transmission within and between servers and higher efficiency(n. 效率；效能) for data centers and supercomputing arrays, as well as of a potentially significant new revenue stream for Intel (8.1 million servers shipped globally last year, and companies like Amazon (AMZN), Facebook (FB), and Apple (AAPL) are pouring millions into their cloud and data capabilities). But that&#39;s not the whole story. The ability to transmit data at super-high speeds within and between server racks will be a paradigm-shifter for data center design, allowing for far more efficient and capable computing and data centers.&lt;/p&gt;
+
+&lt;p&gt;到此为止，这件事似乎就只是服务器内部以及服务器之间的数据传输速度更快了，数据中心和超级计算机群的运行更高效了，同时也为英特尔带来了全新的巨额潜在收入【去年服务器的全球出货量达到810万台，像亚马逊（Amazon）、Facebook和苹果（Apple）这样的公司正投入巨资打造自己的云计算和大数据能力】。实际上，这件事的意义远不止于此。机架服务器内部及彼此间能实现超高速数据传输将彻底改变数据中心的设计方式，促进更加高效、更有效能的计算中心和数据中心的涌现。&lt;/p&gt;
+
+&lt;p&gt;&quot;This opens up(展示，揭露) the ability to redefine the topology(n. 拓扑学,拓扑结构) of systems, and that&#39;s the key thing, &quot; says SergisMushell, a principal research analyst with Gartner&#39;s technology and service provider research group. &quot;We&#39;re going to be able to build much more massive systems. Where before we added one server at a time, we&#39;re going to be able to build massive servers.&quot;&lt;/p&gt;
+
+&lt;p&gt;高德纳公司（Gartner）技术及服务供应商研究集团的首席研究分析师舍基思•穆塞尔称：“这使得重新定义计算系统的拓扑结构成为可能，而这正是关键所在。我们将能建造规模大得多的计算系统。以前我们每次只能增加一台服务器，今后则能建造超大规模的服务器。”&lt;/p&gt;
+
+&lt;p&gt;The current architecture of data centers is dictated(决定；对…有决定性影响) by a variety of technological limitations, many of them tied to(相关联) data transmission(n. 传动装置). Each rack generally requires some mix(混合) of storage, processing, and networking infrastructure(n. 基础设施；公共建设) in order to be effective, because physical separation between these components leads to latency(延迟). The system simply spends too much time beaming(vt. 发送) electronic signals from one physical location to another over across copper or network cables, and the whole system slows down as a result（结果）.&lt;/p&gt;
+
+&lt;p&gt;现有的数据中心架构受到诸多技术限制的局限，其中很多与数据传输有关。一般来说，每个机架服务器都需要一组存储设备、处理器和网络基础设施才能有效运转，这是因为这些组件之间的物理隔离会导致处理延迟。这种系统往往需要花大量时间将电信号从一个物理位置通过铜质或网络数据线传输到另一个位置，结果导致整个系统运行速度降低。&lt;/p&gt;
+
+&lt;p&gt;Many hardware companies are working on ways to solve this, says Paul Teich, senior analyst and CTO at Moor Insights &amp;amp;Strategy. Generally, these new architectures involve further integrating(n. 集成化；综合化) storage, networking, and computing/processing at an even more granular(adj. 颗粒的；粒状的) level within each rack in order to reduce latency and enhance throughput(n. 生产量，生产能力). Intel is moving in the other direction entirely.&lt;/p&gt;
+
+&lt;p&gt;咨询公司Moor Insights &amp;amp;Strategy的高级分析师兼首席技术官保罗•泰西表示，很多硬件公司正在设法解决这个问题。一般情况下，它们的做法是，在每个机架服务器中搭建新的架构，在更小数量级的水平上进一步整合存储设备、网络和计算/处理器，以降低延迟，同时提高数据处理能力。不过英特尔却的开发方向却完全不同。&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>编译原理 第二章 词法分析</title>
+   <link href="/2013/09/17/principles-of-compiling-second-chapter.html"/>
+   <updated>2013-09-17T00:00:00+08:00</updated>
+   <id>/2013/09/17/principles-of-compiling-second-chapter</id>
+   <content type="html">
+   	&lt;p&gt;词法分析是编译的第一个阶段，其任务是：从左至右逐个字符地对源程序进行扫描，产生一个个单词符号，把字符串形式的源程序改造成为单词符号形式的中间程序。&lt;br/&gt;
+执行词法分析的程序称为词法分析程序，也称为词法分析器或扫描器。词法分析器的功能是输入源程序，输出单词符号。&lt;br/&gt;
+词法分析可以采用如下两种处理结构：&lt;br/&gt;
+&lt;LI&gt;把词法分析程序作为主程序。将词法分析工作作为独立的一遍来完成，即把词法分析与语法分析明显分开，由词法分析程序将字符串形式的源程序改造成为单词符号串形式的中间程序，以这个中间程序作为语法分析程序的输入。在种处理结构中，词法分析和语法分析是分别实现的。&lt;/LI&gt;
+&lt;LI&gt;把词法分析程序作为语法分析程序调用的子程序。在进行语法分析时，每当语法分析程序需要一个单词时便调用词法分析程序，词法分析程序每一次调用便从字符串源程序中识别出一个单词交给语法分析程序。在这种处理结构中，词法分析和语法分析实际上是交替进行的。&lt;/LI&gt;&lt;/p&gt;
+
+&lt;H2&gt;2.1 词法分析器设计方法&lt;/H2&gt;
+
+
+&lt;H3&gt;2.1.1 单词符号的分类与输出形式&lt;/H3&gt;
+
+
+&lt;H4&gt;1.单词符号分类&lt;/H4&gt;
+
+
+&lt;p&gt;单词符号是程序语言的基本语法单位，具有确定的语法意义。
+&lt;LI&gt;保留字(基本字)。保留字保留了语言所规定的含义，是编译程序识别各类语法成分的依据。几乎所有程序语言都限制用户使用保留字来作为标识符。&lt;/LI&gt;
+&lt;LI&gt;标识符&lt;/LI&gt;
+&lt;LI&gt;常数：包括各种类型的常数&lt;/LI&gt;
+&lt;LI&gt;运算符&lt;/LI&gt;
+&lt;LI&gt;界符：在语言中是作为语法上的分界符号使用的，如&quot;,&quot;、&quot;:&quot;、&quot;(&quot;、&quot;)&quot;&lt;/LI&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&quot;label warning&quot;&gt;注意&lt;/span&gt;&lt;br/&gt;
+一个程序语言的保留字、运算符和界符的个数是确定的，而标识符或常量的使用则不限定个数。&lt;/p&gt;
+
+&lt;H4&gt;2.词法分析程序输出单词的形式&lt;/H4&gt;
+
+
+&lt;p&gt;词法分析程序的输入是源程序字符串，而输出是与源程序等价的单词符号序列，并且所输出的单词符号通常表示成如下的二元式：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;(单词种别,单词自身的值)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;LI&gt;单词种别。单词种别表示单词的种类，它是语法分析所需要的信息。一个语言的单词符号如何划分种类、分为几类、如何编码都属于技术性问题，主要取决于处理上的方便。通常让每种单词对应一个整数码，这样可最大限度地把各种单词区别开来。对于保留字，可将其全体视为一种，也可一字一种，采用一字一种的分类方法处理起来比较方便；标识符一般统归为一种，也可按整型、实型、布尔型等分为几种；运算符和界符可采用一符一种的分法，也可统归为一种。&lt;/LI&gt;
+&lt;LI&gt;单词自身的值。单词自身的值是编译中其他阶段所需要的信息。对于单词符号来说，如果一个种别只含有一个单词符号，那么对于这个单词符号，其种别编码就完全代表了它自身的值。如果一个种别含有多个单词符号，那么对于它的单词符号，除了给出种别编码之外还应给出单词符号自身的值，以便把同一种类的单词区别开来。注意，标识符自身的值就是标识符自身的字符串，而常量自身的值是常量本身的二进制数值。此外，&lt;/LI&gt;&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>jekyll include</title>
+   <link href="/2013/09/17/jekyll-include.html"/>
+   <updated>2013-09-17T00:00:00+08:00</updated>
+   <id>/2013/09/17/jekyll-include</id>
+   <content type="html">
+   	&lt;h2&gt;Includes&lt;/h2&gt;
+
+&lt;p&gt;If you have small page fragments that you wish to include in multiple places on your site, you can use the include tag.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Included file footer.html not found in _includes directory
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Jekyll expects all include files to be placed in an _includes directory at the root of your source directory. This will embed the contents of &lt;code&gt;&amp;lt;source&amp;gt;/_includes/footer.html&lt;/code&gt; into the calling file.&lt;/p&gt;
+
+&lt;p&gt;You can also pass parameters to an include:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Included file footer.html not found in _includes directory
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;These parameters are available via Liquid in the include:&lt;/p&gt;
+
+&lt;p&gt;在研究过程中，发现include标签应该是不能够使用变量作为参数的，比如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Included file pages_icons not found in _includes directory
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;刚开始看不明白，理解成为目录下面的所有文章都被包含进来，后来才明白，&lt;code&gt;Included file pages_icons not found in _includes directory&lt;/code&gt;是包含了_include目录下面的pages_icons文件，里面需要用到pages_icons变量&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>jekyll细节笔记</title>
+   <link href="/2013/09/17/jekyll-detail.html"/>
+   <updated>2013-09-17T00:00:00+08:00</updated>
+   <id>/2013/09/17/jekyll-detail</id>
+   <content type="html">
+   	&lt;h2&gt;h1 to h6 tag&lt;/h2&gt;
+
+&lt;p&gt;一行以#号开头，可以被解析称H1到H6标签,&lt;code&gt;#&lt;/code&gt;表示&lt;code&gt;&amp;lt;H1&amp;gt;&amp;lt;/H1&amp;gt;&lt;/code&gt;,&lt;code&gt;##&lt;/code&gt;表示&lt;code&gt;&amp;lt;H2&amp;gt;&amp;lt;/H2&amp;gt;&lt;/code&gt;以此类推。&lt;/p&gt;
+
+&lt;h2&gt;li标签&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;空一行&lt;/strong&gt;，新行开头&lt;code&gt;-&lt;/code&gt;表示&lt;code&gt;li&lt;/code&gt;标签&lt;/p&gt;
+
+&lt;h2&gt;文字高亮&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;{% highlight text %}
+{% endhighlight %}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2&gt;Liquid不要解析&lt;/h2&gt;
+
+&lt;p&gt;就像我上面的代码一样，把代码包围在&lt;code&gt;{% raw %}{% endraw %}&lt;/code&gt;中,&lt;a href=&quot;/jekyll/2013/09/18/%E5%A6%82%E4%BD%95%E5%9C%A8jekyll%E4%B8%AD%E8%BE%93%E5%87%BA%7B%25-endraw-%25%7D.html&quot;&gt;raw的结束标签怎么输出来是技术活&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2&gt;代码格式化&lt;/h2&gt;
+
+&lt;p&gt;行首四个空格&lt;/p&gt;
+
+&lt;h2&gt;加上代码的样式&lt;/h2&gt;
+
+&lt;div&gt;使用`code`&lt;/div&gt;
+
+
+&lt;p&gt;
+这也是输出html标签的一种方式&lt;/p&gt;
+
+&lt;h2&gt;Markdown不要解析&lt;/h2&gt;
+
+&lt;p&gt;Markdown won&#39;t process anything in block-level HTML tag，所以就加上&lt;code&gt;&amp;lt;div&amp;gt;&amp;lt;/div&amp;gt;&lt;/code&gt;就可以了&lt;/p&gt;
+
+&lt;h2&gt;换行&lt;/h2&gt;
+
+&lt;p&gt;在行的结尾加上两个空格&lt;/p&gt;
+
+&lt;h2&gt;输出文章的地址&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;[Last time]({% post_url 2013-06-09-writing-about-jekyll-in-jekyll %})
+&lt;/code&gt;&lt;/pre&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>jekyll category变量</title>
+   <link href="/jekyll/2013/09/17/jekyll-category%E5%8F%98%E9%87%8F.html"/>
+   <updated>2013-09-17T00:00:00+08:00</updated>
+   <id>/jekyll/2013/09/17/jekyll-category变量</id>
+   <content type="html">
+   	&lt;p&gt;&lt;a href=&quot;http://stackoverflow.com/questions/5672076/nested-liquid-loops-in-a-jekyll-archive-page-not-working-using-an-outer-loop-va&quot;&gt;原文&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;When you do for category in site.categories&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;category[0] will give you the category name&lt;/li&gt;
+&lt;li&gt;category[1] will give you the list of posts for that category.&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;p&gt;That&#39;s the way Liquid handles iteration over hashes, I believe.&lt;/p&gt;
+
+&lt;p&gt;So the code you are looking for is this one:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;{% for category in site.categories %} 
+    &amp;lt;h2 id=&quot;{{ category[0] }}-ref&quot;&amp;gt;{{ category[0] }}&amp;lt;/h2&amp;gt;
+        &amp;lt;ul&amp;gt;
+           {% for post in category[1] %} 
+               &amp;lt;li&amp;gt;&amp;lt;a href=&quot;{{ post.url }}&quot;&amp;gt;{{ post.title }}&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt; 
+           {% endfor %}
+        &amp;lt;/ul&amp;gt;
+        &amp;lt;p&amp;gt;&amp;lt;a href=&quot;#{{ category[0] }}-ref&quot;&amp;gt;&amp;amp;#8617;&amp;lt;/a&amp;gt;&amp;lt;/p&amp;gt;
+ {% endfor %}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I&#39;ve taken the liberty of fixing some markup issues - I&#39;ve added &lt;code&gt;&amp;lt;ul&amp;gt;...&amp;lt;/ul&amp;gt;&lt;/code&gt; around the post link list, a &lt;code&gt;&amp;lt;p&amp;gt;&lt;/code&gt; around the last link, a semi-colon after the 8617, and also fixed the id at the top (was missing the -ref part)&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>Using Themes</title>
+   <link href="/jekyll/2013/09/16/using-themes.html"/>
+   <updated>2013-09-16T00:00:00+08:00</updated>
+   <id>/jekyll/2013/09/16/using-themes</id>
+   <content type="html">
+   	&lt;p&gt;&lt;a href=&quot;http://jekyllbootstrap.com/usage/jekyll-theming.html&quot;&gt;原文&lt;/a&gt;&lt;br/&gt;
+Learn how to install, switch between, and edit themes in Jekyll Bootstrap.&lt;/p&gt;
+
+&lt;H2&gt;Introduction&lt;/H2&gt;
+
+
+&lt;p&gt;As of(自……起) JB version 0.2.x themes are now entirely modular. They are tracked and versioned individually as Theme Packages. This allows everyone to publish and share themes freely.&lt;/p&gt;
+
+&lt;p&gt;Jekyll-Bootstrap v 0.2.x ships with only the stock “twitter” theme. Additional themes need to be “installed” as outlined below.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&quot;label notice&quot;&gt;NOTE&lt;/span&gt;&lt;br/&gt;
+Jekyll-Bootstrap uses &lt;code&gt;rake tasks&lt;/code&gt; to implement much of its functionality. If you are new to &lt;code&gt;rake&lt;/code&gt; a rake task is just a ruby method that can be run in the base-directory of Jekyll-Bootstrap. You should never run arbitrary(任意的；武断的；专制的) server side code on your system without first reviewing the source! View the Rakefile source.&lt;/p&gt;
+
+&lt;H2&gt;Find Themes&lt;/H2&gt;
+
+
+&lt;p&gt;You can find and browse the latest official themes in the Theme Explorer(http://themes.jekyllbootstrap.com/). The theme explorer is still a work in progress; it shows full-website previews of all available themes.&lt;/p&gt;
+
+&lt;h2&gt; Launch Theme Explorer&lt;/H2&gt;
+
+
+&lt;p&gt;Additionally, designers are free to publish their own themes as long as they are packaged appropriately. You can then use the same installation method outlined below to install the theme.&lt;/p&gt;
+
+&lt;p&gt;Directly browse current Theme Packages on GitHub:&lt;a href=&quot;https://github.com/jekyllbootstrap&quot;&gt;https://github.com/jekyllbootstrap&lt;/a&gt;&lt;/p&gt;
+
+&lt;H2&gt;Install Themes&lt;/H2&gt;
+
+
+&lt;p&gt;Install a theme by using the rake task and passing in the theme’s git url.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ rake theme:install git=&quot;https://github.com/jekyllbootstrap/theme-the-program.git&quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The installer uses git to download the Theme Package and then installs it. If you have obtained a Theme Package in another way, such as zip download, you can manually place it into your ./_theme_packages folder and then run the installer with the name of the theme.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ rake theme:install name=&quot;THEME-NAME&quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As a convenience, after the install is successful, the task will ask you if you’d like to switch to the newly installed theme. Type ‘y’ and enter to switch!&lt;/p&gt;
+
+&lt;H2&gt;Switch Themes&lt;/H2&gt;
+
+
+&lt;p&gt;Once your themes are installed you can switch between them via rake task:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ rake theme:switch name=&quot;the-program&quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;   # for 0.1.0 users &lt;code&gt;rake switch_theme&lt;/code&gt; still works.&lt;/p&gt;
+
+&lt;H2&gt;Customize Themes&lt;/H2&gt;
+
+
+&lt;p&gt;Theme layouts are contained in ./&lt;em&gt;includes/themes/THEME-NAME. It is important that you edit files in the theme directory rather than &lt;/em&gt;layouts because switching themes will overwrite files in the _layout directory and you will lose your changes. The main point here is keeping themes modular; this way editing one does not affect the other.&lt;/p&gt;
+
+&lt;H2&gt;Adding Templates&lt;/H2&gt;
+
+
+&lt;p&gt;You are free add extra template files to _layouts in order to customize your blog.&lt;/p&gt;
+
+&lt;p&gt;However if you want to add theme-specific layouts you should add them to the theme’s directory in _includes. After your files are added make sure to run the switcher again:&lt;/p&gt;
+
+&lt;p&gt;$ rake theme:switch name=&quot;the-minimum&quot;&lt;/p&gt;
+
+&lt;h2&gt;Static Assets&lt;/h2&gt;
+
+
+&lt;p&gt;Static assets are name-spaced for each theme. They are available at ./assets/themes/THEME-NAME. Make sure you edit and add assets in this directory. All themes are provided with the liquid variable: ASSET_PATH which trace back to the aforementioned directory.&lt;/p&gt;
+
+&lt;H2&gt;Add Your Own Theme&lt;/H2&gt;
+
+
+&lt;p&gt;Read the Theme API Documentation for instructions on how to build and publish custom themes for Jekyll Bootstrap.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://jekyllbootstrap.com/usage/blog-configuration.html&quot;&gt;Next Step: Blog Configuration&lt;/a&gt;&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>NSA Revelations Cast Doubt on the Entire Tech Industry</title>
+   <link href="/english/2013/09/16/nsa-revelations-cast-doubt-on-the-entire-tech-industry.html"/>
+   <updated>2013-09-16T00:00:00+08:00</updated>
+   <id>/english/2013/09/16/nsa-revelations-cast-doubt-on-the-entire-tech-industry</id>
+   <content type="html">
+   	&lt;p&gt;&lt;a href=&quot;http://xue.youdao.com/biarticle.a?articleId=856819385276378169&amp;amp;date=2013-09-16&amp;amp;position=read&amp;amp;channelType=personal&quot;&gt;NSA Revelations（揭露出来的真相；暴露的内幕；新发现） Cast Doubt on the Entire Tech Industry&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;国家安全局的揭露信息给整个科技行业布满疑云&lt;/p&gt;
+
+&lt;p&gt;Six years ago, two Microsoft cryptography researchers discovered some weirdness(古怪) in an obscure(晦涩的) cryptography standard authored by the National Security Agency. There was a bug in a government-standard random number generator that could be used to encrypt data.&lt;/p&gt;
+
+&lt;p&gt;六年前，两个微软的密码研究者在由国家安全局编制的晦涩密码标准中发现了一些古怪。在这个政府编制的标准随机数生成器中包含了一个漏洞，它可以用来加密数据。&lt;/p&gt;
+
+&lt;p&gt;The researchers, Dan Shumow and Niels Ferguson, found that the number generator appeared to have been built with a backdoor — it came with a secret numeric key that could allow a third party to decrypt code that it helped generate.&lt;/p&gt;
+
+&lt;p&gt;两个叫Dan Shumow 和 Niels Ferguson的研究者发现，该数字发生器似乎安装了后门：它带有一个数字秘钥，允许第三方破解它所生成的编码。&lt;/p&gt;
+
+&lt;p&gt;According to Thursday’s reports by the ProPublica, the Guardian, and The New York Times, classified documents leaked by NSA whistleblower(告发者；检举者) Edward Snowden appear to confirm what everyone suspected: that the backdoor was engineered（n.工程师 vt.设计） by the NSA. Worse still, a top-secret NSA document published with the reports says that the NSA has worked with industry partners to “covertly(秘密地) influence” technology products.&lt;/p&gt;
+
+&lt;p&gt;据ProPublica，卫报及纽约时报周四报道，由安全局告发者爱德华·斯诺登泄露的机密文件证实了大家的怀疑：即研究者发现的后门是安全局一手策划的。更糟糕的是，与报道一同发表的一份安全局绝密文件显示，安全局正和它的行业合作伙伴一同暗中操纵科技产品。&lt;/p&gt;
+
+&lt;p&gt;That sounds bad, but so far, there’s not much hard evidence about what exactly has been compromised(危及). No company is named in the new allegations(指控). The details of the reported modifications are murky(不可告人的). So while much of the internet’s security systems appear to be broken, it’s unclear where the problems lie.&lt;/p&gt;
+
+&lt;p&gt;这听起来很糟，然而到目前为止，还没有确凿的证据说明这危害到底有多大。新指控中也并未透露任何公司的名字。该报道细节模糊。虽然看上去许多互联网的安全系统遭到破坏，但问题具体在哪则依然不清楚。&lt;/p&gt;
+
+&lt;p&gt;The result is that the trustworthiness of the systems we used to communicate on the internet is in doubt. “I think all companies have a little bit of taint(污点) after this, ” says Christopher Soghoian, a technologist with the American Civil(公民) Liberties(自由) Union.&lt;/p&gt;
+
+&lt;p&gt;这给互联网交流的可信任度投下了阴影。“这让所有的公司多少都有一点污点”，一位来自美国公民自由联盟的技术人员Christopher Soghoian说。&lt;/p&gt;
+
+&lt;p&gt;The latest documents show that the NSA has vast crypto-cracking resources, a database of secretly held encryption keys used to decrypt private communications, and an ability to crack(破解) cryptography in certain VPN encryption chips. Its goal: to crack in a widespread way the internet’s security tools and protocols.&lt;/p&gt;
+
+&lt;p&gt;最新的资料显示，国安局拥有海量的解密资源，他们有一个秘密的数据库存放秘钥用以解密私人通信，他们还可以破解一些VPN加密芯片。他们的目标是：实现因特网安全工具和协议的普遍破解。&lt;/p&gt;
+
+&lt;p&gt;David Dampier, the director of the Center for Computer Security Research at Mississippi State University, says it’s “wrong” for companies to add backdoors. But he added that the latest revelations of the government’s alleged(宣称) decryption capabilities aren’t surprising.&lt;/p&gt;
+
+&lt;p&gt;密西西比州立大学计算机安全研究中心主任David Dampier 指出，公司给产品加上后门是不应该的。但对于最新披露出的对政府破解能力的指控，他并不吃惊。&lt;/p&gt;
+
+&lt;p&gt;“I think that no encryption created by anyone is going to protect you from everyone. The stronger the encryption the harder they are going to work to decrypt it, ” he said. “I don’t care what company is selling you encryption software. Whatever they are going to sell you, it can be decrypted. There’s nothing that is infallible(infallible).”&lt;/p&gt;
+
+&lt;p&gt;“我认为没有人破解不了的密码，密码越复杂，破解它就要下更大的功夫而已，”他说，“不管哪个公司卖给你的加密软件，也不管它卖什么给你，它都是可以被破解的。绝对可靠的东西是不存在的。”&lt;/p&gt;
+
+&lt;p&gt;The reports talk about the NSA’s attempts to exploit(vt. 开发) software bugs, break codes and accumulate encryption keys — this is all stuff that most security experts expected the surveillance(监督) agency to be doing. But here’s the most unsettling(adj. 使人不安的) part: A leaked excerpt(n. 摘录，引用) from the agency’s 2013 budget request talks about the NSA working with “US and foreign IT industries to covertly influence and/or overtly leverage their commercial products designs.” The document explicitly says: “These design changes make the systems in question exploitable.”&lt;/p&gt;
+
+&lt;p&gt;报道还谈到了安全局试图找寻软件漏洞，破解代码和收集秘钥——多数安全专家对这些监督机构做的事情并不意外。但是最让人不安的地方在于：部分泄露的安全局2013年预算请求显示，安全局与“美国和其他国家IT行业暗中操控，甚至公然插手他们的商业产品设计”。该资料明确表明：”这些改变的设计使得系统可被利用。“&lt;/p&gt;
+
+&lt;p&gt;Daniel Castro, a senior analyst with the Information Technology and Innovation Foundation, calls(认为) the latest leaks disturbing. “We went through this debate with the Clipper Chip, and it was clear where public opinion stood, ” he says, referring to a backdoor technology the NSA wanted to install in all encryption two decades ago.&lt;/p&gt;
+
+&lt;p&gt;信息技术与创新基金会的高级分析师Daniel Castro指出最新的披露让人不安。”我们经历了加密芯片的争论，公众的立场是显而易见的“，他指的是二十年前国安局想在所有加密芯片中植入后门技术的争论。&lt;/p&gt;
+
+&lt;p&gt;“If these claims are true, and the NSA introduced backdoors into global security standards, this seems like a clear perversion of democracy(n. 民主), ” Castro added. “This just further erodes(erode) the competitiveness(competitiveness) of U.S. tech companies. In particular, I think this enlarges the scope of companies that will suffer backlash(n. 反冲；强烈抵制) since cryptographic standards are often embedded in hardware.”&lt;/p&gt;
+
+&lt;p&gt;”如果这些传闻属实，国安局确实在全球安全标准中植入了后门，那这便是民主政治的堕落，“他补充说。&#39;这进一步侵蚀了美国科技公司的竞争力。特别是，更多的公司将遭受抵制，因为密码标准经常嵌入在硬件中。&quot;&lt;/p&gt;
+
+&lt;p&gt;Castro wrote a report last month predicting that Snowden’s PRISM revelations could cost the U.S. cloud-computing industry as much as $35 billion over the next three years as companies shied away(回避；避开) from U.S. internet service providers, which are said to be providing government access to their servers.&lt;/p&gt;
+
+&lt;p&gt;Castro上个月为斯诺登棱镜泄密事件撰写了一份报告，报告称美国云计算业未来需长于3年的时间来避开国内那些为政府开辟通道的互联网服务供应商，这带来的损失可能多达350亿美元。&lt;/p&gt;
+
+&lt;p&gt;You’ll hear much the same from Dave Jevans, the founder of Marble Security, an enterprise mobile security provider and the former chief executive of IronKey, He says that it “would be extremely bad” for a tech company to give the government a backdoor.&lt;/p&gt;
+
+&lt;p&gt;Dave Jevans基本赞同Castro的判断。他是Marble Security 的创始人，这是一家移动安全的供应商，在此之前，他是IronKey的首席执行官。他说，科技公司给政府开后门”将非常糟糕“。&lt;/p&gt;
+
+&lt;p&gt;“It may not be the death knell(n. 丧钟声), ” he added, referring to Crypto AG, a Swiss encryption companies alleged(被说成的) to have rigged their machines for the NSA in the 1990s. ”They’re still around, but barely.”&lt;/p&gt;
+
+&lt;p&gt;&quot;这可能不是最致命的地方，&quot;他补充说，Crypto AG这个瑞士的加密公司在上世纪90年代曾被指控为安全局提供问题设备。”这种现象并未绝迹“。&lt;/p&gt;
+
+&lt;p&gt;But not everyone thinks that U.S. competitiveness(竞争力) will be hit. The documents talk about the NSA working with foreign companies too. “I don’t think there’s going to be any direct major impact because there aren’t any other countries that are cherubs(天使) in all this either, ” says Paul Kocher, president of Cryptography Research.&lt;/p&gt;
+
+&lt;p&gt;然而并非所有人都认为美国的竞争力会受到冲击。资料还提到国安局和国外的公司合作。”我认为这不会带来任何直接重要的冲击，因为没有任何国家在这一方面纯洁得像个天使，“Cryptography Research公司总裁Paul Kocher说。&lt;/p&gt;
+
+&lt;p&gt;The number generator found in 2007 — called Dual_EC_RNG — was hardly a technical triumph(成功). It was clumsy and slow and never widely used, but it is supported in Microsoft’s Windows operating system.&lt;/p&gt;
+
+&lt;p&gt;被称为Dual_EC_RNG 的数字生成器创设于2007年，它很难称得上是一次技术的成功。它笨拙，速度慢，并且从未被广泛使用，但是它在微软Windows操作系统中得到了支持。&lt;/p&gt;
+
+&lt;p&gt;Microsoft has said in the past that it does not provide the government with “direct and unfettered(adj. 无拘无束的)” access to customer data, and it says much the same today. “We have significant concerns about the allegations(n. 主张，断言；辩解) of government activity reported yesterday and will be pressing the government for an explanation, ” the company said Friday.&lt;/p&gt;
+
+&lt;p&gt;微软过去已经公开声明从未给政府提供对用户数据的”直接不受约束“通道，今天他们依然这样宣称。”我们严重关切昨天报道中对政府行为的指控，并将责成政府给出解释“微软公司周五宣称。&lt;/p&gt;
+
+&lt;p&gt;But the doubt is still there. And that’s the problem.&lt;/p&gt;
+
+&lt;p&gt;但依然疑云密布，这就是问题所在。&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>Zero to Hosted Jekyll Blog in 3 Minutes</title>
+   <link href="/jekyll/2013/09/16/jekyllbootstrap-Zero-to-Hosted-Jekyll-Blog-in-3-Minutes.html"/>
+   <updated>2013-09-16T00:00:00+08:00</updated>
+   <id>/jekyll/2013/09/16/jekyllbootstrap-Zero-to-Hosted-Jekyll-Blog-in-3-Minutes</id>
+   <content type="html">
+   	&lt;p&gt;&lt;a href=&quot;http://jekyllbootstrap.com/&quot;&gt;原文&lt;/a&gt;&lt;/p&gt;
+
+&lt;H2&gt;1-reate a New Repository&lt;/H2&gt;
+
+
+&lt;p&gt;Go to your https://github.com and create a new repository named USERNAME.github.io&lt;/p&gt;
+
+&lt;H2&gt;2 - Install Jekyll-Bootstrap&lt;/H2&gt;
+
+
+&lt;pre&gt;&lt;code&gt;$ git clone https://github.com/plusjade/jekyll-bootstrap.git USERNAME.github.io
+$ cd USERNAME.github.io
+$ git remote set-url origin git@github.com:USERNAME/USERNAME.github.com.git
+$ git push origin master
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;H2&gt;3 - Profit(收益)&lt;/H2&gt;
+
+
+&lt;p&gt;After GitHub has a couple minutes to do its magic your blog will be publicly available at http://USERNAME.github.io
+&lt;br/&gt;
+*Already have your blog on GitHub?&lt;/p&gt;
+
+&lt;p&gt;I&#39;ll assume you have the Jekyll gem installed on your local machine. Run J￥ekyll-Bootstrap-Core locally to see what all the fuss is about:fuss&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ git clone https://github.com/plusjade/jekyll-bootstrap.git
+$ cd jekyll-bootstrap
+$ jekyll --server
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;See it in action at http://localhost:4000.&lt;/p&gt;
+
+&lt;p&gt;Next Steps
+&lt;a href=&quot;http://jekyllbootstrap.com/usage/jekyll-quick-start.html&quot;&gt;Jekyll Quick Start&lt;/a&gt;&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>Jekyll Quick Start</title>
+   <link href="/jekyll/2013/09/16/jekyllbootstrap-Jekyll-Quick-Start.html"/>
+   <updated>2013-09-16T00:00:00+08:00</updated>
+   <id>/jekyll/2013/09/16/jekyllbootstrap-Jekyll-Quick-Start</id>
+   <content type="html">
+   	&lt;p&gt;&lt;a href=&quot;http://jekyllbootstrap.com/usage/jekyll-quick-start.html&quot;&gt;原文&lt;/a&gt;
+&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;Quickly get your blog installed and published via GitHub Pages. Then run your blog locally and create your first post and page.&lt;/p&gt;
+
+&lt;H2&gt;1. Install Jekyll-Bootstrap&lt;/H2&gt;
+
+
+&lt;p&gt;Install Jekyll-Bootsrap if you haven’t already. Jekyll-bootstrap is a blogging framework with built-in support for theming, analytics, comments, and post/page creation.&lt;/p&gt;
+
+&lt;H2&gt;2. Run Jekyll Locally&lt;/H2&gt;
+
+
+&lt;p&gt;In order to preview your blog locally you’ll need to install the Jekyll ruby gem. Note gem dependencies will also be installed. You don’t have to run a local version but it helps if you want to preview your content before publishing.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ gem install jekyll
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If you run into a problem please consult the original Jekyll installation documentation. You can also create a support issue using GitHub Issues.&lt;/p&gt;
+
+&lt;p&gt;Once the gem is installed you can navigate to your Jekyll-Bootstrap directory. If you’ve followed the homepage instructions this will be: USERNAME.github.com. Once in the directory you’ll run jekyll with server support:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ cd USERNAME.github.com 
+$ jekyll --server
+# remember to change USERNAME to your GitHub username.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Your blog is now available at: http://localhost:4000/.&lt;/p&gt;
+
+&lt;H2&gt;3. Create a Post&lt;/H2&gt;
+
+
+&lt;p&gt;Create posts easily via rake task:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ rake post title=&quot;Hello World&quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The rake task automatically creates a file with properly formatted filename and YAML Front Matter. Make sure to specify your own title. By default, the date is the current date.
+&lt;br/&gt;
+The rake task will never overwrite existing posts unless you tell it to.&lt;/p&gt;
+
+&lt;H2&gt;4. Create a Page&lt;/H2&gt;
+
+
+&lt;p&gt;Create pages easily via rake task:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ rake page name=&quot;about.md&quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Create a nested page:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ rake page name=&quot;pages/about.md&quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Create a page with a “pretty” path:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ rake page name=&quot;pages/about&quot;
+# this will create the file: ./pages/about/index.html
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The rake task automatically creates a page file with properly formatted filename and YAML Front Matter as well as includes the Jekyll Bootstrap “setup” file.&lt;/p&gt;
+
+&lt;H3&gt;Jekyll-Bootstrap Example Pages&lt;/H3&gt;
+
+
+&lt;p&gt;Jekyll-bootstrap also provides many preconfigured page examples for reference. You can study the source and customize it for your own needs.&lt;/p&gt;
+
+&lt;p&gt;&lt;BR/&gt;
+Archive
+&lt;BR/&gt;
+Categories
+&lt;BR/&gt;
+Pages
+&lt;BR/&gt;
+Tags&lt;/p&gt;
+
+&lt;H2&gt;5. Publish&lt;/H2&gt;
+
+
+&lt;p&gt;&lt;BR/&gt;&lt;/p&gt;
+
+&lt;p&gt;After you’ve added posts or made changes to your theme or other files, simply commit them to your git repo and push the commits up to GitHub.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ git add .
+$ git commit -m &quot;Add new content&quot;
+$ git push origin master
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;A GitHub post-commit hook will automatically deploy your changes to your hosted blog. You will receive a success or failure notice for every commit you make to your blog.&lt;/p&gt;
+
+&lt;H2&gt;6. Customize&lt;/H2&gt;
+
+
+&lt;p&gt;Jekyll-Bootstrap can be used as-is as a basic blogging platform. However there are plenty of ways to dig into deeper customization. The following outlines deeper Jekyll-Bootstrap customization techniques:&lt;/p&gt;
+
+&lt;H3&gt;Themes&lt;/H3&gt;
+
+
+&lt;p&gt;Jekyll-Bootstrap supports modular theming. Themes can co-exist and be enabled/disabled on demand. Editing, configuring, and creating themes is docummented in the Theming section.&lt;/p&gt;
+
+&lt;H3&gt;Blog Configuration&lt;/H3&gt;
+
+
+&lt;p&gt;Jekyll and Jekyll-Bootstrap has a simple but powerful Jekyll Configuration System. You can:&lt;/p&gt;
+
+&lt;p&gt;&lt;LI&gt;Specify a custom permalink(永久链接) format for blog posts.&lt;/LI&gt;
+&lt;LI&gt;Specify a commenting engine like disqus, intensedebate, livefyre, or custom.&lt;/LI&gt;
+&lt;LI&gt;Specify an analytics engine like google, getclicky, or custom.&lt;/LI&gt;&lt;/p&gt;
+
+&lt;H3&gt;Programming Interface&lt;/H3&gt;
+
+
+&lt;p&gt;The API pages document main data-structures and code available for use in Jekyll and Jekyll-Bootstrap. Consult these pages for how and where to use the data and code provided.&lt;/p&gt;
+
+&lt;H2&gt;Jekyll Introduction&lt;/H2&gt;
+
+
+&lt;p&gt;&lt;span class=&quot;label notice&quot;&gt;highly recommend&lt;/span&gt; &lt;br/&gt;
+I highly recommend reading the Jekyll Introduction if you plan to customize your blog. The introduction is meant for core understanding of how and why Jekyll works the way it does. This will provide you with the proper context, knowledge-base, and fundamentals necessary to understand and be efficient in working with Jekyll and Jekyll-Bootstrap.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://jekyllbootstrap.com/usage/jekyll-theming.html&quot;&gt;Next Step: Using Themes&lt;/a&gt;&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>jekyll newline</title>
+   <link href="/2013/09/16/jekyll-newline.html"/>
+   <updated>2013-09-16T00:00:00+08:00</updated>
+   <id>/2013/09/16/jekyll-newline</id>
+   <content type="html">
+   	&lt;p&gt;&lt;a href=&quot;http://mccxj.github.io/blog/20120629_problem-about-jekyll-and-markdown.html&quot;&gt;原文&lt;/a&gt;
+在段落中硬换行&lt;br/&gt;
+我原来以为不能硬换行，原来markdown也支持，只需要在需要换行的地方后面加至少两个空格就可以了。&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>修改jekyllbootstrap的rakefile文件，让其可以指定创建的目录</title>
+   <link href="/2013/09/16/jekyll-bootstrap-rakefile.html"/>
+   <updated>2013-09-16T00:00:00+08:00</updated>
+   <id>/2013/09/16/jekyll-bootstrap-rakefile</id>
+   <content type="html">
+   	&lt;p&gt;jekyllbootstrap中使用rake很不错，但是jekyll bootstrap提供的rake post命令却无法指定目录，实在是
+太不方便（也许有吧），所以修改了一下jekyllbootstrap的Rakefile:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# Usage: rake post title=&quot;A Title&quot;
+desc &quot;Begin a new post in #{CONFIG[&#39;posts&#39;]}&quot;
+task :post do
+  abort(&quot;rake aborted: &#39;#{CONFIG[&#39;posts&#39;]}&#39; directory not found.&quot;) unless FileTest.directory?(CONFIG[&#39;posts&#39;])
+  title = ENV[&quot;title&quot;] || &quot;new-post&quot;
+#path创建的目录 Usage:rake post tile=&quot;A Title&quot; path=&quot;directory/directory2&quot; 
+  path = ENV[&quot;path&quot;] || &quot;&quot;
+#去掉目录中的特殊字符，除了/之外，去掉所有的特殊字符
+  path = File.join(CONFIG[&#39;posts&#39;],path.gsub(/[^\w\/]/,&#39;&#39;))
+#除了-之外去掉所有的字符
+  slug = title.downcase.strip.gsub(&#39; &#39;, &#39;-&#39;).gsub(/[^\w-]/, &#39;&#39;)
+#把path目录添加进去
+  filename = File.join(path,&quot;#{Time.now.strftime(&#39;%Y-%m-%d&#39;)}-#{slug}.#{CONFIG[&#39;post_ext&#39;]}&quot;)
+  if File.exist?(filename)
+    abort(&quot;rake aborted!&quot;) if ask(&quot;#{filename} already exists. Do you want to overwrite?&quot;, [&#39;y&#39;, &#39;n&#39;]) == &#39;n&#39;
+  end
+  FileUtils.mkdir_p(path) unless Dir.exists?(path)
+  puts &quot;Creating new post: #{filename}&quot;
+  open(filename, &#39;w&#39;) do |post|
+    post.puts &quot;---&quot;
+    post.puts &quot;layout: post&quot;
+    post.puts &quot;title: \&quot;#{title.gsub(/-/,&#39; &#39;)}\&quot;&quot;
+    post.puts &quot;category: &quot;
+    post.puts &quot;tags: []&quot;
+    post.puts &quot;---&quot;
+    post.puts &quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&quot;
+      end
+    end # task :post&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>Jeff Shell's Promotion At Universal Shows Hollywood's Shifting Priorities</title>
+   <link href="/2013/09/16/jeff-shells-promotion-at-universal-shows-hollywoods-shifting-priorities.html"/>
+   <updated>2013-09-16T00:00:00+08:00</updated>
+   <id>/2013/09/16/jeff-shells-promotion-at-universal-shows-hollywoods-shifting-priorities</id>
+   <content type="html">
+   	&lt;p&gt;&lt;a href=&quot;http://xue.youdao.com/biarticle.a?articleId=-5592324489959049538&amp;amp;date=2013-09-16&amp;amp;position=read&amp;amp;channelType=personal&quot;&gt;Jeff Shell&#39;s Promotion At Universal Shows Hollywood&#39;s Shifting Priorities（转移重点）&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;环球影业高层变动 好莱坞重心出现转移&lt;/p&gt;
+
+&lt;p&gt;Many in Hollywood were caught off-guard(毫无准备) earlier this week when Universal Studio head Adam Fogelson was ousted(免去…的职务) and Jeff Shell, until a few days ago the chairman of NBC Universal, was brought in as his replacement.&lt;/p&gt;
+
+&lt;p&gt;本周初，环球影业（Universal Studio）的总裁亚当•弗格森（Adam Fogelson）闪电离职，而直到几天前还是NBC环球（NBC Universal）公司董事长的杰夫•希尔（Jeff Shell）立刻取而代之，这一切让好莱坞的许多人都有些猝不及防。&lt;/p&gt;
+
+&lt;p&gt;Fogelson grew up in the movie business. Since 1998 he had worked in Universal’s marketing division devising(策划) campaigns for films like The Fast and the Furious and Notting Hill. He was elevated to the post(岗位) of Universal Pictures Chairman in 2009 and this past year saw the studio execute a major turnaround. Thanks to movies like Despicable Me 2, Fast and Furious 6 and Identity Thief, Universal is currently the second-highest grossing studio (domestically) in Hollywood.&lt;/p&gt;
+
+&lt;p&gt;弗格森在电影行业摸爬滚打多年。自1998年以来，他一直在环球的营销部门工作，为电影《速度与激情》（The Fast and the Furious）以及《诺丁山》（Notting Hill）策划了宣传活动。2009年，他被提拔为环球影业的董事长，而且在过去一年里目睹了环球影业的重大转变。凭借《卑鄙的我2》（Despicable Me 2）、《速度与激情6》（Fast and Furious 6）以及《身份窃贼》（Identity Thief）等热门影片，环球目前是好莱坞第二大赚钱的电影公司。&lt;/p&gt;
+
+&lt;p&gt;Fox Cable Network Group before he took over as CEO of TV Guide International. From there he moved to Comcast&lt;/p&gt;
+
+&lt;p&gt;杰夫•希尔则是一个电视人。有着哈佛大学MBA学历的希尔在接任电视指南国际（TV Guide International）首席执行官（CEO）之前曾是福克斯有线电视网络集团（Fox Cable Network Group）的总裁。后来他又从电视指南国际跳到了康卡斯特（Comcast），最近他在伦敦驻地负责监管NBC环球的所有国际业务。&lt;/p&gt;
+
+&lt;p&gt;The different experiences of the two men might not seem like a big deal outside of L.A., but in Hollywood, it’s huge. For most of the history of Hollywood, movie studios were run by the men with the best connections to the town’s talent pool. Valuable leaders were the people who could get big stars and directors together to make huge hits.&lt;/p&gt;
+
+&lt;p&gt;在圈外人眼中，弗格森和希尔的不同经历似乎没什么大不了的，但对好莱坞而言却事关重大。在好莱坞的历史上，电影公司在大多数时候都是由与这里的人才库联系最密切的人经营打理。非常宝贵的是那些人脉广阔的领导者，他们能将巨星和导演聚到一起打造出一炮而红的影片。&lt;/p&gt;
+
+&lt;p&gt;Today, the studios are increasingly being run by clear-eyed executives who see the dramatic changes happening in the industry as our viewing habits shift from theaters to the home. Studios, which are all now parts of larger media conglomerates, don’t need creative geniuses at the top. Underlings can build relationship with CAA and WME. These public companies need strategic thinkers who won’t be afraid to make big changes that might shake Hollywood’s understanding of how movies are made, where they get seen and how they make money.&lt;/p&gt;
+
+&lt;p&gt;如今，电影公司越来越多的被一些眼光敏锐的高管执掌着，随着我们的观影习惯从影院转移到家中，他们看到了发生在该行业的巨大变化。现在都已隶属于更大媒体集团的电影公司不需要在高层中吸纳创造性天才。下级员工就能与CAA和WME两大经纪人公司建立联系。这些上市公司需要不惧于做出重大改变的战略思考者来撼动好莱坞对于如何制作电影、哪里看电影以及如何赚钱等的看法。&lt;/p&gt;
+
+&lt;p&gt;“It’s a recognition that distribution of entertainment is fragmenting, ” says Amir Malin, founder of Qualia Capital and former CEO of Artisan Entertainment. “It’s critical to have an executive in charge who has a keen understanding of changing market conditions so that you can respond and re-position your content investment stratgey.”&lt;/p&gt;
+
+&lt;p&gt;“大家已经认识到，娱乐发行正呈现碎片化。”投资公司Qualia Capital的创始人、艺匠娱乐公司（Artisan Entertainment）前首席执行官米尔•马林（Amir Malin）说道，“让一位对变化多端的市场有着敏锐嗅觉的高管来负责公司，这一点非常关键，这样你就能够快速反应并重新定位内容投资战略。”&lt;/p&gt;
+
+&lt;p&gt;Shell is only the latest executive to take over a movie studio with little or no experience developing and distributing movies. In January, Kevin Tsujihara was named the head of Warner Bros. studio. Tsujihara previously ran the studio’s home video division. He won a grueling three-way race for the top position against Bruce Rosenblum, who ran TV, and Jeff Robinov from the film studio.&lt;/p&gt;
+
+&lt;p&gt;一些鲜少或者毫无电影制作与发行经验的高管接掌了电影公司，希尔只是最近的一例。今年1月，凯文•特苏哈拉（Kevin Tsujihara）被任命为华纳兄弟娱乐公司（Warner Bros.）的首席执行官。特苏哈拉之前分管该公司的家庭娱乐部门。他在一场胶着的三方角逐中，打败了负责电视业务的布鲁斯•罗森布鲁姆（Bruce Rosenblum）和来自电影部门的杰夫•罗宾诺夫（Jeff Robinov），最终坐上头把交椅。&lt;/p&gt;
+
+&lt;p&gt;Office politics have a lot to do with any of these decisions. Tsujihara is reportedly well-liked by Warner Bros. employees and Fogelson was reportedly engaged in some ugly backroom maneuvering trying to oust his co-chair, Donna Langley. She still has her job after the shakeout.&lt;/p&gt;
+
+&lt;p&gt;这些决定都与职场争斗有着很大关系。据悉，特苏哈拉深得华纳兄弟员工的拥戴，而弗格森为排挤与自己共担要职的唐娜•兰格利（Donna Langley），参与了一些恶劣的幕后操纵。此次高层震动后，兰格利仍留任高管。&lt;/p&gt;
+
+&lt;p&gt;But the new leaders show where companies like Comcast and Time Warner&lt;/p&gt;
+
+&lt;p&gt;但是新的领导班子向世人显示，如康卡斯特和时代华纳（Time Warner）等公司看到了他们的当务之急在哪里。迪士尼（Disney）在罗伯特•伊格（Robert Iger）的领导下已经取得了惊人的成功。在迪士尼公司中一路高升之前，伊格有着美国广播公司（ABC）的工作背景。&lt;/p&gt;
+
+&lt;p&gt;“Iger knew how to expand Disney’s scope of vision, eyeing potential sources of new entertainment properties from anywhere in the company, ” says Jeff Gomez, CEO of Starlight Runner Entertainment, a company that helps studios translate their intellectual property to different platforms.&lt;/p&gt;
+
+&lt;p&gt;“伊格知道如何扩大迪斯尼的视野，在公司中四处寻觅新娱乐业务的潜在资源。”星光娱乐公司（Starlight Runner Entertainment）首席执行官杰夫•戈麦斯（Jeff Gomez）表示，该公司帮助电影公司把知识产权转化到各个平台。&lt;/p&gt;
+
+&lt;p&gt;The biggest change we’re likely to see from these new leaders? Expect the window between when a film hits theater and when it hits home viewing to shrink dramatically.&lt;/p&gt;
+
+&lt;p&gt;从这些新领导者身上我们可能看到的最大挑战是什么？电影从影院上映到走进家庭的窗口期预计会大大缩短。&lt;/p&gt;
+
+&lt;p&gt;“At some point, that four month window has to be evaporated, ” says Richard Greenfield, media analyst at BTIG. “Maybe there’s a reason to have some window but a movie basically plays for four weeks in theaters and then it’s left sitting there for four months. It doesn’t make any sense.”&lt;/p&gt;
+
+&lt;p&gt;“未来，这四个月的窗口期不得不消失。”市场研究公司BTIG的媒体分析师理查德•格林菲尔德（Richard Greenfield）说道。“也许留有少许窗口期是有意义的，但一部电影基本上只在影院上映四周，然后会被晾足四个月。这毫无道理可言。”&lt;/p&gt;
+
+&lt;p&gt;Traditional Hollywood, afraid of rocking the boat with the theater owners, has so far resisted this kind of change. But the town may not have a choice for much longer. Men like Shell and Tsujihara were put in charge to squeeze every possible penny out of each studio’s intellectual property. That might not mean better movies but it’s sure to mean smarter business.&lt;/p&gt;
+
+&lt;p&gt;传统好莱坞害怕破坏与影院老板们的关系，目前仍抵制这种改变。但再过一段时间，好莱坞可能会别无选择。让希尔和特苏哈拉等人来执掌电影公司就是为了充分挖掘每家公司知识产权的盈利潜能。这可能不意味着会有更好的电影，但一定意味着会有更精明的业务。&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>Git</title>
+   <link href="/git/2013/09/16/git.html"/>
+   <updated>2013-09-16T00:00:00+08:00</updated>
+   <id>/git/2013/09/16/git</id>
+   <content type="html">
+   	&lt;p&gt;&lt;a href=&quot;https://coderwall.com/p/vej4iw&quot;&gt;Quicker Git Add Commit Push&lt;/a&gt;&lt;br/&gt;
+ Add this to your .bash_profile:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;function gcp () {
+    if [ -z &quot;$1&quot; ]
+    then
+        read -p &quot;Commit Message:&quot; MSG
+    else
+        MSG=&quot;$1&quot;
+    fi
+    git add .
+    git commit -am &quot;$MSG&quot;
+    git push
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;now whenever you want to commit and push just execute&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;gcp &quot;This is the comment&quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;if you don&#39;t supply a commit message it will prompt you for one.&lt;/p&gt;
+
+&lt;p&gt;If you&#39;d rather git open your default editor to comment, use this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;function gcp () {
+    git add .
+    git commit -a
+    git push
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;but you can get the best of both worlds, one-liner messages, OR editor messages with something like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;function gcp() {
+    git add .
+    if [ -z &quot;$1&quot; ]
+    then
+        git commit -a
+    else
+        git commit -am &quot;$1&quot;
+    fi
+    git push
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;git commit -a的作用是提交所有已经提交到git的文件到本地库&lt;br/&gt;
+git commit帮助文档中如下说：&lt;br/&gt;
+Tell the command to automatically stage files that have been modified and deleted, but new files you have not told git about are not affected.
+有一个文件修改了:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;git commit -am &quot;a&quot;
+[master 5ea27a3] a
+1 file changed, 8 insertions(+)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;没有修改，添加了新文件：&lt;br/&gt;
+    git commit -am &quot;a&quot;
+    # On branch master
+    # Untracked files:
+    #   (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+    #
+    #   &quot;_posts/english/2013-09-17-\351\243\216\351\231\251\346\212\225\350\265\204\350\200\205\346\234\211\346\234\233\344\273\216\346\216\250\347\211\271ipo\344\270\255\350\216\267\347\233\212.md&quot;
+    nothing added to commit but untracked files present (use &quot;git add&quot; to track)
+可以看到新添加的文件并不会提交上去&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>UE（ultraEdit）设置不产生.bak文件(内含中英文版本)</title>
+   <link href="/ultraedit/2013/09/15/ultraedit-not-backups.html"/>
+   <updated>2013-09-15T00:00:00+08:00</updated>
+   <id>/ultraedit/2013/09/15/ultraedit-not-backups</id>
+   <content type="html">
+   	&lt;p&gt;&lt;a href=&quot;http://blog.csdn.net/snowseabye/article/details/7239952&quot;&gt;原文&lt;/a&gt;
+英文版按照如下顺序设置：
+Menu: Advanced --&gt; Confiugration --&gt; File Handling --&gt; Backup --&gt; Select No Backup option&lt;/p&gt;
+
+&lt;p&gt;中文版按照如下顺序设置：
+高级--&gt; 配置 --&gt; 文件处理 --&gt; 备份，选择右侧的不备份即可&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>使用UltraEdit编辑jekyll文章</title>
+   <link href="/jekyll/2013/09/15/ultraedit-edit-jekyll-post.html"/>
+   <updated>2013-09-15T00:00:00+08:00</updated>
+   <id>/jekyll/2013/09/15/ultraedit-edit-jekyll-post</id>
+   <content type="html">
+   	&lt;p&gt;在windows下保存文章的时候，需要保存为utf-8无BOM格式
+&lt;img src=&quot;/assets/images/jekyll/ultraEdit_save_jekyll_post.jpg&quot;&gt;&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>jekyll server报cannot load such file -- posix_spawn_ext (LoadError)</title>
+   <link href="/jekyll/2013/09/15/jekyll-server-cannot-load-such-file-posix-spawn-ext.html"/>
+   <updated>2013-09-15T00:00:00+08:00</updated>
+   <id>/jekyll/2013/09/15/jekyll-server-cannot-load-such-file-posix-spawn-ext</id>
+   <content type="html">
+   	&lt;p&gt;想要git clone &lt;a href=&quot;https://github.com/realjenius/realjenius.com&quot;&gt;realjenius&lt;/a&gt;的jekyll项目来研究研究，但是jekyll server的时候报如下的错误：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[user@localhost realjenius.com]$ jekyll server
+Configuration file: /home/user/mycode/jekyll/realjenius.com/_config.yml
+        Source: /home/user/mycode/jekyll/realjenius.com
+   Destination: /home/user/jekyll/realjenius.com/_site
+  Generating...   Liquid Exception: cannot load such file -- posix_spawn_ext in _posts/java/2009-09-10-brackets-in-java-annotation-parameters.md
+/usr/local/lib/ruby/site_ruby/2.0.0/rubygems/core_ext/kernel_require.rb:53:in `require&#39;: cannot load such file -- posix_spawn_ext (LoadError)
+from /usr/local/lib/ruby/site_ruby/2.0.0/rubygems/core_ext/kernel_require.rb:53:in `require&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;测试一下是不是真的没有这个posix_spawn_ext文件，结果：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[user@localhost realjenius.com]$ ruby -e &quot;require &#39;posix-spawn&#39;&quot;
+/usr/local/lib/ruby/site_ruby/2.0.0/rubygems/core_ext/kernel_require.rb:53:in `require&#39;: cannot load such file -- posix_spawn_ext (LoadError)
+from /usr/local/lib/ruby/site_ruby/2.0.0/rubygems/core_ext/kernel_require.rb:53:in `require&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;果然是
+&lt;br/&gt;
+再查看一下是否真的没有：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[root@localhost test]# gem uninstall posix-spawn
+    You have requested to uninstall the gem:
+    posix-spawn-0.3.6
+
+    pygments.rb-0.5.2 depends on posix-spawn (~&amp;gt; 0.3.6)
+    If you remove this gem, these dependencies will not be met.
+    Continue with Uninstall? [yN]  
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;有安装posix-spawn,算了，重新安装：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[root@localhost test]# gem install posix-spawn -V
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;安装成功之后，测试一下:
+    [user@localhost test]$ ruby -e &quot;require &#39;posix-spawn&#39;&quot;
+    [user@localhost test]$&lt;/p&gt;
+
+&lt;p&gt;其他类似错误：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/usr/local/lib/ruby/site_ruby/2.0.0/rubygems/core_ext/kernel_require.rb:53:in `require&#39;: cannot load such file -- yajl/yajl (LoadError)
+
+[user@localhost test]# gem install yajl-ruby -V
+&lt;/code&gt;&lt;/pre&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>载入 jQuery 库的最佳方法</title>
+   <link href="/jquery/2013/09/15/include-jquery-best-way.html"/>
+   <updated>2013-09-15T00:00:00+08:00</updated>
+   <id>/jquery/2013/09/15/include-jquery-best-way</id>
+   <content type="html">
+   	&lt;p&gt;&lt;a href=&quot;http://lightcss.com/best-way-to-include-jquery/&quot;&gt;原文&lt;/a&gt;
+在网站开发的项目中使用Google CDN的jQuery库虽然加载速度很快，但调用本地服务器的库才可以确保万无一失。&lt;/p&gt;
+
+&lt;H1&gt;使用方法&lt;/H1&gt;
+
+
+&lt;p&gt;使用下面的代码可以在Google CDN库获取失败时载入本地jQuery库：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;script type=&quot;text/javascript&quot; src=&quot;//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
+&amp;lt;script type=&quot;text/javascript&quot;&amp;gt;window.jQuery || document.write(&#39;&amp;lt;script type=&quot;text/javascript&quot; src=&quot;/js/libs/jquery.min.js&quot;&amp;gt;&amp;lt;\/script&amp;gt;&#39;)&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在WordPress主题中使用的方法为：&lt;/p&gt;
+
+&lt;script type=&quot;text/javascript&quot; src=&quot;//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js&quot;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;&lt;script type=&quot;text/javascript&quot;&gt;window.jQuery || document.write(&#39;&lt;script type=&quot;text/javascript&quot; src=&quot;&lt;?php echo get_template_directory_uri(); ?&gt;/jquery.min.js&quot;&gt;&amp;lt;\/script&gt;&#39;)&lt;/script&gt;
+注意事项&lt;/p&gt;
+
+&lt;p&gt;因为开头提到的原因，所以建议下载一份 jQuery 官方的 min 库 放到 WordPress 当前使用的主题目录下调用，不要使用 wp-includes 里面的库。
+Google CDN 库的地址采用了协议相对路径，它可以很好的解决 https 引起的一些问题，具体可以看 Paul Irish 的介绍，当然你依旧可以使用带「http:」的路径。
+许多网站都采用 Google CDN 提供的 jQuery 库，使用它可以得到出色的缓存效果。
+把 jQuery 代码统统放到页面底部可以提高载入速度。
+使用 HTML5 重构的页面可省略掉 type=&quot;text/javascript&quot;。
+使用SAE开发者资源&lt;/p&gt;
+
+&lt;p&gt;由于 Google 服务在国内缺乏稳定性，为了稳妥，使用 SAE 的开发者资源是个省流量又提高速度的好方法。SAE 为新浪为其应用提供的开发者资源，其中就有 jQuery 库。使用的话非常简单，只要到 SAE 开发者中心 找到合适的地址并替换掉上面代码的 Google CDN 地址即可。例如：&lt;/p&gt;
+
+&lt;p&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;//lib.sinaapp.com/js/jquery/1.9.0/jquery.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;window.jQuery || document.write(&#39;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/libs/jquery.min.js&quot;&gt;&amp;lt;\/script&gt;&#39;)&lt;/script&gt;
+2011.05.25：由于目前 Google 的不稳定，而国内没有好的同类服务，故这已不是最优方案。当然，你把 Google 库路径换成国内稳定且快速的路径（如果存在），依然可以受用此方法带来的各种好处。
+2011.06.23：根据 LOO2K 提醒，更新了 SAE 方案。&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>html中/，没有斜杆，//的区别</title>
+   <link href="/html/2013/09/15/html-diagonal.html"/>
+   <updated>2013-09-15T00:00:00+08:00</updated>
+   <id>/html/2013/09/15/html-diagonal</id>
+   <content type="html">
+   	url 没有斜杆 当前网址+url&lt;br/&gt;
+/url http://localhost:8080/123/223.html  http://localhost:8080/url&lt;br/&gt;
+//url http://url&lt;br/&gt;
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>github如何删除一个库</title>
+   <link href="/git/2013/09/15/github-delete-repository.html"/>
+   <updated>2013-09-15T00:00:00+08:00</updated>
+   <id>/git/2013/09/15/github-delete-repository</id>
+   <content type="html">
+   	&lt;p&gt;一定要先进入一个库之后才有删除库的选项
+&lt;img src=&quot;/assets/images/git/github/github_delete_repository.png&quot;/&gt;
+&lt;img src=&quot;/assets/images/git/github/github_delete_repository_2.png&quot;/&gt;&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>在安装rdiscount的报错</title>
+   <link href="/ruby/2013/09/15/gem-install-rdiscount-error.html"/>
+   <updated>2013-09-15T00:00:00+08:00</updated>
+   <id>/ruby/2013/09/15/gem-install-rdiscount-error</id>
+   <content type="html">
+   	&lt;p&gt;&lt;a href=&quot;https://github.com/brianmario/mysql2/issues/371&quot;&gt;source&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;gem install rdiscount
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;H1&gt;results:&lt;/H1&gt;
+
+
+&lt;H2&gt;The following warning/error:&lt;/H2&gt;
+
+
+&lt;pre&gt;&lt;code&gt;Parsing documentation for rdiscount-2.0.7.2
+unable to convert &quot;\xCF&quot; from ASCII-8BIT to UTF-8 for lib/rdiscount.bundle, skipping
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;H2&gt;Full output:&lt;/H2&gt;
+
+
+&lt;pre&gt;&lt;code&gt;mes-MacBook-Pro:~ me$ gem install rdiscount
+Fetching: rdiscount-2.0.7.2.gem (100%)
+Building native extensions.  This could take a while...
+Successfully installed rdiscount-2.0.7.2
+Parsing documentation for rdiscount-2.0.7.2
+unable to convert &quot;\xCF&quot; from ASCII-8BIT to UTF-8 for lib/rdiscount.bundle, skipping
+Installing ri documentation for rdiscount-2.0.7.2
+1 gem installed
+mes-MacBook-Pro:~ me$
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;H1&gt;解决方法：&lt;/H1&gt;
+
+
+&lt;p&gt;must install rdoc 4.0.1 or higher&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>gem install jekyll报instance of Date needs to have method marshal_load</title>
+   <link href="/jekyll/2013/09/15/gem-install-jekyll-instance-of-Date-needs-to-have-method-marshal_load.html"/>
+   <updated>2013-09-15T00:00:00+08:00</updated>
+   <id>/jekyll/2013/09/15/gem-install-jekyll-instance-of-Date-needs-to-have-method-marshal_load</id>
+   <content type="html">
+   	&lt;pre&gt;&lt;code&gt;$ ruby -v
+ruby 1.8.7 (2011-06-30 patchlevel 352) [i686-linux]
+$ gem -v
+1.8.10
+
+
+$ gem install jekyll
+ERROR:  While executing gem ... (TypeError)
+    instance of Date needs to have method `marshal_load&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;解决办法：
+&lt;br/&gt;升级 Ruby 到 1.9.3+&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>US and UK spy agencies defeat privacy and security on the internet</title>
+   <link href="/english/2013/09/15/english-US-and-UK-spy-agencies-defeat-privacy-and-security-on-the-internet.html"/>
+   <updated>2013-09-15T00:00:00+08:00</updated>
+   <id>/english/2013/09/15/english-US-and-UK-spy-agencies-defeat-privacy-and-security-on-the-internet</id>
+   <content type="html">
+   	&lt;p&gt;&lt;a href=&quot;http://xue.youdao.com/biarticle.a?articleId=-825172592751556828&amp;amp;date=2013-09-14&amp;amp;position=read&amp;amp;channelType=personal&quot;&gt;文章来源&lt;/a&gt;&lt;BR/&gt;
+US and UK spy agencies defeat privacy and security on the internet&lt;br/&gt;
+美国和英国情报机构战胜网络隐私和安全&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;US and British intelligence agencies have successfully cracked much of the online encryption relied upon by hundreds of millions of people to protect the privacy of their personal data, online transactions and emails, according to top-secret documents revealed by former contractor Edward Snowden.&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;根据前特工爱德华.斯诺登披露的顶级秘密文件，美国和英国情报机构成功破解网上的加密，破坏无数的人为保护个人数据、在线操作和电子邮件的密码，侵犯人们隐私。&lt;/p&gt;
+
+&lt;p&gt;The files show that the National Security Agency and its UK counterpart
+GCHQ have broadly compromised the guarantees that internet companies have given consumers to reassure them that their communications, online banking and medical records would be indecipherable to criminals or governments.&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;文件披露国家安全机构和英国的同行GCHO连累了那些网络公司，这些公司向消费者保证他们的网上沟通、网上银行和医疗记录是安全的，这些记录是无法被罪犯和政府破解。
+&lt;br/&gt;
+The agencies, the documents reveal, have adopted a battery of(一连串的) methods in their systematic and ongoing assault on what they see as one of the biggest threats to their ability to access huge swathes of internet traffic – &quot;the use of ubiquitous encryption across the internet&quot;.&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;文件披露了这些机构采用了一系列的方法不间断系统地攻击他们视为对他们访问大量网络数据的能力的最大威胁之一——网络上广泛使用的加密&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;Those methods include covert measures to ensure NSA control over setting of international encryption standards, the use of supercomputers to break encryption with &quot;brute force&quot;, and – the most closely guarded secret of all – collaboration with technology companies and internet service providers themselves.&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;这些方法包括确保NSA控制国际的加密标准这种隐密的措施，使用超级电脑用暴力破解密码-最严密监视的秘密是-与科技公司和网络服务商合作。&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;Through these covert partnerships, the agencies have inserted secret vulnerabilities – known as backdoors or trapdoors – into commercial encryption software.&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;通过这些隐蔽的合作，机构能安插秘密漏洞-人们所知的“后门”或“地板门”-进入到商业加密软件中。&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;The files, from both the NSA and GCHQ, were obtained by the Guardian, and the details are being published today in partnership with(和…合作) the New York Times and ProPublica. They reveal:&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;NSA和GCHQ的文件被卫报获取，详情可以在今天出版的卫报和纽约时报和ProPublica刊登。内容包括：&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;li&gt; A 10-year NSA program against encryption technologies made a breakthrough in 2010 which made &quot;vast amounts&quot; of data collected through internet cable taps newly &quot;exploitable&quot;.&lt;/li&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;li&gt;在2010年，10年NSA针对加密技术的项目取得突破，这使“大量”的数据通过新开发网络电缆窃听。&lt;/li&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;li&gt; The NSA spends $250m a year on a program which, among other goals, works with technology companies to &quot;covertly influence&quot; their product designs.&lt;/li&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;li&gt; NSA花费每年2.5亿美元与科技公司合作，“秘密影响”产品设计。&lt;/li&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;li&gt; The secrecy of their capabilities against encryption is closely guarded, with analysts warned: &quot;Do not ask about or speculate on sources or methods.&quot;&lt;li&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;li&gt; 针对加密功能的秘密被紧密监视，分析员警告：“不要问或推测资源或方法。”&lt;li&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;li&gt; The NSA describes strong decryption programs as the &quot;price of admission for the US to maintain unrestricted access to and use of cyberspace&quot;.&lt;/li&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;li&gt; NSA描述强大的解密程序为“美国管理不受控制的网络访问和使用所付出的代价”&lt;/li&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;li&gt; A GCHQ team has been working to develop ways into encrypted traffic on the &quot;big four&quot; service providers, named as Hotmail, Google, Yahoo and Facebook.&lt;li/&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;li&gt; GCHQ小组努力寻求方法以在四大服务商-Hotmial, Google, Yahoo和Facebook破密。&lt;/li&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;li&gt;This network diagram, from a GCHQ pilot program(试点计划，试点工程), shows how the agency proposed a system to identify encrypted traffic from its internet cable-tapping programs and decrypt what it could in near-real time. Photograph: Guardian&lt;/li&gt;&lt;/p&gt;
+
+&lt;p&gt;这个网络表格是GCHQ的试点程序，显示机构是如何计划一个系统从网络电缆辨认加密流-几乎能边窃听程序边解密。&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;The agencies insist that the ability to defeat encryption is vital to their core missions of counter-terrorism and foreign intelligence gathering.&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;机构坚持破解加密的能力对对付恐怖主义和外国情报收集是很重要的。&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;But security experts accused them of attacking the internet itself and the privacy of all users. &quot;Cryptography forms the basis for trust online, &quot; said Bruce Schneier, an encryption specialist and fellow at Harvard&#39;s Berkman Center for Internet and Society. &quot;By deliberately undermining online security in a short-sighted effort to eavesdrop, the NSA is undermining the very fabric of the internet.&quot; Classified briefings between the agencies celebrate their success at &quot;defeating network security and privacy&quot;.&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;但安全专家指控他们攻击互联网和用户的隐私。“密码学构成网络信任的基础。”哈佛大学布赫曼网络和社会中心的布鲁斯.斯肯里尔说。“通过故意短视地削弱网络安全来偷听，NSA在削弱互联网的组织。”分类的机构间的简报庆祝他们在“打败网络安全和隐私”上的成绩。&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;&quot;For the past decade, NSA has lead [sic] an aggressive, multi-pronged effort to break widely used internet encryption technologies, &quot; stated a 2010 GCHQ document. &quot;Vast amounts of encrypted internet data which have up till(到目前为止) now been discarded are now exploitable.&quot;&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;“在上个十年，NSA已经 [sic]-一个侵略性的、多元化努力，以打破广泛使用的网络加密技术“2010GCHQ文件提到。”直到现在，大量的加密被遗弃的数据在开发。“&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;An internal agency memo noted that among British analysts shown a presentation on the NSA&#39;s progress: &quot;Those not already briefed were gobsmacked!&quot;&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;一个内部情报机构的备忘录提到，英国分析家展现NSA的进步：“那些已经不简短的令人震惊。“&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;The breakthrough, which was not described in detail in the documents, meant the intelligence agencies were able to monitor &quot;large amounts&quot; of data flowing through the world&#39;s fibre-optic cables and break its encryption, despite assurances from internet company executives that this data was beyond the reach(beyond the reach
+力所不及；无法达到；超出…的能力之外) of government.&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;在文件中没有详细提及的突破是情报机构能够监视“大量“的通过世界光导纤维电缆的数据和破解加密，虽然网络公司行政人员称政府不能接触到这些数据。”&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;The key component of the NSA&#39;s battle against encryption, its collaboration with technology companies, is detailed in the US intelligence community&#39;s top-secret 2013 budget request under the heading &quot;Sigint [signals intelligence] enabling&quot;.&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;2013年秘密预算案中详细叙述，NSA对付加密战的关键因素是其与科技公司的合作，以“Singint[信号情报]为标题。&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;Classified briefings between the NSA and GCHQ celebrate their success at &#39;defeating network security and privacy&#39;. Photograph: Guardian&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;NSA和GCHQ的分类简报庆祝他们在网络安全和隐私上取得的成绩。&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;Funding for the program – $254.9m for this year – dwarfs that of the Prism program, which operates at a cost of $20m a year, according to previous NSA documents. Since 2011, the total spending on Sigint enabling has topped $800m. The program &quot;actively engages US and foreign IT industries to covertly influence and/or overtly leverage their commercial products&#39; designs&quot;, the document states. None of the companies involved in such partnerships are named; these details are guarded by still higher levels of classification.&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;根据前NSA文件称，今年在此程序中的费用是2.549亿美元，比起每年花费2千万的棱镜程序要多得多。自从2011年，Sigint的总费用是8亿美元。文件称这程序能积极参与美国和外国的IT工业，以秘密影响和/或公开地利用商业产品设计。文件没有列出参与的公司的名称，这些细节仍然是作为高级情报来监视。&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;Among other things, the program is designed to &quot;insert vulnerabilities into commercial encryption systems&quot;. These would be known to the NSA, but to no one else, including ordinary customers, who are tellingly referred to in the document as &quot;adversaries&quot;.&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;在其他事中，这个程序作这样设计，以“在商业加密系统中安插漏洞。只有NSA知道，其他人不知道，包括普通消费者，他们在文章中称为”对手“。&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;&quot;These design changes make the systems in question exploitable through Sigint collection … with foreknowledge of the modification. To the consumer and other adversaries, however, the systems&#39; security remains intact.&quot;&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;“这些设计通过Sigint收集并改变所提及的系统开发…预知的修改。对消费者和其他对手来说，这个系统的安全还仍是完整的。“&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;The document sets out in clear terms the program&#39;s broad aims, including making commercial encryption software &quot;more tractable&quot; to NSA attacks by &quot;shaping&quot; the worldwide marketplace and continuing efforts to break into the encryption used by the next generation of 4G phones.&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;这文件清淅的条文解释程序的广泛意义，包括使商业加密软件受到NSA攻击更易于处理，形成世界市场和继续努力破解下一代4G手机的用户的加密。&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;Among the specific accomplishments for 2013, the NSA expects the program to obtain access to &quot;data flowing through a hub for(for prep.属于…的；) a major communications provider&quot; and to a &quot;major internet peer-to-peer voice and text communications system&quot;.&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;2013年的具体成绩是，NSA期待程序获取“数据为更多沟通供应商一中心流动，“重要的互联网同伴对同伴的声音和文字沟通系统。”&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;Technology companies maintain that they work with the intelligence agencies only when legally compelled to do so. The Guardian has previously reported that Microsoft co-operated with the NSA to circumvent((巧妙地)避开，规避) encryption on the Outlook.com email and chat services. The company insisted that it was obliged to comply with &quot;existing or future lawful demands&quot; when designing its products.&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;科技公司说他们之所以与情报机构合作是因为他们法律上被迫这样做。卫报以前报道过微软与NSA合作在Outlook.com电邮和聊天服务上破解加密。公司坚持当他们设计产品时，他们被迫遵循“现有或将来的合法要求”。&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;Independent security experts have long suspected that the NSA has been introducing weaknesses into security standards, a fact confirmed for the first time by another secret document. It shows the agency worked covertly to get its own version of a draft security standard issued by the US National Institute of Standards and Technology approved for worldwide use in 2006.&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;独立安全专家长期怀疑NSA已经在安全标准上引入漏洞，这是首次被秘密文件确认的事实。其显示机构民秘密地工作，以获得自己版本的草稿安全标准，这标准是由美国国家标准和科技机构制定的，在2006年得到世界认可的。&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;&quot;Eventually, NSA became the sole editor, &quot; the document states.&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;文件称：“最终，NSA变成唯一的编辑。“&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;The NSA&#39;s codeword for its decryption program, Bullrun, is taken from a major battle of the American civil war. Its British counterpart, Edgehill, is named after the first major engagement of the English civil war, more than 200 years earlier.&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;NSA的解密的代号是Bullrun,该代号是源于美国国内战争的一场主要战役。其英国同僚代号是Egehill,源于英格兰国内战争的首次重要交战，这战争是早在200多年前的。&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;A classification guide for NSA employees and contractors on Bullrun outlines in broad terms（in broad terms大体上） its goals.&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;NSA的员工和订约人的分类指引是Bullrun概要比目标要广阔。&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;&quot;Project Bullrun deals with NSA&#39;s abilities to defeat the encryption used in specific network communication technologies. Bullrun involves multiple sources, all of which are extremely sensitive.&quot; The document reveals that the agency has capabilities against widely used online protocols, such as HTTPS, voice-over-IP and Secure Sockets Layer (SSL), used to protect online shopping and banking.&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;“Bullrun项目处理NSA打败在具体网络沟通技术的加密。Bullrun包括多种来源，所有都是极期敏感的。“文件揭示情报机构有能力对付广泛应用在网络的协议，比如HTTPS，IP声音和加密套接字协议层（SSL），这些协议都用来保护网上购物和网上银行。&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;The document also shows that the NSA&#39;s Commercial Solutions Center, ostensibly the body through which technology companies can have their security products assessed and presented to prospective government buyers, has another, more clandestine role.&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;文件也指出NSA商业解决中心，表面上是科技公司评估安全产品和向潜在政府买家显示的机构，有更秘密的作用。&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;It is used by the NSA to &quot;to leverage sensitive, co-operative relationships with specific industry partners&quot; to insert vulnerabilities into security products. Operatives were warned that this information must be kept top secret &quot;at a minimum&quot;.&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;这机构是用来为NSA利用敏感和合作的关系和具体工业合作方在安全产品上安插漏洞。操作者称这些信息必须至少保持高度秘密。&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;A more general NSA classification guide reveals more detail on the agency&#39;s deep partnerships with industry, and its ability to modify products. It cautions analysts that two facts must remain top secret: that NSA makes modifications to commercial encryption software and devices &quot;to make them exploitable&quot;, and that NSA &quot;obtains cryptographic details of commercial cryptographic information security systems through industry relationships&quot;.&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;一个更普通的NSA分类指南揭示更多情报机构和工业的深远合作，和机构修改产品的能力。情报机构警告分析家两个事实必须保持顶级秘密：NSA修改商业加密软件和设备，以使软件更具开发性“，NSA通过工业关系获得商业用密码写的信息安全系统。“&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;The agencies have not yet cracked all encryption technologies, however, the documents suggest. Snowden appeared to confirm this during a live Q&amp;amp;A with Guardian readers in June. &quot;Encryption works. Properly implemented strong crypto systems are one of the few things that you can rely on, &quot; he said before warning that NSA can frequently find ways around it as a result of(as a result ofadv. 因此，由于；作为…的结果) weak security on the computers at either end of the communication.&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;情报机构还没有完全破解所有加密技术，但是文件提到，斯诺登6月参加现场直播的Q&amp;amp;A向卫报读者确定这点。“加密在进行。你可以依赖恰当的加密系统。“他说在警告前，NSA能够经常发现围绕加密系统的方法，结果在电脑交流时没有安全感。&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;The documents are scattered with warnings over the importance of maintaining absolute secrecy around decryption capabilities.&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;文件散布警告-在破密能力方面维护完全秘密的重要性。
+&lt;br/&gt;
+NSA Bullrun 2
+&lt;br/&gt;
+一张幻灯片显示情报机构破密的能力受到密切监视。
+&lt;br/&gt;
+A slide showing that the secrecy of the agencies&#39; capabilities against encryption is closely guarded. Photograph: Guardian
+&lt;br/&gt;
+在切尔滕纳姆和格洛斯特郡，GCHQ大楼制定严格的指南，关于讨论如何破密的议题。分析家指出：“不要问或猜想支撑Bullrun的来源或方法。”根据一文件，这个信息被紧密监视，甚至进入时弹出警告程序：“不须要‘知道‘”
+&lt;br/&gt;
+Strict guidelines were laid down at the GCHQ complex in Cheltenham, Gloucestershire, on how to discuss projects relating to decryption. Analysts were instructed: &quot;Do not ask about or speculate on sources or methods underpinning Bullrun.&quot; This informaton was so closely guarded, according to one document, that even those with access to aspects of the program were warned: &quot;There will be no &#39;need to know&#39;.&quot;
+&lt;br/&gt;
+据估计，情报机构会会选择性地抽一些合同工告知这个信息，但这被斯诺登彻底了解了，在美国
+&lt;br/&gt;
+The agencies were supposed to be &quot;selective in which contractors are given exposure to this information&quot;, but it was ultimately seen by Snowden, one of 850, 000 people in the US with top-secret clearance. A 2009 GCHQ document spells out the significant potential consequences of any leaks, including &quot;damage to industry relationships&quot;.
+&lt;br/&gt;
+85万人中有一个掌握顶级秘密。一份2009年GCHQ的文件指出任意泄露信息的结果是潜在重要性，包括‘对工业关系的破坏‘。
+&lt;br/&gt;
+&quot;Loss of confidence in our ability to adhere to confidentiality agreements would lead to loss of access to proprietary information that can save time when developing new capability, &quot; intelligence workers were told. Somewhat less important to GCHQ was the public&#39;s trust which was marked as a moderate risk, the document stated.
+&lt;br/&gt;
+情报局人员被告知：“当我们发展新能力时，如果在我们能力范围内失去机密文件的信息，会导致失去特有的省时间的信息。文件提到，对GCHQ而言，大众的信任是评为中等危险。
+&lt;br/&gt;
+&quot;Some exploitable products are used by the general public; some exploitable weaknesses are well known eg possibility of recovering poorly chosen passwords, &quot; it said. &quot;Knowledge that GCHQ exploits these products and the scale of our capability would raise public awareness generating unwelcome publicity for us and our political masters.&quot;
+&lt;br/&gt;
+文件说：“公共在使用一些可利用的产品。一些可利用的弱点是众所周知的，比如使用保密性弱的密码。”“公众知道GCHQ利用这些产品和我们的能力，就会产生对我们和我们的领导不利的宣传。”
+&lt;br/&gt;
+The decryption effort is particularly important to GCHQ. Its strategic advantage from its Tempora program – direct taps on transatlantic fibre-optic cables of major telecommunications corporations – was in danger of eroding as more and more big internet companies encrypted their traffic, responding to customer demands for guaranteed privacy.
+&lt;br/&gt;
+对GCHQ而言，破密是特别重要的。其策略性的优点是Tempora程序-直接通过美国的电讯公司的光导纤维电缆窃听信息-这些公司陷于侵蚀的危险，因为越来越多网络公司破解消费者的信息，这样回应消费者保证隐私的要求。
+&lt;br/&gt;
+Without attention, the 2010 GCHQ document warned, the UK&#39;s &quot;Sigint utility will degrade as information flows changes, new applications are developed (and deployed) at pace and widespread encryption becomes more commonplace.&quot; Documents show that Edgehill&#39;s initial aim was to decode the encrypted traffic certified by three major (unnamed) internet companies and 30 types of Virtual Private Network (VPN) – used by businesses to provide secure remote access to their systems. By 2015, GCHQ hoped to have cracked the codes used by 15 major internet companies, and 300 VPNs.
+&lt;br/&gt;
+2010年GCHQ文件警告，正当信息流动改变，英国的“Sigint”会退化，新的应用会一步步发展并广泛传播，破密变得更普通的。文件指出埃德希尔的初衷是破解加密的被3个主要网络公司（没列出）和30个虚拟私人网络证实的文件-由商业使用，以对他们系统提供安全远程遥控。到2015年，GCHQ希望能破解由15个主要网络公司和300个VPN使用的密码。
+&lt;br/&gt;
+Another program, codenamed Cheesy Name, was aimed at singling（挑出，选出 (out)） out encryption keys, known as &#39;certificates&#39;, that might be vulnerable to being cracked by GCHQ supercomputers.
+&lt;br/&gt;
+另一个程序代码是Cheesy Name，目的是挑选出加密密码，大家所知的‘证书‘，这很脆弱，会被GCHQ超级电脑破解。&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;Analysts on the Edgehill project were working on(work on致力于；作用于；继续工作) ways into the networks of major webmail providers as part of the decryption project. A quarterly update from 2012 notes the project&#39;s team &quot;continue to work on understanding&quot; the big four communication providers, named in the document as Hotmail, Google, Yahoo and Facebook, adding &quot;work has predominantly been focused this quarter on Google due to new access opportunities being developed&quot;.&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;埃德希尔项目的分析家在寻找主要网页邮件供应商以成立破密项目。2012年的季度更新显示项目小组继续与四大通讯供应商协议，前文提到hotmail, Google, Yahoo和Facebook。并补充因为有新的发展机会，本季度主要集中在Google上工作。
+&lt;br/&gt;
+To help secure( 保护；弄到；招致；缚住) an insider advantage, GCHQ also established a Humint Operations Team (HOT). Humint, short for &quot;human intelligence&quot; refers to information gleaned directly from sources or undercover agents.
+&lt;br/
+为了帮助确保一个内部优势，GCHQ也在建立Humint操作小组（HOT）。Humint,是“人类情报”的简称，指的是直接由来源机构收集或秘密情报人员收集的信息。
+&lt;br/&gt;
+This GCHQ team was, according to an internal document, &quot;responsible for identifying, recruiting and running covert agents in the global telecommunications industry.&quot;
+&lt;br/&gt;
+根据一份内部文件，这个GCHQ小组负责辨认、招聘和管理世界通讯业的秘密情报人员。
+&lt;br/&gt;
+&quot;This enables GCHQ to tackle some of its most challenging targets, &quot; the report said. The efforts made by the NSA and GCHQ against encryption technologies may have negative consequences for all internet users, experts warn.
+&lt;br/&gt;
+报道称，“这会使GCHQ处理一些挑战性的目标。”专家警告，NSA和GCHQ反对破解技术的工作可能导致对所有互联网使用者的负责结果。
+&lt;br/&gt;
+&quot;Backdoors are fundamentally in conflict with good security, &quot; said Christopher Soghoian, principal technologist and senior policy analyst at the American Civil Liberties Union. &quot;Backdoors expose all users of a backdoored system, not just intelligence agency targets, to heightened risk of data compromise.&quot; This is because the insertion of backdoors in a software product, particularly those that can be used to obtain unencrypted user communications or data, significantly increases the difficulty of designing a secure product.&quot;
+&lt;br/&gt;
+美国国内自由联盟主要技术人员和高级警务分析家克里斯多夫.苏豪伊恩说：“后门彻底与安保发生冲突。后门为所有用户提供后门系统，不只是情报机构目标，提升数据的危险。”这是因为在软件产品安插后门软件，特别那些可以获取未加密用户的沟通记录或数据，大大提高了设计一款安全产品的难度。“
+&lt;br/&gt;
+This was a view echoed in a recent paper by Stephanie Pell, a former prosecutor at the US Department of Justice and non-resident fellow at the Center for Internet and Security at Stanford Law School.
+&lt;br/&gt;
+这是在最近一份由斯蒂芬妮.佩尔写的报告上得到回应，斯蒂芬妮是美国司法部的前检察官及斯坦福法学院网络与安全中心的工作人员。
+&lt;br/&gt;
+&quot;[An] encrypted communications system with a lawful interception back door is far more likely to result in the catastrophic loss of communications confidentiality than a system that never has access to the unencrypted communications of its users, &quot; she states.
+&lt;br/&gt;
+她提到，“一个加密沟通系统有合法的拦截后台软件，与不能接触不加密用户沟通的系统相比，这很可能导致沟通机密的灾难性损失。”&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>Centos 6.4 64位系统安装截图软件shutter</title>
+   <link href="/centos/2013/09/15/Install-shuttter-centos-64bit.html"/>
+   <updated>2013-09-15T00:00:00+08:00</updated>
+   <id>/centos/2013/09/15/Install-shuttter-centos-64bit</id>
+   <content type="html">
+   	&lt;pre&gt;&lt;code&gt;[root@localhost yum.repos.d]# rpm -Uvh http://li.nux.ro/download/nux/dextop/el6/x86_64/nux-dextop-release-0-1.el6.nux.noarch.rpm
+Retrieving http://li.nux.ro/download/nux/dextop/el6/x86_64/nux-dextop-release-0-1.el6.nux.noarch.rpm
+Preparing...                ########################################### [100%]
+package nux-dextop-release-0-1.el6.nux.noarch is already installed
+[root@localhost yum.repos.d]# yum install shutter
+&lt;/code&gt;&lt;/pre&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>Google Chrome 29 Released – Install on RHEL/CentOS 6 and Fedora 19/15</title>
+   <link href="/linux/2013/09/15/Install-Google-Chrome-in-Linux.html"/>
+   <updated>2013-09-15T00:00:00+08:00</updated>
+   <id>/linux/2013/09/15/Install-Google-Chrome-in-Linux</id>
+   <content type="html">
+   	&lt;p&gt;&lt;a href=&quot;http://www.tecmint.com/install-google-chrome-on-redhat-centos-fedora-linux/&quot;&gt;原文&lt;/a&gt;
+Google Chrome is a freeware web browser developed by Google Inc.
+Google Chrome team finally announced the release of Google Chrome 29,
+the actual version is 29.0.1547.57 for Linux, Mac and Windows operating systems.
+This new version bundled with some exciting features like a new API for high quality video and
+audio communication with minor security and bug fixes.
+If you would like to know more other cool features of this release,
+please visit at &lt;a href=&quot;https://www.google.com/chrome/intl/en/more/features.html&quot;&gt;Google’s Chrome Features&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Install Google Chrome in Linux
+Install Google Chrome in Linux&lt;/p&gt;
+
+&lt;p&gt;In our earlier articles we have shown you how to install latest released Opera Browser 12.00 and Firefox 21 versions. In this tutorial we will show you how we have practically installed Google Chrome 29 browser in one of our CentOS 6.4 server using Google’s own repository with Yum tool. By using repository you will keep your Chrome browser up-to-date. However, it should also work on RHEL 6.4/6.3/6.2/6.1/6.0, CentOS 6.4/6.3/6.2/6.1/6.0 and Fedora 19,18,17,16,15 versions as well.
+Step 1: Enable Google YUM repository
+Create a file called /etc/yum.repos.d/google-chrome.repo and add the following lines of code to it.
+[google-chrome]
+name=google-chrome
+baseurl=http://dl.google.com/linux/chrome/rpm/stable/$basearch
+enabled=1
+gpgcheck=1
+gpgkey=https://dl-ssl.google.com/linux/linux_signing_key.pub
+Step 2: Installing Chrome Web Browser
+Download and Install Chrome Web Browser with yum command. It will automatically install all dependencies.&lt;/p&gt;
+
+&lt;h1&gt;yum install google-chrome-stable&lt;/h1&gt;
+
+&lt;p&gt;Update : Sadly, the Google Chrome browser no longer supports the most famous commercial distribution Red Hat and its free clones such as CentOS and Scientific Linux.
+Yes, they’ve discontinued support for RHEL 6.X version as of Google Chrome and on other side, latest Firefox and Opera browsers run successfully on the same platforms.
+Luckily, there is a script developed by Richard Lloyd, that automatically download and install latest Google Chrome browser by picking libraries from a more recent released distro and put those libraries in (/opt/google/chrome/lib) directory and then you can able to run Google Chrome on CentOS 6.X version.&lt;/p&gt;
+
+&lt;h1&gt;wget http://chrome.richardlloyd.org.uk/install_chrome.sh&lt;/h1&gt;
+
+&lt;h1&gt;chmod u+x install_chrome.sh&lt;/h1&gt;
+
+&lt;h1&gt;./install_chrome.sh&lt;/h1&gt;
+
+&lt;p&gt;Sample Output
+Google Chrome Installer 2.00 on the i686 platform
+(C) Richard K. Lloyd 2013 &lt;a href=&quot;&amp;#109;&amp;#x61;&amp;#x69;&amp;#108;&amp;#x74;&amp;#111;&amp;#58;&amp;#114;&amp;#107;&amp;#x6c;&amp;#x6c;&amp;#x6f;&amp;#x79;&amp;#100;&amp;#64;&amp;#103;&amp;#109;&amp;#x61;&amp;#x69;&amp;#x6c;&amp;#x2e;&amp;#99;&amp;#111;&amp;#109;&quot;&gt;&amp;#114;&amp;#x6b;&amp;#x6c;&amp;#108;&amp;#111;&amp;#121;&amp;#x64;&amp;#64;&amp;#103;&amp;#109;&amp;#97;&amp;#x69;&amp;#108;&amp;#46;&amp;#x63;&amp;#111;&amp;#x6d;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;*** Checking for an update to install_chrome.sh ...&lt;/p&gt;
+
+&lt;p&gt;--2013-07-18 17:27:02--  http://chrome.richardlloyd.org.uk/version.dat
+Resolving chrome.richardlloyd.org.uk... 193.110.246.53
+Connecting to chrome.richardlloyd.org.uk|193.110.246.53|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 5 [text/plain]
+Saving to: aversion.data&lt;/p&gt;
+
+&lt;p&gt;100%[===================================================================================================================&gt;] 5           --.-K/s   in 0s&lt;/p&gt;
+
+&lt;p&gt;2013-07-18 17:27:02 (264 KB/s) - aversion.data&lt;/p&gt;
+
+&lt;p&gt;*** install_chrome.sh is already the latest version (2.00) - continuing ...&lt;/p&gt;
+
+&lt;p&gt;*** Determining latest Google Chrome version number ...
+Step 3: Starting Chrome Web Browser
+Starting browser with root user.&lt;/p&gt;
+
+&lt;h1&gt;google-chrome &amp;amp;&lt;/h1&gt;
+
+&lt;p&gt;Google Chrome Startup Screen
+Google Chrome Startup Screen
+Welcome screen of Chrome web browser.
+Google Chrome Welcome Screen
+Google Chrome Welcome Screen
+Exploring www.tecmint.com with cool Chrome web browser.
+Exploring www.tecmint.com in Google Chrome
+Exploring www.tecmint.com in Google Chrome
+That’s it, enjoy browsing with Chrome and do let me know your browsing experience with Chrome via comments.
+Bio
+Latest Posts&lt;/p&gt;
+
+&lt;p&gt;My Twitter profileMy Facebook profileMy Google+ profile
+Narad Shrestha
+He has over 10 years of rich IT experience which includes various Linux Distros, FOSS and Networking. Narad always believes sharing IT knowledge with others and adopts new technology with ease.&lt;/p&gt;
+
+&lt;p&gt;Linux Services &amp;amp; Free WordPress Setup&lt;/p&gt;
+
+&lt;p&gt;Our post is simply ‘DIY’ aka ‘Do It Yourself, still you may find difficulties and want us to help you out. We offer wide range of Linux and Web Hosting Solutions at fair minimum rates. Please submit your orders by Clicking Here.
+Tweet&lt;/p&gt;
+
+&lt;p&gt;4
+inShare
+61
+comments
+Database Management Free work from home At home work
+Distribution strategy in marketing Advertising Running Shoes
+? PREVIOUS POST
+A Command Line Web Browsing with Lynx and Links Tools
+NEXT POST ?
+Install Firefox 23 in RHEL/CentOS 6.4 &amp;amp; Fedora 19/18/17
+Related Post(s):
+Firefox 17 Released, Adds New Facebook Messenger – Install in Ubuntu 12.04/12.10, Xubuntu 12.10 and Linux Mint 14/13
+Install Opera 12.11 (Browser) in RHEL/CentOS 6.3 and Fedora 17/16/15
+Install Firefox 14 in RHEL – CentOS – Fedora
+Install Firefox 23 in RHEL/CentOS 6.4 &amp;amp; Fedora 19/18/17
+A Command Line Web Browsing with Lynx and Links Tools&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>msysgit bash的操作，比如复制拷贝</title>
+   <link href="/git/2013/09/14/msysgit-operate.html"/>
+   <updated>2013-09-14T00:00:00+08:00</updated>
+   <id>/git/2013/09/14/msysgit-operate</id>
+   <content type="html">
+   	&lt;h1&gt;通过通过控制台的menu菜单&lt;/h1&gt;
+
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/git/msysgit/1.jpg&quot;&gt;
+&lt;br/&gt;可以选择标记，用鼠标选中要复制的代码，右键&lt;/p&gt;
+
+&lt;h1&gt;通过快捷键&lt;/h1&gt;
+
+
+&lt;p&gt;要插入内容到bash，可以按insert&lt;br/&gt;
+ctr+u是清空光标之前已经输入的内容&lt;br/&gt;
+ctr+k是清空光标之后已经输入的内容&lt;br/&gt;
+Esc是清空已经输入的全部内容&lt;br/&gt;&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>INSTALLING RUBY, RUBYGEMS, RAILS, AND MONGREL ON MAC OS X 10.5 (LEOPARD)</title>
+   <link href="/ruby/2013/09/14/INSTALLING-RUBY-RUBYGEMS-RAILS-AND-MONGREL-ON-MAC-OS-X-10.5-%28LEOPARD%29.html"/>
+   <updated>2013-09-14T00:00:00+08:00</updated>
+   <id>/ruby/2013/09/14/INSTALLING-RUBY-RUBYGEMS-RAILS-AND-MONGREL-ON-MAC-OS-X-10.5-(LEOPARD)</id>
+   <content type="html">
+   	&lt;p&gt;&lt;a href=&quot;http://hivelogic.com/articles/ruby-rails-leopard&quot;&gt;这篇文章的来源&lt;/a&gt;&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;These are instructions for compiling and installing Ruby, Rubygems, Ruby on Rails, and Mongrel on Mac OS X 10.5 (Leopard).&lt;/p&gt;
+
+&lt;p&gt;If you already know why I write these tutorials, if you already have /usr/local in your path, if you’ve installed XCode installed
+already … in other words, if you’re an old-school Hivelogic reader, &lt;a href=&quot;http://hivelogic.com/articles/ruby-rails-leopard#ruby&quot;&gt;just click here to jump right to the instructions&lt;/a&gt;.&lt;/p&gt;
+
+&lt;H1&gt;THE FAQ (SORT OF)&lt;/H1&gt;
+
+
+&lt;p&gt;Below I’ll walk you through getting your system ready for building and compiling open source software. But before I do, please allow
+me to answer of few of the questions I invariably(adv. 总是；不变地；一定地) get asked every time I release this type of do-it-yourself
+tutorials:&lt;/p&gt;
+
+&lt;H2&gt;Why would I want to compile this stuff when it ships as part of Leopard?&lt;/H2&gt;
+
+
+&lt;p&gt;Good question! Leopard ships with Ruby 1.8.6 and Rails 1.2.3 – both respectably(adv. 相当好地；体面地；可敬地) recent and stable versions.
+And it’s easy enough to update to the latest version of Rails with a single command (sudo gem install rails if you’re curious).&lt;/p&gt;
+
+&lt;p&gt;Then why roll your own? I expand on(详述) the benefits of building your own open source utilities (like Ruby and Rails) and why where they live
+is important in my article entitled(题为) &lt;a href=&quot;http://hivelogic.com/articles/using_usr_local/&quot;&gt;Using /usr/local&lt;/a&gt;, but here are a few of the
+reasons:&lt;/p&gt;
+
+&lt;p&gt;&lt;li&gt;You want to run the latest/greatest versions of available software and don’t want to wait (or hope) for Apple to release an update.&lt;/li&gt;
+&lt;li&gt;Your want to update, tweak([俚语]【计算机】对…稍作调整，对程序微调), and customize your own tools while keeping your system “stock” from Apple’s standpoint.&lt;li&gt;
+&lt;li&gt;Apple may decide to modify these utilities during a system update, and doing so may break your stuff.&lt;/li&gt;
+&lt;li&gt;You can move or remove the /usr/local filesystem, or even transfer it to another machine in one step.&lt;/li&gt;
+&lt;li&gt;You’re used to, interested in, or curious about in the compile and build process.&lt;/li&gt;
+For some people, these reasons are enough to take a few minutes to build your own software.&lt;/p&gt;
+
+&lt;h1&gt;Why wouldn’t I just use MacPorts or Fink?(MacPorts和Fink是两个开源项目)&lt;/H1&gt;
+
+
+&lt;p&gt;Both MacPorts and Fink are great projects, and I wholeheartedly support their efforts. I’m also a longtime FreeBSD geek, and the FreeBSD ports
+tree is something I’ve relied upon(依靠) for ages. So I really get what MacPorts and Fink are about.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, I’m a geek at heart, I don’t mind compiling my own software, and I like the ability to build just what I need, right when I need it, without installing or waiting for any additional or externally-maintained software. If this method sounds like a headache to you, I know where you’re coming from. MacPorts and Fink provide most excellent alternatives. Tell them I sent you.&lt;/p&gt;
+
+&lt;H2&gt;I used your instructions and I got the following error …&lt;/H2&gt;
+
+
+&lt;p&gt;Please don’t email me about it but instead, post your question in the comments. I try and read and respond as often as I can. When I can’t, other Hivelogic readers often step in and try to help (they’re a great bunch), and usually we can figure it out together.&lt;/p&gt;
+
+&lt;H1&gt;PREREQUISITES&lt;/H1&gt;
+
+
+&lt;p&gt;You will need:&lt;/p&gt;
+
+&lt;p&gt;&lt;LI&gt;Mac OS X 10.5 (Leopard)&lt;/LI&gt;
+&lt;LI&gt;Xcode 3.0 or newer&lt;/LI&gt;
+&lt;LI&gt;Familiarity with (or willingness to use) the Mac OS X Terminal application&lt;/LI&gt;
+Note: You will probably need to install Xcode from the Mac OS X install DVD/CD (in the Optional Installs → Xcode folder). You can also download
+it from &lt;a href=&quot;https://developer.apple.com/&quot;&gt;Apple’s Developer Connection&lt;/a&gt; free of charge.&lt;/p&gt;
+
+&lt;p&gt;Another Note: These instructions are written for people using the default Mac OS X shell, bash. If you haven’t manually(adv. 手动地；用手) changed your shell
+from bash, and you didn’t upgrade to Leopard from something older than Tiger, then you don’t have anything to worry about. If you’ve taken
+specific steps to change the default shell to something other than bash (like tcsh), then you’ll need to figure out equivalent syntax to
+use when setting paths and environment variables, or just switch back to bash, because we just roll with bash here. Sorry.&lt;/p&gt;
+
+&lt;H1&gt;JUST IN CASE&lt;/H1&gt;
+
+
+&lt;p&gt;While it’s unlikely that any of these steps might damage your system somehow, it’s probably a good idea to have a current backup of
+everything, just in case(以防万一) (I recommend SuperDuper! for this by the way(顺便说说，顺便问一下), awesome product). So you’re following
+these instructions at your own risk, and I’m not liable(adj. 有责任的) for anything that happens.&lt;/p&gt;
+
+&lt;H1&gt;A NOTE ABOUT SUDO&lt;/H1&gt;
+
+
+&lt;p&gt;With great power comes great responsibility, so Mac OS X may prompt you for your password prior to(在……之前；居先) executing some of the commands
+you’ll be typing. It may do this only once, or several times throughout this process. Just re-enter your password as needed.&lt;/p&gt;
+
+&lt;H1&gt;USING TERMINAL&lt;/H1&gt;
+
+
+&lt;p&gt;You’ll need to launch the Terminal application. It can be found in the /Applications/Utilities folder.&lt;/p&gt;
+
+&lt;p&gt;Each of the lines below appearing in monospaced type(等宽字体) should be entered into Terminal, and be followed by the Return key.&lt;/p&gt;
+
+&lt;H1&gt;PATHS&lt;/H1&gt;
+
+
+&lt;H2&gt;Don’t skip this step!&lt;/H2&gt;
+
+
+&lt;p&gt;Mac OS X, like other UNIX systems, uses something called a path to determine where it should look for applications on the command
+line (that is, when you’re using the Terminal app). The path is actually an environment variable, set by a special file that’s automatically
+ executed when you open a new Terminal window.&lt;/p&gt;
+
+&lt;p&gt;We need to make sure that our path is set to look for files in /usr/local (the place where we’ll be installing the tools) before looking
+anywhere else. This is important.&lt;/p&gt;
+
+&lt;p&gt;To see if the path has been set properly, we can check the contents of the .profile file (the special file hidden in our home folder) for
+a PATH line using a text editor. TextMate, TextWrangler, BBEdit, and vi are all perfectly good options. To open the file with TextMate,
+for example, we can type:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; mate ~/.profile
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This will open the file if it already exists, or open a blank file if it doesn’t. Add the following line at the very end of the file:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; export PATH=&quot;/usr/local/bin:/usr/local/sbin:/usr/local/mysql/bin:$PATH&quot; 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now save and close the file.&lt;/p&gt;
+
+&lt;p&gt;It doesn’t matter how many other lines there are in the file, or what they say or do. Just make sure that this line comes last and you
+should be fine.&lt;/p&gt;
+
+&lt;p&gt;To make sure the changes are picked up correctly, we now need to execute the file with the following command:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;. ~/.profile
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It’s likely there will be no response from the shell here, just the prompt, but that’s OK, the changes have been picked up and we’re ready
+to move on.&lt;/p&gt;
+
+&lt;p&gt;You can also close your Terminal and open a new one instead if you’d like.&lt;/p&gt;
+
+&lt;p&gt;Note: You may have noticed that I’ve added MySQL to the path in the line above. That’s because most users will be installing MySQL later
+in this tutorial. If you’re the type to want to use something like SQLite or PostGreSQL as your database instead of MySQL, you can feel
+free to omit the /usr/local/mysql/bin: bit from the line above, and replace it with the path to the database of your choice. If this note
+doesn’t make sense to you, even if you don’t plan to install MySQL later, just keep on going … the extra bit in the path statement won’t
+affect you at all.&lt;/p&gt;
+
+&lt;H1&gt;SETTING UP&lt;/H1&gt;
+
+
+&lt;p&gt;I like to create a folder to contain all of the downloaded files and their respective build folders. I tend to keep this folder around
+indefinitely. Source code doesn’t take up much space, and it’s useful to refer back to later to remind yourself of previous installation
+details or techniques, installed versions, for a fast install at a later time, or in case you want to uninstall something.&lt;/p&gt;
+
+&lt;p&gt;For these examples, we’ll create a folder called src in the /usr/local section of the filesystem, and change directories into that folder.
+It will be our workspace for everything we do here:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo mkdir -p /usr/local/src
+sudo chgrp admin /usr/local/src
+sudo chmod -R 775 /usr/local/src
+cd /usr/local/src
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You’ll download and compile everything in this new folder.&lt;/p&gt;
+
+&lt;H1&gt;RUBY&lt;/H1&gt;
+
+
+&lt;p&gt;Ok, let’s get started. Unlike previous versions of Mac OS X, Leopard has everything you’ll need to compile Ruby. You don’t need to install
+any prerequisites. Take these commands and type or paste them into Terminal:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;curl -O ftp://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.7-p72.tar.gz
+tar xzvf ruby-1.8.7-p72.tar.gz
+cd ruby-1.8.7-p72
+./configure --enable-shared --enable-pthread CFLAGS=-D_XOPEN_SOURCE=1
+make
+sudo make install
+cd ..
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;我安装的是最新的：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;curl -O http://cache.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p247.tar.gz
+tar xzvf ruby-2.0.0-p247.tar.gz
+cd ruby-2.0.0-p247
+./configure --enable-shared --enable-pthread CFLAGS=-D_XOPEN_SOURCE=1
+make
+sudo make install(这里需要输入密码，不知道为什么是我自己的密码,而不是超级管理员的密码)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To verify that Ruby is installed and in your path, just type:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;which ruby
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;或者是这样：
+    USERtekiiMac-3:src user$ which ruby
+    /usr/local/bin/ruby
+    USERtekiiMac-3:src user$ ruby --version
+    ruby 1.8.7 (2012-02-08 patchlevel 358) &lt;a href=&quot;%E7%B3%BB%E7%BB%9F%E8%87%AA%E5%B8%A6%E7%9A%84%E7%89%88%E6%9C%AC&quot;&gt;universal-darwin12.0&lt;/a&gt;
+    USERtekiiMac-3:src user$ /usr/local/bin/ruby --version
+    ruby 2.0.0p247 (2013-06-27 revision 41674) [x86_64-darwin12.1.0]
+You should see:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/usr/local/bin/ruby
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If you don’t, you haven’t set your path correctly.&lt;/p&gt;
+
+&lt;h1&gt;RUBYGEMS&lt;/H1&gt;
+
+
+&lt;p&gt;With Ruby installed, we can move on to RubyGems. Same routine:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;curl -O http://rubyforge.iasi.roedu.net/files/rubygems/rubygems-1.3.1.tgz
+tar xzvf rubygems-1.3.1.tgz
+cd rubygems-1.3.1
+sudo /usr/local/bin/ruby setup.rb
+cd ..
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;我自己的：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;curl -O  http://rubyforge.org/frs/download.php/76729/rubygems-1.8.25.tgz（下载不了，只好用浏览器下载之后拷贝过来）
+tar xzvf rubygems-1.8.25.tgz
+cd rubygems-1.8.25
+sudo /usr/local/bin/ruby setup.rb
+cd ..
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;H1&gt;RUBY ON RAILS&lt;/H1&gt;
+
+
+&lt;p&gt;At last, we’re ready to install Rails. RubyGems will handle this for us:
+    su root(输入密码)
+    gem install rails
+Mongrel and Capistrano get installed the same way:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo gem install mongrel
+sudo gem install capistrano
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;There are a handful(n. 少数；一把；棘手事) of other gems you’ll undoubtedly want, and you can install them one at a time, or all on one line
+(if you have a list) like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo gem install RedCloth termios rspec sake
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;H1&gt;THE MYSQL GEM&lt;/H1&gt;
+
+
+&lt;p&gt;As of(自……起) Rails 2.0, the default database system is is now SQLite, which also ships with Leopard.&lt;/p&gt;
+
+&lt;p&gt;Many of us still run MySQL locally though, and want to install the MySQL gem for better Rails integration. If you followed my MySQL for
+Mac OS X installation instructions or used one of the official MySQL distributions, your MySQL lives in /usr/local/mysql. You can install
+the gem using the following command:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo gem install mysql -- --with-mysql-dir=/usr/local/mysql
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;H1&gt;WE’RE DONE&lt;/H1&gt;
+
+
+&lt;p&gt;Congratulations, you now have a custom-built, properly installed Ruby on Rails system! You might also like to build your own Subversion
+client or run your own MySQL server too.&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>git revert (reset) a single file</title>
+   <link href="/git/2013/09/13/git-revert-a-single-file.html"/>
+   <updated>2013-09-13T00:00:00+08:00</updated>
+   <id>/git/2013/09/13/git-revert-a-single-file</id>
+   <content type="html">
+   	&lt;p&gt;&lt;a href=&quot;http://www.norbauer.com/rails-consulting/notes/git-revert-reset-a-single-file.html&quot;&gt;原文&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;This one is hard to find out there so here it is. If you have an uncommitted change (its only in your working copy) that you wish to revert (in SVN terms) to the copy in your latest commit, do the following:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;git checkout filename
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This will checkout the file from HEAD, overwriting your change. This command is also used to checkout branches, and you could happen to have a file with the same name as a branch. All is not lost, you will simply need to type:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;git checkout -- filename
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You can also do this with files from other branches, and such. man git-checkout has the details.&lt;/p&gt;
+
+&lt;p&gt;The rest of the Internet will tell you to use git reset --hard, but this resets all uncommitted changes you’ve made in your working copy. Type this with care(小心点).&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>git push时候出现HTTP request failed</title>
+   <link href="/git/2013/09/13/git-http-request-failed.html"/>
+   <updated>2013-09-13T00:00:00+08:00</updated>
+   <id>/git/2013/09/13/git-http-request-failed</id>
+   <content type="html">
+   	&lt;h1&gt;问题如下：&lt;/h1&gt;
+
+
+&lt;p&gt;git的版本&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[user@localhost test]$ git --version
+git version 1.7.1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在Centos6.4 64位系统下，当我使用git push的时候会出现如下的问题：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[user@localhost test]$ git push
+    error: The requested URL returned error: 403 Forbidden while accessing https://github.com/username/repositoryname.git/info/refs
+fatal: HTTP request failed
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;   [user@localhost test]$ git remote -v
+   origin   https://github.com/username/repositoryname.git (fetch)
+   origin   https://github.com/username/repositoryname.git (push)&lt;/p&gt;
+
+&lt;h1&gt;解决方法：&lt;/h1&gt;
+
+
+&lt;pre&gt;&lt;code&gt;[user@localhost test]$ git remote set-url origin https://username@github.com/username/repositoryname.git
+[user@localhost test]$ git push
+Counting objects: 10, done.
+Delta compression using up to 8 threads.
+Compressing objects: 100% (5/5), done.
+Writing objects: 100% (6/6), 685 bytes, done.
+Total 6 (delta 2), reused 0 (delta 0)
+To https://username@github.com/username/repositoryname.git
+9e89c81..2a28518  gh-pages -&amp;gt; gh-pages
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;br/&gt;另外也可以设置称ssh提交方式，这样在命令行就不用每次都输入讨厌的密码&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>git push采用SSH方式</title>
+   <link href="/git/2013/09/13/git-generate-ssh-key.html"/>
+   <updated>2013-09-13T00:00:00+08:00</updated>
+   <id>/git/2013/09/13/git-generate-ssh-key</id>
+   <content type="html">
+   	&lt;H1&gt;问题的来源&lt;/H1&gt;
+
+
+&lt;p&gt;想要使用SSH的方法，不想每次提交的时候都要输入密码，这样让我烦死了&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[user@localhost test]$ git remote set-url origin ssh://git@github.com/username/repository.git
+[user@localhost test]$ git push
+The authenticity of host &#39;github.com (192.30.252.130)&#39; can&#39;t be established.
+RSA key fingerprint is 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added &#39;github.com,192.30.252.130&#39; (RSA) to the list of known hosts.
+Permission denied (publickey).
+fatal: The remote end hung up unexpectedly
+[user@localhost test]$ ssh -vT git@github.com
+OpenSSH_5.3p1, OpenSSL 1.0.0-fips 29 Mar 2010
+debug1: Reading configuration data /etc/ssh/ssh_config
+debug1: Applying options for *
+debug1: Connecting to github.com [192.30.252.129] port 22.
+debug1: Connection established.
+debug1: identity file /home/user/.ssh/identity type -1
+debug1: identity file /home/user/.ssh/id_rsa type -1
+debug1: identity file /home/user/.ssh/id_dsa type -1
+debug1: Remote protocol version 2.0, remote software version OpenSSH_5.9p1 Debian-5ubuntu1+github5
+debug1: match: OpenSSH_5.9p1 Debian-5ubuntu1+github5 pat OpenSSH*
+debug1: Enabling compatibility mode for protocol 2.0
+debug1: Local version string SSH-2.0-OpenSSH_5.3
+debug1: SSH2_MSG_KEXINIT sent
+debug1: SSH2_MSG_KEXINIT received
+debug1: kex: server-&amp;gt;client aes128-ctr hmac-md5 none
+debug1: kex: client-&amp;gt;server aes128-ctr hmac-md5 none
+debug1: SSH2_MSG_KEX_DH_GEX_REQUEST(1024&amp;lt;1024&amp;lt;8192) sent
+debug1: expecting SSH2_MSG_KEX_DH_GEX_GROUP
+debug1: SSH2_MSG_KEX_DH_GEX_INIT sent
+debug1: expecting SSH2_MSG_KEX_DH_GEX_REPLY
+debug1: Host &#39;github.com&#39; is known and matches the RSA host key.
+debug1: Found key in /home/user/.ssh/known_hosts:1
+Warning: Permanently added the RSA host key for IP address &#39;192.30.252.129&#39; to the list of known hosts.
+debug1: ssh_rsa_verify: signature correct
+debug1: SSH2_MSG_NEWKEYS sent
+debug1: expecting SSH2_MSG_NEWKEYS
+debug1: SSH2_MSG_NEWKEYS received
+debug1: SSH2_MSG_SERVICE_REQUEST sent
+debug1: SSH2_MSG_SERVICE_ACCEPT received
+debug1: Authentications that can continue: publickey
+debug1: Next authentication method: publickey
+debug1: Trying private key: /home/user/.ssh/identity
+debug1: Trying private key: /home/user/.ssh/id_rsa
+debug1: Trying private key: /home/user/.ssh/id_dsa
+debug1: No more authentication methods to try.
+Permission denied (publickey).
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;下面是解决办法：
+&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;
+&lt;a href=&quot;https://help.github.com/articles/generating-ssh-keys&quot;&gt;Generating SSH Keys&lt;/a&gt;&lt;BR/&gt;
+If you have decided not to use the recommended(推荐的) HTTPS method, we can use SSH keys to establish a secure connection between your computer and GitHub. The steps below will walk you through generating an SSH key and then adding the public key to your GitHub account.&lt;/p&gt;
+
+&lt;h1&gt;Step 1: Check for SSH keys&lt;/h1&gt;
+
+
+&lt;p&gt;First, we need to check for existing ssh keys on your computer. Open up Terminal and run:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cd ~/.ssh
+ls
+# Lists the files in your .ssh directory
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;我实际的运行效果：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[user@localhost test]$ cd ~/.ssh
+[user@localhost .ssh]$ ls
+known_hosts
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Check the directory listing to see if you have a file named either id_rsa.pub or id_dsa.pub. If you don&#39;t have either of those files go to step 2. Otherwise, you already have an existing keypair, and you can skip to step 3.
+&lt;br/&gt;我目前没有id_rsa.pub和id_dsa.pub文件&lt;/p&gt;
+
+&lt;H1&gt;Step 2: Generate a new SSH key&lt;/H1&gt;
+
+
+&lt;p&gt;To generate a new SSH key, enter the code below. We want the default settings so when asked to enter a file in which to save the key, just press enter.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ssh-keygen -t rsa -C &quot;your_email@example.com&quot;
+# Creates a new ssh key, using the provided email as a label
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/you/.ssh/id_rsa):
+$ssh-add id_rsa
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now you need to enter a passphrase.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# Enter passphrase (empty for no passphrase): [Type a passphrase]
+# Enter same passphrase again: [Type passphrase again]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Which should give you something like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Your identification has been saved in /home/you/.ssh/id_rsa.
+Your public key has been saved in /home/you/.ssh/id_rsa.pub.
+The key fingerprint is:
+01:0f:f4:3b:ca:85:d6:17:a1:7d:f0:68:9d:f0:a2:db your_email@example.com
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;我运行的实际效果：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[user@localhost .ssh]$ ssh-keygen -t rsa -C &quot;xinllaang@sina.com&quot;
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/user/.ssh/id_rsa): 
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/user/.ssh/id_rsa.
+Your public key has been saved in /home/user/.ssh/id_rsa.pub.
+The key fingerprint is:
+01:0f:f4:3b:ca:85:d6:17:a1:7d:f0:68:9d:f0:a2:db your_email@example.com
+The key&#39;s randomart image is:
++--[ RSA 2048]----+
+|  +              |
+|     .  .        |
+|  . .    o       |
+|          +      |
+|          .      |
+|      .          |
+|       o  .      |
+|                 |
+|       o+        |
++-----------------+
+[user@localhost .ssh]$ ls
+id_rsa  id_rsa.pub  known_hosts
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h1&gt;Step 3: Add your SSH key to GitHub&lt;/h1&gt;
+
+
+&lt;p&gt;Run the following code to copy the key to your clipboard.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apt-get install xclip
+# Downloads and installs xclip. If you don&#39;t have `apt-get`, you might need to use another installer (like `yum`)
+
+$ xclip -sel clip &amp;lt; ~/.ssh/id_rsa.pub
+# Copies the contents of the id_rsa.pub file to your clipboard
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;我的操作：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[user@localhost .ssh]$ sudo yum install xclip
+[sudo] password for user: 
+Sorry, try again.
+[sudo] password for user: 
+user is not in the sudoers file.  This incident will be reported.
+
+[user@localhost .ssh]$ su root
+Password: 
+
+[root@localhost .ssh]# yum install xclip
+Loaded plugins: fastestmirror, priorities, refresh-packagekit, security
+Loading mirror speeds from cached hostfile
+  * epel: mirrors.hustunique.com
+  * nux-dextop: mirror.li.nux.ro
+  Setting up Install Process
+  Resolving Dependencies
+  --&amp;gt; Running transaction check
+  ---&amp;gt; Package xclip.x86_64 0:0.12-1.el6 will be installed
+  --&amp;gt; Finished Dependency Resolution
+
+  Dependencies Resolved
+
+  ================================================================================
+   Package          Arch              Version               Repository       Size
+   ================================================================================
+   Installing:
+    xclip            x86_64            0.12-1.el6            epel             25 k
+
+ Transaction Summary
+ ================================================================================
+ Install       1 Package(s)
+
+ Total download size: 25 k
+ Installed size: 43 k
+ Is this ok [y/N]: y
+ Downloading Packages:
+ xclip-0.12-1.el6.x86_64.rpm                              |  25 kB     00:00     
+ Running rpm_check_debug
+ Running Transaction Test
+ Transaction Test Succeeded
+ Running Transaction
+      Installing : xclip-0.12-1.el6.x86_64                                      1/1 
+      Verifying  : xclip-0.12-1.el6.x86_64                                      1/1 
+
+     Installed:
+          xclip.x86_64 0:0.12-1.el6                                                     
+
+      Complete!
+
+[root@localhost .ssh]# su user
+[user@localhost .ssh]$ xclip -sel clip &amp;lt; ~/.ssh/id_rsa.pub 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;LI&gt;Go to your Account Settings&lt;/LI&gt;
+&lt;LI&gt;Click &quot;SSH Keys&quot; in the left sidebar&lt;/LI&gt;
+&lt;LI&gt;SSH Key buttonClick &quot;Add SSH key&quot;&lt;/LI&gt;
+&lt;LI&gt;Paste your key into the &quot;Key&quot; field&lt;/LI&gt;
+&lt;LI&gt;Click &quot;Add key&quot;&amp;lt;/LI?
+&lt;LI&gt;Confirm the action by entering your GitHub password&lt;/LI&gt;
+我的操作：
+&lt;br/&gt;
+&lt;img src=&quot;/assets/images/git/github_ssh_setting.png&quot;&gt;&lt;/p&gt;
+
+&lt;H1&gt;Step 4: Test everything out&lt;/H1&gt;
+
+
+&lt;p&gt;To make sure everything is working you&#39;ll now SSH to GitHub. When you do this, you will be asked to authenticate this action using your password, which for this purpose is the passphrase you created earlier. Don&#39;t change the git@github.com part. That&#39;s supposed to be there.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ssh -T git@github.com
+# Attempts to ssh to github
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It&#39;s possible that you&#39;ll see this error message:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;...
+Agent admitted failure to sign using the key.
+debug1: No more authentication methods to try.
+Permission denied (publickey).
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is a known problem with certain Linux distributions. For a resolution, see &lt;a href=&quot;https://help.github.com/articles/error-agent-admitted-failure-to-sign&quot;&gt;our help article&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;You may see this warning:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# The authenticity of host &#39;github.com (207.97.227.239)&#39; can&#39;t be established.
+# RSA key fingerprint is 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48.
+# Are you sure you want to continue connecting (yes/no)?
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Don&#39;t worry, this is supposed to happen. Verify that the fingerprint matches the one here and type &quot;yes&quot;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# Hi username! You&#39;ve successfully authenticated, but GitHub does not provide shell access.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If that username is correct, you&#39;ve successfully set up your SSH key. Don&#39;t worry about the shell access thing, you don&#39;t want that anyway.
+&lt;BR/&gt;
+If you see &quot;access denied&quot; please consider using &lt;a href=&quot;https://help.github.com/articles/error-permission-denied-publickey&quot;&gt;HTTPS&lt;/a&gt; instead of SSH. If you need SSH start at &lt;a href=&quot;https://help.github.com/articles/error-permission-denied-publickey&quot;&gt;these instructions&lt;/a&gt; for diagnosing the issue.
+&lt;br/&gt;
+我的操作过程：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[user@localhost .ssh]$ ssh -T git@github.com
+Warning: Permanently added the RSA host key for IP address &#39;192.30.252.131&#39; to the list of known hosts.
+Hi user! You&#39;ve successfully authenticated, but GitHub does not provide shell access.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;br/&gt;
+测试一下是否真的成功了：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[user@localhost test]$ git push
+Counting objects: 9, done.
+Delta compression using up to 8 threads.
+Compressing objects: 100% (6/6), done.
+Writing objects: 100% (6/6), 1.47 KiB, done.
+Total 6 (delta 3), reused 0 (delta 0)
+To ssh://git@github.com/username/resposity.git
+2a28518..aa2d8e4  gh-pages -&amp;gt; gh-pages
+[user@localhost test]$ git remote -v
+origin  ssh://git@github.com/maijunjin/resposity.git (fetch)
+origin  ssh://git@github.com/username/resposity.git (push)
+&lt;/code&gt;&lt;/pre&gt;
+
+   </content>
+ </entry>
+ 
+ 
+</feed>
