@@ -48,7 +48,7 @@ task :post do
   path = ENV["path"] || ""
 #去掉目录中的特殊字符
   path = File.join(CONFIG['posts'],path.gsub(/[^\w\/]/,''))
-  slug = title.downcase.strip.gsub(' ', '-').gsub(/[^\w-]/, '')
+  slug = title.downcase.strip.gsub(' ', '-')
 #把path目录添加进去
   filename = File.join(path,"#{Time.now.strftime('%Y-%m-%d')}-#{slug}.#{CONFIG['post_ext']}")
   if File.exist?(filename)
