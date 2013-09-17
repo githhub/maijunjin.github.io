@@ -4,7 +4,7 @@
  <title>STUDY LEARN</title>
  <link href="/atom.xml" rel="self"/>
  <link href=""/>
- <updated>2013-09-17T01:01:46+08:00</updated>
+ <updated>2013-09-17T20:52:10+08:00</updated>
  <id></id>
  <author>
    <name>STUDY LEARN</name>
@@ -13,10 +13,78 @@
 
  
  <entry>
+   <title>编译原理 第二章 词法分析</title>
+   <link href="/2013/09/17/principles-of-compiling-second-chapter.html"/>
+   <updated>2013-09-17T00:00:00+08:00</updated>
+   <id>/2013/09/17/principles-of-compiling-second-chapter</id>
+   <content type="html">
+   	&lt;p&gt;词法分析是编译的第一个阶段，其任务是：从左至右逐个字符地对源程序进行扫描，产生一个个单词符号，把字符串形式的源程序改造成为单词符号形式的中间程序。&lt;br/&gt;
+执行词法分析的程序称为词法分析程序，也称为词法分析器或扫描器。词法分析器的功能是输入源程序，输出单词符号。&lt;br/&gt;
+词法分析可以采用如下两种处理结构：&lt;br/&gt;
+&lt;LI&gt;把词法分析程序作为主程序。将词法分析工作作为独立的一遍来完成，即把词法分析与语法分析明显分开，由词法分析程序将字符串形式的源程序改造成为单词符号串形式的中间程序，以这个中间程序作为语法分析程序的输入。在种处理结构中，词法分析和语法分析是分别实现的。&lt;/LI&gt;
+&lt;LI&gt;把词法分析程序作为语法分析程序调用的子程序。在进行语法分析时，每当语法分析程序需要一个单词时便调用词法分析程序，词法分析程序每一次调用便从字符串源程序中识别出一个单词交给语法分析程序。在这种处理结构中，词法分析和语法分析实际上是交替进行的。&lt;/LI&gt;&lt;/p&gt;
+
+&lt;H2&gt;2.1 词法分析器设计方法&lt;/H2&gt;
+
+
+&lt;H3&gt;2.1.1 单词符号的分类与输出形式&lt;/H3&gt;
+
+
+&lt;H4&gt;1.单词符号分类&lt;/H4&gt;
+
+
+&lt;p&gt;单词符号是程序语言的基本语法单位，具有确定的语法意义。
+&lt;LI&gt;保留字(基本字)。保留字保留了语言所规定的含义，是编译程序识别各类语法成分的依据。几乎所有程序语言都限制用户使用保留字来作为标识符。&lt;/LI&gt;
+&lt;LI&gt;标识符&lt;/LI&gt;
+&lt;LI&gt;常数：包括各种类型的常数&lt;/LI&gt;
+&lt;LI&gt;运算符&lt;/LI&gt;
+&lt;LI&gt;界符：在语言中是作为语法上的分界符号使用的，如&quot;,&quot;、&quot;:&quot;、&quot;(&quot;、&quot;)&quot;&lt;/LI&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&quot;label warning&quot;&gt;注意&lt;/span&gt;&lt;br/&gt;
+一个程序语言的保留字、运算符和界符的个数是确定的，而标识符或常量的使用则不限定个数。&lt;/p&gt;
+
+&lt;H4&gt;2.词法分析程序输出单词的形式&lt;/H4&gt;
+
+
+&lt;p&gt;词法分析程序的输入是源程序字符串，而输出是与源程序等价的单词符号序列，并且所输出的单词符号通常表示成如下的二元式：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;(单词种别,单词自身的值)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;LI&gt;单词种别。单词种别表示单词的种类，它是语法分析所需要的信息。一个语言的单词符号如何划分种类、分为几类、如何编码都属于技术性问题，主要取决于处理上的方便。通常让每种单词对应一个整数码，这样可最大限度地把各种单词区别开来。对于保留字，可将其全体视为一种，也可一字一种，采用一字一种的分类方法处理起来比较方便；标识符一般统归为一种，也可按整型、实型、布尔型等分为几种；运算符和界符可采用一符一种的分法，也可统归为一种。&lt;/LI&gt;
+&lt;LI&gt;单词自身的值。单词自身的值是编译中其他阶段所需要的信息。对于单词符号来说，如果一个种别只含有一个单词符号，那么对于这个单词符号，其种别编码就完全代表了它自身的值。如果一个种别含有多个单词符号，那么对于它的单词符号，除了给出种别编码之外还应给出单词符号自身的值，以便把同一种类的单词区别开来。注意，标识符自身的值就是标识符自身的字符串，而常量自身的值是常量本身的二进制数值。此外，&lt;/LI&gt;&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>jekyll include</title>
+   <link href="/2013/09/17/jekyll-include.html"/>
+   <updated>2013-09-17T00:00:00+08:00</updated>
+   <id>/2013/09/17/jekyll-include</id>
+   <content type="html">
+   	&lt;h2&gt;Includes&lt;/h2&gt;
+
+&lt;h3&gt;If you have small page fragments that you wish to include in multiple places on your site, you can use the include tag.&lt;/h3&gt;
+
+&lt;p&gt;Included file footer.html not found in _includes directory&lt;/p&gt;
+
+&lt;h4&gt;Jekyll expects all include files to be placed in an &lt;em&gt;includes directory at the root of your source directory. This will embed the contents of &lt;source&gt;/&lt;/em&gt;includes/footer.html into the calling file.&lt;/h4&gt;
+
+&lt;h6&gt;You can also pass parameters to an include:&lt;/h6&gt;
+
+&lt;h6&gt;Included file footer.html not found in _includes directory&lt;/h6&gt;
+
+&lt;h6&gt;#These parameters are available via Liquid in the include:&lt;/h6&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
    <title>Using Themes</title>
-   <link href="/blog/2013/09/16/using-themes"/>
+   <link href="/jekyll/2013/09/16/using-themes.html"/>
    <updated>2013-09-16T00:00:00+08:00</updated>
-   <id>/blog/2013/09/16/using-themes</id>
+   <id>/jekyll/2013/09/16/using-themes</id>
    <content type="html">
    	&lt;p&gt;&lt;a href=&quot;http://jekyllbootstrap.com/usage/jekyll-theming.html&quot;&gt;原文&lt;/a&gt;&lt;br/&gt;
 Learn how to install, switch between, and edit themes in Jekyll Bootstrap.&lt;/p&gt;
@@ -99,9 +167,9 @@ Jekyll-Bootstrap uses &lt;code&gt;rake tasks&lt;/code&gt; to implement much of i
  
  <entry>
    <title>NSA Revelations Cast Doubt on the Entire Tech Industry</title>
-   <link href="/blog/2013/09/16/nsa-revelations-cast-doubt-on-the-entire-tech-industry"/>
+   <link href="/english/2013/09/16/nsa-revelations-cast-doubt-on-the-entire-tech-industry.html"/>
    <updated>2013-09-16T00:00:00+08:00</updated>
-   <id>/blog/2013/09/16/nsa-revelations-cast-doubt-on-the-entire-tech-industry</id>
+   <id>/english/2013/09/16/nsa-revelations-cast-doubt-on-the-entire-tech-industry</id>
    <content type="html">
    	&lt;p&gt;&lt;a href=&quot;http://xue.youdao.com/biarticle.a?articleId=856819385276378169&amp;amp;date=2013-09-16&amp;amp;position=read&amp;amp;channelType=personal&quot;&gt;NSA Revelations（揭露出来的真相；暴露的内幕；新发现） Cast Doubt on the Entire Tech Industry&lt;/a&gt;&lt;/p&gt;
 
@@ -184,9 +252,9 @@ Jekyll-Bootstrap uses &lt;code&gt;rake tasks&lt;/code&gt; to implement much of i
  
  <entry>
    <title>Zero to Hosted Jekyll Blog in 3 Minutes</title>
-   <link href="/blog/2013/09/16/jekyllbootstrap-Zero-to-Hosted-Jekyll-Blog-in-3-Minutes"/>
+   <link href="/jekyll/2013/09/16/jekyllbootstrap-Zero-to-Hosted-Jekyll-Blog-in-3-Minutes.html"/>
    <updated>2013-09-16T00:00:00+08:00</updated>
-   <id>/blog/2013/09/16/jekyllbootstrap-Zero-to-Hosted-Jekyll-Blog-in-3-Minutes</id>
+   <id>/jekyll/2013/09/16/jekyllbootstrap-Zero-to-Hosted-Jekyll-Blog-in-3-Minutes</id>
    <content type="html">
    	&lt;p&gt;&lt;a href=&quot;http://jekyllbootstrap.com/&quot;&gt;原文&lt;/a&gt;&lt;/p&gt;
 
@@ -228,9 +296,9 @@ $ jekyll --server
  
  <entry>
    <title>Jekyll Quick Start</title>
-   <link href="/blog/2013/09/16/jekyllbootstrap-Jekyll-Quick-Start"/>
+   <link href="/jekyll/2013/09/16/jekyllbootstrap-Jekyll-Quick-Start.html"/>
    <updated>2013-09-16T00:00:00+08:00</updated>
-   <id>/blog/2013/09/16/jekyllbootstrap-Jekyll-Quick-Start</id>
+   <id>/jekyll/2013/09/16/jekyllbootstrap-Jekyll-Quick-Start</id>
    <content type="html">
    	&lt;p&gt;&lt;a href=&quot;http://jekyllbootstrap.com/usage/jekyll-quick-start.html&quot;&gt;原文&lt;/a&gt;
 &lt;br/&gt;&lt;/p&gt;
@@ -359,9 +427,9 @@ I highly recommend reading the Jekyll Introduction if you plan to customize your
  
  <entry>
    <title>jekyll newline</title>
-   <link href="/blog/2013/09/16/jekyll-newline"/>
+   <link href="/2013/09/16/jekyll-newline.html"/>
    <updated>2013-09-16T00:00:00+08:00</updated>
-   <id>/blog/2013/09/16/jekyll-newline</id>
+   <id>/2013/09/16/jekyll-newline</id>
    <content type="html">
    	&lt;p&gt;&lt;a href=&quot;http://mccxj.github.io/blog/20120629_problem-about-jekyll-and-markdown.html&quot;&gt;原文&lt;/a&gt;
 在段落中硬换行&lt;br/&gt;
@@ -372,9 +440,9 @@ I highly recommend reading the Jekyll Introduction if you plan to customize your
  
  <entry>
    <title>修改jekyllbootstrap的rakefile文件，让其可以指定创建的目录</title>
-   <link href="/blog/2013/09/16/jekyll-bootstrap-rakefile"/>
+   <link href="/2013/09/16/jekyll-bootstrap-rakefile.html"/>
    <updated>2013-09-16T00:00:00+08:00</updated>
-   <id>/blog/2013/09/16/jekyll-bootstrap-rakefile</id>
+   <id>/2013/09/16/jekyll-bootstrap-rakefile</id>
    <content type="html">
    	&lt;p&gt;jekyllbootstrap中使用rake很不错，但是jekyll bootstrap提供的rake post命令却无法指定目录，实在是
 太不方便（也许有吧），所以修改了一下jekyllbootstrap的Rakefile:&lt;/p&gt;
@@ -416,9 +484,9 @@ task :post do
  
  <entry>
    <title>Jeff Shell's Promotion At Universal Shows Hollywood's Shifting Priorities</title>
-   <link href="/blog/2013/09/16/jeff-shells-promotion-at-universal-shows-hollywoods-shifting-priorities"/>
+   <link href="/2013/09/16/jeff-shells-promotion-at-universal-shows-hollywoods-shifting-priorities.html"/>
    <updated>2013-09-16T00:00:00+08:00</updated>
-   <id>/blog/2013/09/16/jeff-shells-promotion-at-universal-shows-hollywoods-shifting-priorities</id>
+   <id>/2013/09/16/jeff-shells-promotion-at-universal-shows-hollywoods-shifting-priorities</id>
    <content type="html">
    	&lt;p&gt;&lt;a href=&quot;http://xue.youdao.com/biarticle.a?articleId=-5592324489959049538&amp;amp;date=2013-09-16&amp;amp;position=read&amp;amp;channelType=personal&quot;&gt;Jeff Shell&#39;s Promotion At Universal Shows Hollywood&#39;s Shifting Priorities（转移重点）&lt;/a&gt;&lt;/p&gt;
 
@@ -481,9 +549,9 @@ task :post do
  
  <entry>
    <title>一行git所有的更新</title>
-   <link href="/blog/2013/09/16/git"/>
+   <link href="/2013/09/16/git.html"/>
    <updated>2013-09-16T00:00:00+08:00</updated>
-   <id>/blog/2013/09/16/git</id>
+   <id>/2013/09/16/git</id>
    <content type="html">
    	&lt;p&gt;&lt;a href=&quot;https://coderwall.com/p/vej4iw&quot;&gt;Quicker Git Add Commit Push&lt;/a&gt;&lt;br/&gt;
  Add this to your .bash_profile:&lt;/p&gt;
@@ -536,9 +604,9 @@ task :post do
  
  <entry>
    <title>UE（ultraEdit）设置不产生.bak文件(内含中英文版本)</title>
-   <link href="/blog/2013/09/15/ultraedit-not-backups"/>
+   <link href="/ultraedit/2013/09/15/ultraedit-not-backups.html"/>
    <updated>2013-09-15T00:00:00+08:00</updated>
-   <id>/blog/2013/09/15/ultraedit-not-backups</id>
+   <id>/ultraedit/2013/09/15/ultraedit-not-backups</id>
    <content type="html">
    	&lt;p&gt;&lt;a href=&quot;http://blog.csdn.net/snowseabye/article/details/7239952&quot;&gt;原文&lt;/a&gt;
 英文版按照如下顺序设置：
@@ -552,9 +620,9 @@ Menu: Advanced --&gt; Confiugration --&gt; File Handling --&gt; Backup --&gt; Se
  
  <entry>
    <title>使用UltraEdit编辑jekyll文章</title>
-   <link href="/blog/2013/09/15/ultraedit-edit-jekyll-post"/>
+   <link href="/jekyll/2013/09/15/ultraedit-edit-jekyll-post.html"/>
    <updated>2013-09-15T00:00:00+08:00</updated>
-   <id>/blog/2013/09/15/ultraedit-edit-jekyll-post</id>
+   <id>/jekyll/2013/09/15/ultraedit-edit-jekyll-post</id>
    <content type="html">
    	&lt;p&gt;在windows下保存文章的时候，需要保存为utf-8无BOM格式
 &lt;img src=&quot;/assets/images/jekyll/ultraEdit_save_jekyll_post.jpg&quot;&gt;&lt;/p&gt;
@@ -564,9 +632,9 @@ Menu: Advanced --&gt; Confiugration --&gt; File Handling --&gt; Backup --&gt; Se
  
  <entry>
    <title>jekyll server报cannot load such file -- posix_spawn_ext (LoadError)</title>
-   <link href="/blog/2013/09/15/jekyll-server-cannot-load-such-file-posix-spawn-ext"/>
+   <link href="/jekyll/2013/09/15/jekyll-server-cannot-load-such-file-posix-spawn-ext.html"/>
    <updated>2013-09-15T00:00:00+08:00</updated>
-   <id>/blog/2013/09/15/jekyll-server-cannot-load-such-file-posix-spawn-ext</id>
+   <id>/jekyll/2013/09/15/jekyll-server-cannot-load-such-file-posix-spawn-ext</id>
    <content type="html">
    	&lt;p&gt;想要git clone &lt;a href=&quot;https://github.com/realjenius/realjenius.com&quot;&gt;realjenius&lt;/a&gt;的jekyll项目来研究研究，但是jekyll server的时候报如下的错误：&lt;/p&gt;
 
@@ -620,9 +688,9 @@ from /usr/local/lib/ruby/site_ruby/2.0.0/rubygems/core_ext/kernel_require.rb:53:
  
  <entry>
    <title>载入 jQuery 库的最佳方法</title>
-   <link href="/blog/2013/09/15/include-jquery-best-way"/>
+   <link href="/jquery/2013/09/15/include-jquery-best-way.html"/>
    <updated>2013-09-15T00:00:00+08:00</updated>
-   <id>/blog/2013/09/15/include-jquery-best-way</id>
+   <id>/jquery/2013/09/15/include-jquery-best-way</id>
    <content type="html">
    	&lt;p&gt;&lt;a href=&quot;http://lightcss.com/best-way-to-include-jquery/&quot;&gt;原文&lt;/a&gt;
 在网站开发的项目中使用Google CDN的jQuery库虽然加载速度很快，但调用本地服务器的库才可以确保万无一失。&lt;/p&gt;
@@ -663,9 +731,9 @@ Google CDN 库的地址采用了协议相对路径，它可以很好的解决 ht
  
  <entry>
    <title>html中/，没有斜杆，//的区别</title>
-   <link href="/blog/2013/09/15/html-diagonal"/>
+   <link href="/html/2013/09/15/html-diagonal.html"/>
    <updated>2013-09-15T00:00:00+08:00</updated>
-   <id>/blog/2013/09/15/html-diagonal</id>
+   <id>/html/2013/09/15/html-diagonal</id>
    <content type="html">
    	url 没有斜杆 当前网址+url&lt;br/&gt;
 /url http://localhost:8080/123/223.html  http://localhost:8080/url&lt;br/&gt;
@@ -675,9 +743,9 @@ Google CDN 库的地址采用了协议相对路径，它可以很好的解决 ht
  
  <entry>
    <title>github如何删除一个库</title>
-   <link href="/blog/2013/09/15/github-delete-repository"/>
+   <link href="/git/2013/09/15/github-delete-repository.html"/>
    <updated>2013-09-15T00:00:00+08:00</updated>
-   <id>/blog/2013/09/15/github-delete-repository</id>
+   <id>/git/2013/09/15/github-delete-repository</id>
    <content type="html">
    	&lt;p&gt;一定要先进入一个库之后才有删除库的选项
 &lt;img src=&quot;/assets/images/git/github/github_delete_repository.png&quot;/&gt;
@@ -688,9 +756,9 @@ Google CDN 库的地址采用了协议相对路径，它可以很好的解决 ht
  
  <entry>
    <title>在安装rdiscount的报错</title>
-   <link href="/blog/2013/09/15/gem-install-rdiscount-error"/>
+   <link href="/ruby/2013/09/15/gem-install-rdiscount-error.html"/>
    <updated>2013-09-15T00:00:00+08:00</updated>
-   <id>/blog/2013/09/15/gem-install-rdiscount-error</id>
+   <id>/ruby/2013/09/15/gem-install-rdiscount-error</id>
    <content type="html">
    	&lt;p&gt;&lt;a href=&quot;https://github.com/brianmario/mysql2/issues/371&quot;&gt;source&lt;/a&gt;&lt;/p&gt;
 
@@ -731,9 +799,9 @@ mes-MacBook-Pro:~ me$
  
  <entry>
    <title>gem install jekyll报instance of Date needs to have method marshal_load</title>
-   <link href="/blog/2013/09/15/gem-install-jekyll-instance-of-Date-needs-to-have-method-marshal_load"/>
+   <link href="/jekyll/2013/09/15/gem-install-jekyll-instance-of-Date-needs-to-have-method-marshal_load.html"/>
    <updated>2013-09-15T00:00:00+08:00</updated>
-   <id>/blog/2013/09/15/gem-install-jekyll-instance-of-Date-needs-to-have-method-marshal_load</id>
+   <id>/jekyll/2013/09/15/gem-install-jekyll-instance-of-Date-needs-to-have-method-marshal_load</id>
    <content type="html">
    	&lt;pre&gt;&lt;code&gt;$ ruby -v
 ruby 1.8.7 (2011-06-30 patchlevel 352) [i686-linux]
@@ -754,9 +822,9 @@ ERROR:  While executing gem ... (TypeError)
  
  <entry>
    <title>US and UK spy agencies defeat privacy and security on the internet</title>
-   <link href="/blog/2013/09/15/english-US-and-UK-spy-agencies-defeat-privacy-and-security-on-the-internet"/>
+   <link href="/english/2013/09/15/english-US-and-UK-spy-agencies-defeat-privacy-and-security-on-the-internet.html"/>
    <updated>2013-09-15T00:00:00+08:00</updated>
-   <id>/blog/2013/09/15/english-US-and-UK-spy-agencies-defeat-privacy-and-security-on-the-internet</id>
+   <id>/english/2013/09/15/english-US-and-UK-spy-agencies-defeat-privacy-and-security-on-the-internet</id>
    <content type="html">
    	&lt;p&gt;&lt;a href=&quot;http://xue.youdao.com/biarticle.a?articleId=-825172592751556828&amp;amp;date=2013-09-14&amp;amp;position=read&amp;amp;channelType=personal&quot;&gt;文章来源&lt;/a&gt;&lt;BR/&gt;
 US and UK spy agencies defeat privacy and security on the internet&lt;br/&gt;
@@ -973,9 +1041,9 @@ This was a view echoed in a recent paper by Stephanie Pell, a former prosecutor 
  
  <entry>
    <title>Centos 6.4 64位系统安装截图软件shutter</title>
-   <link href="/blog/2013/09/15/Install-shuttter-centos-64bit"/>
+   <link href="/centos/2013/09/15/Install-shuttter-centos-64bit.html"/>
    <updated>2013-09-15T00:00:00+08:00</updated>
-   <id>/blog/2013/09/15/Install-shuttter-centos-64bit</id>
+   <id>/centos/2013/09/15/Install-shuttter-centos-64bit</id>
    <content type="html">
    	&lt;pre&gt;&lt;code&gt;[root@localhost yum.repos.d]# rpm -Uvh http://li.nux.ro/download/nux/dextop/el6/x86_64/nux-dextop-release-0-1.el6.nux.noarch.rpm
 Retrieving http://li.nux.ro/download/nux/dextop/el6/x86_64/nux-dextop-release-0-1.el6.nux.noarch.rpm
@@ -989,9 +1057,9 @@ package nux-dextop-release-0-1.el6.nux.noarch is already installed
  
  <entry>
    <title>Google Chrome 29 Released – Install on RHEL/CentOS 6 and Fedora 19/15</title>
-   <link href="/blog/2013/09/15/Install-Google-Chrome-in-Linux"/>
+   <link href="/linux/2013/09/15/Install-Google-Chrome-in-Linux.html"/>
    <updated>2013-09-15T00:00:00+08:00</updated>
-   <id>/blog/2013/09/15/Install-Google-Chrome-in-Linux</id>
+   <id>/linux/2013/09/15/Install-Google-Chrome-in-Linux</id>
    <content type="html">
    	&lt;p&gt;&lt;a href=&quot;http://www.tecmint.com/install-google-chrome-on-redhat-centos-fedora-linux/&quot;&gt;原文&lt;/a&gt;
 Google Chrome is a freeware web browser developed by Google Inc.
@@ -1031,7 +1099,7 @@ Luckily, there is a script developed by Richard Lloyd, that automatically downlo
 
 &lt;p&gt;Sample Output
 Google Chrome Installer 2.00 on the i686 platform
-(C) Richard K. Lloyd 2013 &lt;a href=&quot;&amp;#x6d;&amp;#x61;&amp;#x69;&amp;#108;&amp;#116;&amp;#x6f;&amp;#58;&amp;#x72;&amp;#107;&amp;#108;&amp;#108;&amp;#111;&amp;#x79;&amp;#100;&amp;#64;&amp;#x67;&amp;#109;&amp;#97;&amp;#x69;&amp;#x6c;&amp;#46;&amp;#x63;&amp;#111;&amp;#109;&quot;&gt;&amp;#114;&amp;#x6b;&amp;#108;&amp;#108;&amp;#x6f;&amp;#x79;&amp;#100;&amp;#64;&amp;#x67;&amp;#x6d;&amp;#97;&amp;#x69;&amp;#108;&amp;#46;&amp;#x63;&amp;#111;&amp;#109;&lt;/a&gt;&lt;/p&gt;
+(C) Richard K. Lloyd 2013 &lt;a href=&quot;&amp;#109;&amp;#x61;&amp;#105;&amp;#108;&amp;#116;&amp;#111;&amp;#x3a;&amp;#114;&amp;#x6b;&amp;#x6c;&amp;#x6c;&amp;#111;&amp;#x79;&amp;#100;&amp;#64;&amp;#x67;&amp;#x6d;&amp;#x61;&amp;#105;&amp;#108;&amp;#46;&amp;#x63;&amp;#111;&amp;#x6d;&quot;&gt;&amp;#114;&amp;#x6b;&amp;#108;&amp;#108;&amp;#111;&amp;#x79;&amp;#x64;&amp;#64;&amp;#x67;&amp;#x6d;&amp;#97;&amp;#x69;&amp;#x6c;&amp;#x2e;&amp;#x63;&amp;#x6f;&amp;#109;&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;*** Checking for an update to install_chrome.sh ...&lt;/p&gt;
 
@@ -1097,9 +1165,9 @@ A Command Line Web Browsing with Lynx and Links Tools&lt;/p&gt;
  
  <entry>
    <title>msysgit bash的操作，比如复制拷贝</title>
-   <link href="/blog/2013/09/14/msysgit-operate"/>
+   <link href="/git/2013/09/14/msysgit-operate.html"/>
    <updated>2013-09-14T00:00:00+08:00</updated>
-   <id>/blog/2013/09/14/msysgit-operate</id>
+   <id>/git/2013/09/14/msysgit-operate</id>
    <content type="html">
    	&lt;h1&gt;通过通过控制台的menu菜单&lt;/h1&gt;
 
@@ -1120,9 +1188,9 @@ Esc是清空已经输入的全部内容&lt;br/&gt;&lt;/p&gt;
  
  <entry>
    <title>INSTALLING RUBY, RUBYGEMS, RAILS, AND MONGREL ON MAC OS X 10.5 (LEOPARD)</title>
-   <link href="/blog/2013/09/14/INSTALLING-RUBY-RUBYGEMS-RAILS-AND-MONGREL-ON-MAC-OS-X-10.5-%28LEOPARD%29"/>
+   <link href="/ruby/2013/09/14/INSTALLING-RUBY-RUBYGEMS-RAILS-AND-MONGREL-ON-MAC-OS-X-10.5-%28LEOPARD%29.html"/>
    <updated>2013-09-14T00:00:00+08:00</updated>
-   <id>/blog/2013/09/14/INSTALLING-RUBY-RUBYGEMS-RAILS-AND-MONGREL-ON-MAC-OS-X-10.5-(LEOPARD)</id>
+   <id>/ruby/2013/09/14/INSTALLING-RUBY-RUBYGEMS-RAILS-AND-MONGREL-ON-MAC-OS-X-10.5-(LEOPARD)</id>
    <content type="html">
    	&lt;p&gt;&lt;a href=&quot;http://hivelogic.com/articles/ruby-rails-leopard&quot;&gt;这篇文章的来源&lt;/a&gt;&lt;br/&gt;&lt;/p&gt;
 
@@ -1374,9 +1442,9 @@ client or run your own MySQL server too.&lt;/p&gt;
  
  <entry>
    <title>git revert (reset) a single file</title>
-   <link href="/blog/2013/09/13/git-revert-a-single-file"/>
+   <link href="/git/2013/09/13/git-revert-a-single-file.html"/>
    <updated>2013-09-13T00:00:00+08:00</updated>
-   <id>/blog/2013/09/13/git-revert-a-single-file</id>
+   <id>/git/2013/09/13/git-revert-a-single-file</id>
    <content type="html">
    	&lt;p&gt;&lt;a href=&quot;http://www.norbauer.com/rails-consulting/notes/git-revert-reset-a-single-file.html&quot;&gt;原文&lt;/a&gt;&lt;/p&gt;
 
@@ -1399,9 +1467,9 @@ client or run your own MySQL server too.&lt;/p&gt;
  
  <entry>
    <title>git push时候出现HTTP request failed</title>
-   <link href="/blog/2013/09/13/git-http-request-failed"/>
+   <link href="/git/2013/09/13/git-http-request-failed.html"/>
    <updated>2013-09-13T00:00:00+08:00</updated>
-   <id>/blog/2013/09/13/git-http-request-failed</id>
+   <id>/git/2013/09/13/git-http-request-failed</id>
    <content type="html">
    	&lt;h1&gt;问题如下：&lt;/h1&gt;
 
@@ -1444,9 +1512,9 @@ To https://username@github.com/username/repositoryname.git
  
  <entry>
    <title>git push采用SSH方式</title>
-   <link href="/blog/2013/09/13/git-generate-ssh-key"/>
+   <link href="/git/2013/09/13/git-generate-ssh-key.html"/>
    <updated>2013-09-13T00:00:00+08:00</updated>
-   <id>/blog/2013/09/13/git-generate-ssh-key</id>
+   <id>/git/2013/09/13/git-generate-ssh-key</id>
    <content type="html">
    	&lt;H1&gt;问题的来源&lt;/H1&gt;
 

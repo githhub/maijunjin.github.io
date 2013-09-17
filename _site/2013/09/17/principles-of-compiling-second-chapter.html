@@ -1,0 +1,180 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:wb="http://open.weibo.com/wb">
+  <head profile="http://gmpg.org/xfn/11">
+    <meta charset="utf-8">
+    <title>编译原理 第二章 词法分析</title>
+    
+    
+    <meta name="author" content="STUDY LEARN">
+    <link rel="alternate" title="STUDY LEARN" href="/atom.xml" type="application/rss+xml" />
+
+    <!-- Le styles -->
+    <link href="/assets/themes/twitter/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/assets/themes/twitter/css/style.css?body=1" rel="stylesheet" media="all" />
+    
+    <link rel="index" title="STUDY LEARN" href="/" />
+    
+    <link rel="prev" href="//2013/09/17/jekyll-include.html" title="jekyll include" />
+    
+    
+    
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">STUDY LEARN</a>
+          <ul class="nav">
+            <li><a href="/categories.html">目录</a></li>
+          </ul>
+          <ul>
+<form action="http://google.com/search" method="get" _lpchecked="1">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:maijunjin.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search">
+  </fieldset>
+</form>
+
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="content">
+     	
+
+
+    <link href="/assets/css/jquery.tocify.css" rel="stylesheet">
+
+<div class="page-header">
+  <h1>编译原理 第二章 词法分析 <small></small></h1>
+</div>
+<div class="row-fluid">
+  <div class="span8">  
+    <div id="article">
+    <p>词法分析是编译的第一个阶段，其任务是：从左至右逐个字符地对源程序进行扫描，产生一个个单词符号，把字符串形式的源程序改造成为单词符号形式的中间程序。<br/>
+执行词法分析的程序称为词法分析程序，也称为词法分析器或扫描器。词法分析器的功能是输入源程序，输出单词符号。<br/>
+词法分析可以采用如下两种处理结构：<br/>
+<LI>把词法分析程序作为主程序。将词法分析工作作为独立的一遍来完成，即把词法分析与语法分析明显分开，由词法分析程序将字符串形式的源程序改造成为单词符号串形式的中间程序，以这个中间程序作为语法分析程序的输入。在种处理结构中，词法分析和语法分析是分别实现的。</LI>
+<LI>把词法分析程序作为语法分析程序调用的子程序。在进行语法分析时，每当语法分析程序需要一个单词时便调用词法分析程序，词法分析程序每一次调用便从字符串源程序中识别出一个单词交给语法分析程序。在这种处理结构中，词法分析和语法分析实际上是交替进行的。</LI></p>
+
+<H2>2.1 词法分析器设计方法</H2>
+
+
+<H3>2.1.1 单词符号的分类与输出形式</H3>
+
+
+<H4>1.单词符号分类</H4>
+
+
+<p>单词符号是程序语言的基本语法单位，具有确定的语法意义。
+<LI>保留字(基本字)。保留字保留了语言所规定的含义，是编译程序识别各类语法成分的依据。几乎所有程序语言都限制用户使用保留字来作为标识符。</LI>
+<LI>标识符</LI>
+<LI>常数：包括各种类型的常数</LI>
+<LI>运算符</LI>
+<LI>界符：在语言中是作为语法上的分界符号使用的，如","、":"、"("、")"</LI></p>
+
+<p><span class="label warning">注意</span><br/>
+一个程序语言的保留字、运算符和界符的个数是确定的，而标识符或常量的使用则不限定个数。</p>
+
+<H4>2.词法分析程序输出单词的形式</H4>
+
+
+<p>词法分析程序的输入是源程序字符串，而输出是与源程序等价的单词符号序列，并且所输出的单词符号通常表示成如下的二元式：</p>
+
+<pre><code>(单词种别,单词自身的值)
+</code></pre>
+
+<p><LI>单词种别。单词种别表示单词的种类，它是语法分析所需要的信息。一个语言的单词符号如何划分种类、分为几类、如何编码都属于技术性问题，主要取决于处理上的方便。通常让每种单词对应一个整数码，这样可最大限度地把各种单词区别开来。对于保留字，可将其全体视为一种，也可一字一种，采用一字一种的分类方法处理起来比较方便；标识符一般统归为一种，也可按整型、实型、布尔型等分为几种；运算符和界符可采用一符一种的分法，也可统归为一种。</LI>
+<LI>单词自身的值。单词自身的值是编译中其他阶段所需要的信息。对于单词符号来说，如果一个种别只含有一个单词符号，那么对于这个单词符号，其种别编码就完全代表了它自身的值。如果一个种别含有多个单词符号，那么对于它的单词符号，除了给出种别编码之外还应给出单词符号自身的值，以便把同一种类的单词区别开来。注意，标识符自身的值就是标识符自身的字符串，而常量自身的值是常量本身的二进制数值。此外，</LI></p>
+    
+    </div>  
+    <div>
+		   
+			   上一篇： <a href="/2013/09/17/jekyll-include.html">jekyll include</a><br/>
+		   
+			    
+			 
+	  </div>
+    <hr/>
+  <script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiCategories = []; //请用代码生成文章分类，分类名放在 JSONArray 中，如: ["分类1", "分类2"]
+    var wumiiSitePrefix = "http://maijunjin.github.io/";
+    var wumiiParams = "&num=5&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.cn/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅关联推荐，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>   
+ <hr>
+<!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"hnghnx"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END -->
+<!-- Duoshuo Comment END -->
+  </div>
+  
+  <aside class="span4">
+     <div class="span3">
+       <div id="toc"  style="max-height:60%;width:18%">
+       </div><!--/.well -->
+     </div><!--/span-->
+
+  </aside>
+
+</div>
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/assets/js/jquery-1.8.3.min.js"></script>
+    <script src="/assets/js/jquery-ui-1.9.1.custom.min.js"></script>
+    <script src="/assets/js/bootstrap.js"></script>
+    <script src="/assets/js/jquery.tocify.js"></script>
+    <script src="/assets/js/prettify.js"></script>
+
+    <script>
+        $(function() {
+
+            var toc = $("#toc").tocify({ selectors: "h2,h3,h4,h5,h6" }).data("toc-tocify");
+
+            prettyPrint();
+            $(".optionName").popover({ trigger: "hover" });
+
+        });
+    </script>
+
+
+
+      </div>
+
+    </div> <!-- /container -->
+
+    
+<!-- UJian Button BEGIN -->
+<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&fade=1&uid=1840499"></script>
+<a href="http://www.ujian.cc" style="border:0;"><img src="http://img.ujian.cc/pixel.png" alt="友荐云推荐" style="border:0;padding:0;margin:0;" /></a>
+<!-- UJian Button END -->
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F7aa860a60009fb75dc2789a27ff3c98f' type='text/javascript'%3E%3C/script%3E"));
+</script>
+  </body>
+</html>
+
