@@ -2,14 +2,14 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 	<url>
-		<loc>/atom.xml</loc>
+		<loc>/archive.html</loc>
 		<lastmod></lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
 	</url>
 
 	<url>
-		<loc>/archive.html</loc>
+		<loc>/atom.xml</loc>
 		<lastmod></lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
@@ -45,168 +45,182 @@
 
 
 	<url>
-		<loc>/blog/2013/09/16/using-themes</loc>
+		<loc>/2013/09/17/%E9%A2%84%E6%B5%8B%E6%80%A7%E8%BE%93%E5%85%A5%E6%8A%80%E6%9C%AF%E5%85%AC%E5%8F%B8swiftkey%E8%9E%8D%E8%B5%841%2C760%E4%B8%87%E7%BE%8E%E5%85%83.html</loc>
+		<lastmod>2013-09-17</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/2013/09/17/principles-of-compiling-second-chapter.html</loc>
+		<lastmod>2013-09-17</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
+		<loc>/jekyll/2013/09/16/using-themes.html</loc>
 		<lastmod>2013-09-16</lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
 	</url>
 
 	<url>
-		<loc>/blog/2013/09/16/nsa-revelations-cast-doubt-on-the-entire-tech-industry</loc>
+		<loc>/english/2013/09/16/nsa-revelations-cast-doubt-on-the-entire-tech-industry.html</loc>
 		<lastmod>2013-09-16</lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
 	</url>
 
 	<url>
-		<loc>/blog/2013/09/16/jekyllbootstrap-Zero-to-Hosted-Jekyll-Blog-in-3-Minutes</loc>
+		<loc>/jekyll/2013/09/16/jekyllbootstrap-Zero-to-Hosted-Jekyll-Blog-in-3-Minutes.html</loc>
 		<lastmod>2013-09-16</lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
 	</url>
 
 	<url>
-		<loc>/blog/2013/09/16/jekyllbootstrap-Jekyll-Quick-Start</loc>
+		<loc>/jekyll/2013/09/16/jekyllbootstrap-Jekyll-Quick-Start.html</loc>
 		<lastmod>2013-09-16</lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
 	</url>
 
 	<url>
-		<loc>/blog/2013/09/16/jekyll-newline</loc>
+		<loc>/2013/09/16/jekyll-newline.html</loc>
 		<lastmod>2013-09-16</lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
 	</url>
 
 	<url>
-		<loc>/blog/2013/09/16/jekyll-bootstrap-rakefile</loc>
+		<loc>/2013/09/16/jekyll-bootstrap-rakefile.html</loc>
 		<lastmod>2013-09-16</lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
 	</url>
 
 	<url>
-		<loc>/blog/2013/09/16/jeff-shells-promotion-at-universal-shows-hollywoods-shifting-priorities</loc>
+		<loc>/2013/09/16/jeff-shells-promotion-at-universal-shows-hollywoods-shifting-priorities.html</loc>
 		<lastmod>2013-09-16</lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
 	</url>
 
 	<url>
-		<loc>/blog/2013/09/16/git</loc>
+		<loc>/2013/09/16/git.html</loc>
 		<lastmod>2013-09-16</lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
 	</url>
 
 	<url>
-		<loc>/blog/2013/09/15/ultraedit-not-backups</loc>
+		<loc>/ultraedit/2013/09/15/ultraedit-not-backups.html</loc>
 		<lastmod>2013-09-15</lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
 	</url>
 
 	<url>
-		<loc>/blog/2013/09/15/ultraedit-edit-jekyll-post</loc>
+		<loc>/jekyll/2013/09/15/ultraedit-edit-jekyll-post.html</loc>
 		<lastmod>2013-09-15</lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
 	</url>
 
 	<url>
-		<loc>/blog/2013/09/15/jekyll-server-cannot-load-such-file-posix-spawn-ext</loc>
+		<loc>/jekyll/2013/09/15/jekyll-server-cannot-load-such-file-posix-spawn-ext.html</loc>
 		<lastmod>2013-09-15</lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
 	</url>
 
 	<url>
-		<loc>/blog/2013/09/15/include-jquery-best-way</loc>
+		<loc>/jquery/2013/09/15/include-jquery-best-way.html</loc>
 		<lastmod>2013-09-15</lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
 	</url>
 
 	<url>
-		<loc>/blog/2013/09/15/html-diagonal</loc>
+		<loc>/html/2013/09/15/html-diagonal.html</loc>
 		<lastmod>2013-09-15</lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
 	</url>
 
 	<url>
-		<loc>/blog/2013/09/15/github-delete-repository</loc>
+		<loc>/git/2013/09/15/github-delete-repository.html</loc>
 		<lastmod>2013-09-15</lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
 	</url>
 
 	<url>
-		<loc>/blog/2013/09/15/gem-install-rdiscount-error</loc>
+		<loc>/ruby/2013/09/15/gem-install-rdiscount-error.html</loc>
 		<lastmod>2013-09-15</lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
 	</url>
 
 	<url>
-		<loc>/blog/2013/09/15/gem-install-jekyll-instance-of-Date-needs-to-have-method-marshal_load</loc>
+		<loc>/jekyll/2013/09/15/gem-install-jekyll-instance-of-Date-needs-to-have-method-marshal_load.html</loc>
 		<lastmod>2013-09-15</lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
 	</url>
 
 	<url>
-		<loc>/blog/2013/09/15/english-US-and-UK-spy-agencies-defeat-privacy-and-security-on-the-internet</loc>
+		<loc>/english/2013/09/15/english-US-and-UK-spy-agencies-defeat-privacy-and-security-on-the-internet.html</loc>
 		<lastmod>2013-09-15</lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
 	</url>
 
 	<url>
-		<loc>/blog/2013/09/15/Install-shuttter-centos-64bit</loc>
+		<loc>/centos/2013/09/15/Install-shuttter-centos-64bit.html</loc>
 		<lastmod>2013-09-15</lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
 	</url>
 
 	<url>
-		<loc>/blog/2013/09/15/Install-Google-Chrome-in-Linux</loc>
+		<loc>/linux/2013/09/15/Install-Google-Chrome-in-Linux.html</loc>
 		<lastmod>2013-09-15</lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
 	</url>
 
 	<url>
-		<loc>/blog/2013/09/14/msysgit-operate</loc>
+		<loc>/git/2013/09/14/msysgit-operate.html</loc>
 		<lastmod>2013-09-14</lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
 	</url>
 
 	<url>
-		<loc>/blog/2013/09/14/INSTALLING-RUBY-RUBYGEMS-RAILS-AND-MONGREL-ON-MAC-OS-X-10.5-%28LEOPARD%29</loc>
+		<loc>/ruby/2013/09/14/INSTALLING-RUBY-RUBYGEMS-RAILS-AND-MONGREL-ON-MAC-OS-X-10.5-%28LEOPARD%29.html</loc>
 		<lastmod>2013-09-14</lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
 	</url>
 
 	<url>
-		<loc>/blog/2013/09/13/git-revert-a-single-file</loc>
+		<loc>/git/2013/09/13/git-revert-a-single-file.html</loc>
 		<lastmod>2013-09-13</lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
 	</url>
 
 	<url>
-		<loc>/blog/2013/09/13/git-http-request-failed</loc>
+		<loc>/git/2013/09/13/git-http-request-failed.html</loc>
 		<lastmod>2013-09-13</lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
 	</url>
 
 	<url>
-		<loc>/blog/2013/09/13/git-generate-ssh-key</loc>
+		<loc>/git/2013/09/13/git-generate-ssh-key.html</loc>
 		<lastmod>2013-09-13</lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>

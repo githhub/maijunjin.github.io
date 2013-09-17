@@ -1,0 +1,247 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:wb="http://open.weibo.com/wb">
+  <head profile="http://gmpg.org/xfn/11">
+    <meta charset="utf-8">
+    <title>Google Chrome 29 Released – Install on RHEL/CentOS 6 and Fedora 19/15</title>
+    <meta name="description" content="Install Google Chrome in Linux">
+    <meta name="keywords" content="Chromelinux">
+    <meta name="author" content="STUDY LEARN">
+    <link rel="alternate" title="STUDY LEARN" href="/atom.xml" type="application/rss+xml" />
+
+    <!-- Le styles -->
+    <link href="/assets/themes/twitter/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/assets/themes/twitter/css/style.css?body=1" rel="stylesheet" media="all" />
+    
+    <link rel="index" title="STUDY LEARN" href="/" />
+    
+    <link rel="prev" href="//git/2013/09/14/msysgit-operate.html" title="msysgit bash的操作，比如复制拷贝" />
+    
+    
+    <link rel="next" href="//centos/2013/09/15/Install-shuttter-centos-64bit.html" title="Centos 6.4 64位系统安装截图软件shutter" />
+    
+    
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">STUDY LEARN</a>
+          <ul class="nav">
+            <li><a href="/categories.html">目录</a></li>
+          </ul>
+          <ul>
+<form action="http://google.com/search" method="get" _lpchecked="1">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:maijunjin.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search">
+  </fieldset>
+</form>
+
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="content">
+     	
+
+
+    <link href="/assets/css/jquery.tocify.css" rel="stylesheet">
+
+<div class="page-header">
+  <h1>Google Chrome 29 Released – Install on RHEL/CentOS 6 and Fedora 19/15 <small></small></h1>
+</div>
+<div class="row-fluid">
+  <div class="span8">  
+    <div id="article">
+    <p><a href="http://www.tecmint.com/install-google-chrome-on-redhat-centos-fedora-linux/">原文</a>
+Google Chrome is a freeware web browser developed by Google Inc.
+Google Chrome team finally announced the release of Google Chrome 29,
+the actual version is 29.0.1547.57 for Linux, Mac and Windows operating systems.
+This new version bundled with some exciting features like a new API for high quality video and
+audio communication with minor security and bug fixes.
+If you would like to know more other cool features of this release,
+please visit at <a href="https://www.google.com/chrome/intl/en/more/features.html">Google’s Chrome Features</a>.</p>
+
+<p>Install Google Chrome in Linux
+Install Google Chrome in Linux</p>
+
+<p>In our earlier articles we have shown you how to install latest released Opera Browser 12.00 and Firefox 21 versions. In this tutorial we will show you how we have practically installed Google Chrome 29 browser in one of our CentOS 6.4 server using Google’s own repository with Yum tool. By using repository you will keep your Chrome browser up-to-date. However, it should also work on RHEL 6.4/6.3/6.2/6.1/6.0, CentOS 6.4/6.3/6.2/6.1/6.0 and Fedora 19,18,17,16,15 versions as well.
+Step 1: Enable Google YUM repository
+Create a file called /etc/yum.repos.d/google-chrome.repo and add the following lines of code to it.
+[google-chrome]
+name=google-chrome
+baseurl=http://dl.google.com/linux/chrome/rpm/stable/$basearch
+enabled=1
+gpgcheck=1
+gpgkey=https://dl-ssl.google.com/linux/linux_signing_key.pub
+Step 2: Installing Chrome Web Browser
+Download and Install Chrome Web Browser with yum command. It will automatically install all dependencies.</p>
+
+<h1>yum install google-chrome-stable</h1>
+
+<p>Update : Sadly, the Google Chrome browser no longer supports the most famous commercial distribution Red Hat and its free clones such as CentOS and Scientific Linux.
+Yes, they’ve discontinued support for RHEL 6.X version as of Google Chrome and on other side, latest Firefox and Opera browsers run successfully on the same platforms.
+Luckily, there is a script developed by Richard Lloyd, that automatically download and install latest Google Chrome browser by picking libraries from a more recent released distro and put those libraries in (/opt/google/chrome/lib) directory and then you can able to run Google Chrome on CentOS 6.X version.</p>
+
+<h1>wget http://chrome.richardlloyd.org.uk/install_chrome.sh</h1>
+
+<h1>chmod u+x install_chrome.sh</h1>
+
+<h1>./install_chrome.sh</h1>
+
+<p>Sample Output
+Google Chrome Installer 2.00 on the i686 platform
+(C) Richard K. Lloyd 2013 <a href="&#109;&#x61;&#x69;&#108;&#116;&#111;&#x3a;&#114;&#107;&#x6c;&#x6c;&#x6f;&#121;&#x64;&#64;&#103;&#x6d;&#x61;&#x69;&#x6c;&#x2e;&#x63;&#111;&#109;">&#114;&#x6b;&#108;&#108;&#x6f;&#x79;&#100;&#x40;&#103;&#x6d;&#97;&#105;&#x6c;&#x2e;&#99;&#x6f;&#109;</a></p>
+
+<p>*** Checking for an update to install_chrome.sh ...</p>
+
+<p>--2013-07-18 17:27:02--  http://chrome.richardlloyd.org.uk/version.dat
+Resolving chrome.richardlloyd.org.uk... 193.110.246.53
+Connecting to chrome.richardlloyd.org.uk|193.110.246.53|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 5 [text/plain]
+Saving to: aversion.data</p>
+
+<p>100%[===================================================================================================================>] 5           --.-K/s   in 0s</p>
+
+<p>2013-07-18 17:27:02 (264 KB/s) - aversion.data</p>
+
+<p>*** install_chrome.sh is already the latest version (2.00) - continuing ...</p>
+
+<p>*** Determining latest Google Chrome version number ...
+Step 3: Starting Chrome Web Browser
+Starting browser with root user.</p>
+
+<h1>google-chrome &amp;</h1>
+
+<p>Google Chrome Startup Screen
+Google Chrome Startup Screen
+Welcome screen of Chrome web browser.
+Google Chrome Welcome Screen
+Google Chrome Welcome Screen
+Exploring www.tecmint.com with cool Chrome web browser.
+Exploring www.tecmint.com in Google Chrome
+Exploring www.tecmint.com in Google Chrome
+That’s it, enjoy browsing with Chrome and do let me know your browsing experience with Chrome via comments.
+Bio
+Latest Posts</p>
+
+<p>My Twitter profileMy Facebook profileMy Google+ profile
+Narad Shrestha
+He has over 10 years of rich IT experience which includes various Linux Distros, FOSS and Networking. Narad always believes sharing IT knowledge with others and adopts new technology with ease.</p>
+
+<p>Linux Services &amp; Free WordPress Setup</p>
+
+<p>Our post is simply ‘DIY’ aka ‘Do It Yourself, still you may find difficulties and want us to help you out. We offer wide range of Linux and Web Hosting Solutions at fair minimum rates. Please submit your orders by Clicking Here.
+Tweet</p>
+
+<p>4
+inShare
+61
+comments
+Database Management Free work from home At home work
+Distribution strategy in marketing Advertising Running Shoes
+? PREVIOUS POST
+A Command Line Web Browsing with Lynx and Links Tools
+NEXT POST ?
+Install Firefox 23 in RHEL/CentOS 6.4 &amp; Fedora 19/18/17
+Related Post(s):
+Firefox 17 Released, Adds New Facebook Messenger – Install in Ubuntu 12.04/12.10, Xubuntu 12.10 and Linux Mint 14/13
+Install Opera 12.11 (Browser) in RHEL/CentOS 6.3 and Fedora 17/16/15
+Install Firefox 14 in RHEL – CentOS – Fedora
+Install Firefox 23 in RHEL/CentOS 6.4 &amp; Fedora 19/18/17
+A Command Line Web Browsing with Lynx and Links Tools</p>
+    
+    </div>  
+    <div>
+		   
+			   上一篇： <a href="/git/2013/09/14/msysgit-operate.html">msysgit bash的操作，比如复制拷贝</a><br/>
+		   
+			    
+			 
+				下一篇： <a href="/centos/2013/09/15/Install-shuttter-centos-64bit.html">Centos 6.4 64位系统安装截图软件shutter</a>
+			 
+	  </div>
+    <hr/>
+  <script type="text/javascript" id="wumiiRelatedItems"></script>
+<script type="text/javascript">
+    var wumiiPermaLink = ""; //请用代码生成文章永久的链接
+    var wumiiTitle = ""; //请用代码生成文章标题
+    var wumiiTags = ""; //请用代码生成文章标签，以英文逗号分隔，如："标签1,标签2"
+    var wumiiCategories = []; //请用代码生成文章分类，分类名放在 JSONArray 中，如: ["分类1", "分类2"]
+    var wumiiSitePrefix = "http://maijunjin.github.io/";
+    var wumiiParams = "&num=5&mode=1&pf=JAVASCRIPT";
+</script>
+<script type="text/javascript" src="http://widget.wumii.cn/ext/relatedItemsWidget"></script>
+<a href="http://www.wumii.com/widget/relatedItems" style="border:0;">
+    <img src="http://static.wumii.cn/images/pixel.png" alt="无觅关联推荐，快速提升流量" style="border:0;padding:0;margin:0;" />
+</a>   
+ <hr>
+<!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"hnghnx"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END -->
+<!-- Duoshuo Comment END -->
+  </div>
+  
+  <aside class="span4">
+     <div class="span3">
+       <div id="toc"  style="max-height:60%;width:18%">
+       </div><!--/.well -->
+     </div><!--/span-->
+
+  </aside>
+
+</div>
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/assets/js/jquery-1.8.3.min.js"></script>
+    <script src="/assets/js/jquery-ui-1.9.1.custom.min.js"></script>
+    <script src="/assets/js/bootstrap.js"></script>
+    <script src="/assets/js/jquery.tocify.js"></script>
+    <script src="/assets/js/prettify.js"></script>
+
+    <script>
+        $(function() {
+
+            var toc = $("#toc").tocify({ selectors: "h2,h3,h4,h5,h6" }).data("toc-tocify");
+
+            prettyPrint();
+            $(".optionName").popover({ trigger: "hover" });
+
+        });
+    </script>
+
+
+
+      </div>
+
+    </div> <!-- /container -->
+
+    
+<!-- UJian Button BEGIN -->
+<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?type=slide&fade=1&uid=1840499"></script>
+<a href="http://www.ujian.cc" style="border:0;"><img src="http://img.ujian.cc/pixel.png" alt="友荐云推荐" style="border:0;padding:0;margin:0;" /></a>
+<!-- UJian Button END -->
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F7aa860a60009fb75dc2789a27ff3c98f' type='text/javascript'%3E%3C/script%3E"));
+</script>
+  </body>
+</html>
+
