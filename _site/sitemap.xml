@@ -2,14 +2,14 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 	<url>
-		<loc>/atom.xml</loc>
+		<loc>/archive.html</loc>
 		<lastmod></lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
 	</url>
 
 	<url>
-		<loc>/archive.html</loc>
+		<loc>/atom.xml</loc>
 		<lastmod></lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>
@@ -30,6 +30,13 @@
 	</url>
 
 	<url>
+		<loc>/outline.html</loc>
+		<lastmod></lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.6</priority>
+	</url>
+
+	<url>
 		<loc>/sitemap.xml</loc>
 		<lastmod></lastmod>
 		<changefreq>weekly</changefreq>
@@ -38,13 +45,6 @@
 
 	<url>
 		<loc>/tags.html</loc>
-		<lastmod></lastmod>
-		<changefreq>weekly</changefreq>
-		<priority>0.6</priority>
-	</url>
-
-	<url>
-		<loc>/outline.html</loc>
 		<lastmod></lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.6</priority>

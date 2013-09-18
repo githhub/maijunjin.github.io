@@ -8,7 +8,7 @@ tags: [jekyll,liquid]
 [原文](http://blog.slaks.net/2013-06-10/jekyll-endraw-in-code/)  
 {% assign openTag = '{%' %}
 
-[Last time]({% post_url 2013-06-09-writing-about-jekyll-in-jekyll %}), we saw how to write about Jekyll tags in Jekyll-based blog posts, using HTML entities or the `{{ openTag }} raw %}` block.  
+[Last time](http://blog.slaks.net/2013-06-09/writing-about-jekyll-in-jekyll/), we saw how to write about Jekyll tags in Jekyll-based blog posts, using HTML entities or the `{{ openTag }} raw %}` block.  
 
 These techniques cannot be used in syntax-highlighted code blocks (Jekyll's <code>&#123;% higlight %}</code> tag or a Markdown code block), since such blocks are always HTML-escaped.  Instead, you can wrap all of the code in the block with a Liquid <code>&#123;% raw %}</code> tag.  Since the Liquid tag is processed before Markdown or syntax highlighting, this works perfectly.
 

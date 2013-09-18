@@ -4,7 +4,7 @@
  <title>STUDY LEARN</title>
  <link href="/atom.xml" rel="self"/>
  <link href=""/>
- <updated>2013-09-18T03:16:30+08:00</updated>
+ <updated>2013-09-18T10:29:34+08:00</updated>
  <id></id>
  <author>
    <name>STUDY LEARN</name>
@@ -20,7 +20,7 @@
    <content type="html">
    	&lt;p&gt;&lt;a href=&quot;http://blog.slaks.net/2013-06-10/jekyll-endraw-in-code/&quot;&gt;原文&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;#&quot;&gt;Last time&lt;/a&gt;, we saw how to write about Jekyll tags in Jekyll-based blog posts, using HTML entities or the &lt;code&gt;{% raw %}&lt;/code&gt; block.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://blog.slaks.net/2013-06-09/writing-about-jekyll-in-jekyll/&quot;&gt;Last time&lt;/a&gt;, we saw how to write about Jekyll tags in Jekyll-based blog posts, using HTML entities or the &lt;code&gt;{% raw %}&lt;/code&gt; block.&lt;/p&gt;
 
 &lt;p&gt;These techniques cannot be used in syntax-highlighted code blocks (Jekyll&#39;s &lt;code&gt;&amp;#123;% higlight %}&lt;/code&gt; tag or a Markdown code block), since such blocks are always HTML-escaped.  Instead, you can wrap all of the code in the block with a Liquid &lt;code&gt;&amp;#123;% raw %}&lt;/code&gt; tag.  Since the Liquid tag is processed before Markdown or syntax highlighting, this works perfectly.&lt;/p&gt;
 
@@ -1919,7 +1919,7 @@ Luckily, there is a script developed by Richard Lloyd, that automatically downlo
 
 &lt;p&gt;Sample Output
 Google Chrome Installer 2.00 on the i686 platform
-(C) Richard K. Lloyd 2013 &lt;a href=&quot;&amp;#109;&amp;#x61;&amp;#x69;&amp;#108;&amp;#x74;&amp;#111;&amp;#58;&amp;#x72;&amp;#x6b;&amp;#x6c;&amp;#108;&amp;#111;&amp;#x79;&amp;#100;&amp;#64;&amp;#103;&amp;#109;&amp;#x61;&amp;#x69;&amp;#108;&amp;#x2e;&amp;#x63;&amp;#x6f;&amp;#x6d;&quot;&gt;&amp;#x72;&amp;#107;&amp;#108;&amp;#108;&amp;#111;&amp;#121;&amp;#x64;&amp;#64;&amp;#x67;&amp;#109;&amp;#x61;&amp;#105;&amp;#x6c;&amp;#x2e;&amp;#x63;&amp;#111;&amp;#109;&lt;/a&gt;&lt;/p&gt;
+(C) Richard K. Lloyd 2013 &lt;a href=&quot;&amp;#x6d;&amp;#x61;&amp;#x69;&amp;#x6c;&amp;#116;&amp;#111;&amp;#x3a;&amp;#114;&amp;#107;&amp;#x6c;&amp;#108;&amp;#111;&amp;#121;&amp;#100;&amp;#64;&amp;#103;&amp;#109;&amp;#x61;&amp;#105;&amp;#x6c;&amp;#x2e;&amp;#x63;&amp;#x6f;&amp;#109;&quot;&gt;&amp;#x72;&amp;#107;&amp;#x6c;&amp;#108;&amp;#x6f;&amp;#x79;&amp;#100;&amp;#64;&amp;#103;&amp;#x6d;&amp;#x61;&amp;#105;&amp;#108;&amp;#x2e;&amp;#99;&amp;#111;&amp;#109;&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;*** Checking for an update to install_chrome.sh ...&lt;/p&gt;
 
