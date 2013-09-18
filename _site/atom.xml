@@ -4,7 +4,7 @@
  <title>STUDY LEARN</title>
  <link href="/atom.xml" rel="self"/>
  <link href=""/>
- <updated>2013-09-18T15:06:52+08:00</updated>
+ <updated>2013-09-18T15:37:17+08:00</updated>
  <id></id>
  <author>
    <name>STUDY LEARN</name>
@@ -159,6 +159,68 @@ IT FEELS more like a rock concert(n. 音乐会) than a press conference(记者�
 &lt;p&gt;Yet Xiaomi and other Chinese firms sell so many games, apps and add-ons in large part because the Chinese government requires handsets to run a neutered version of the Android operating system, without Google’s app store, mail service, maps and other features. That helps Xiaomi sell its own replacement services, an advantage it will lose once it steps outside China. How scared should Apple be, really, of a rival that has yet to prove that its business model will work at home, let alone abroad?&lt;/p&gt;
 
 &lt;p&gt;不过，虽然小米和其它中国公司销售了如此多的游戏、应用以及附加软件，但这很大程度上是因为中国政府要求其国内的手机产品使用“阉割版”的安卓操作系统——即不装载谷歌的应用商店、邮件服务、地图导航以及其它功能，这帮助小米得以销售它自己的替代服务。可一旦跨出国门，这一优势便将不复存在。小米的商业模式在国内尚待验证，更何况走向世界？既然如此，苹果公司真的需要害怕吗？&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>GitHub的认证过程（二）</title>
+   <link href="/ssh/2013/09/18/github%E7%9A%84%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B%EF%BC%88%E4%BA%8C%EF%BC%89.html"/>
+   <updated>2013-09-18T00:00:00+08:00</updated>
+   <id>/ssh/2013/09/18/github的认证过程（二）</id>
+   <content type="html">
+   	&lt;p&gt;&lt;a href=&quot;http://blog.csdn.net/zhaohuabing/article/details/7281219&quot;&gt;原文&lt;/a&gt;&lt;br/&gt;
+  采用SSH验证的方式有一个缺陷，任何人在保存有私匙的计算机上都可以对GitHub进行操作，另外私匙也存在被别人盗窃的风险。SSH提供了一种SSH with authentication key的认证方式。该方式对私匙设置了一个口令，在使用私匙前必须先输入口令，口令验证通过后才能使用私匙进行下一步操作。在本地计算机上设置SSH时，有一个提示输入口令的步骤，如图：&lt;br/&gt;
+&lt;img src=&quot;/assets/images/git/github/github_ssh_verification_2.gif&quot; title=&quot;git ssh认证原理&quot; alt=&quot;git ssh认证原理&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;口令是可选的，如果没有输入口令，在设置完毕后，用户的任何git操作都不需要输入口令。
+如果输入了口令，在进行任何git操作时，都会提示用户输入口令，如图：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/git/github/github_ssh_verification_3.gif&quot; title=&quot;git ssh认证原理&quot; alt=&quot;git ssh认证原理&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;按照GitHub的认证过程（一）的思路，其认证过程可能是下面这样的：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/git/github/github_ssh_verification_4.jpg&quot; title=&quot;git ssh认证原理&quot; alt=&quot;git ssh认证原理&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;该方式避免了私匙失窃的风险，但操作过于繁琐，如果不想每一次操作都输入口令，可以使用ssh-agent工具。ssh-agent会在第一次输入口令时记住口令，在本次会话后续使用到private key的操作中，ssh-agent自动使用第一次输入的口令，不再要求用户输入。参考&lt;a href=&quot;http://dogbiscuit.org/mdub/weblog/Tech/WindowsSshAgent&quot;&gt;如何在Windows中使用ssh-agent&lt;/a&gt;。&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
+   <title>GitHub的认证过程（一）</title>
+   <link href="/git/2013/09/18/github%E7%9A%84%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B%EF%BC%88%E4%B8%80%EF%BC%89.html"/>
+   <updated>2013-09-18T00:00:00+08:00</updated>
+   <id>/git/2013/09/18/github的认证过程（一）</id>
+   <content type="html">
+   	&lt;p&gt;&lt;a href=&quot;http://blog.csdn.net/zhaohuabing/article/details/7271889&quot;&gt;原文&lt;/a&gt;&lt;br/&gt;
+GitHub采用SSH来对客户端进行认证。首先需要设置密匙。设置密匙的操作步骤如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;在客户端生成密钥对
+$ ssh-keygen -t rsa -C zhaohuabing@gmail.com
+生成的密钥对保存在本地根目录的.ssh目录下的两个文件中
+私钥：id_rsa  
+公钥：id_rsa.pub
+2、将公钥的内容添加到GitHub的Account Settings-&amp;gt;SSH Keys中
+3、然后就可以对GitHub进行提交代码、更新代码等操作了。
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;   GitHub在用户认证过程中采用了双匙机制，在双匙加密机制中，只有合法用户才拥有私匙，只要GitHub在收到请求时可以证明提交请求的客户端上拥有该私匙，即可以确认该操作是由合法用户发起的。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;GitHub如何能够确认提交请求的客户端计算机上拥有该私匙呢？我推测可能是这样一个过程：
+1、客户端向GitHub主机发起请求，请求中包含了GitHub用户名
+2、GitHub主机通过用户名查找到该用户在Account Settings中设置的公匙
+3、GitHub主机生成一段随机信息， 使用用户的公匙加密后返回给客户端
+4、客户端使用私匙解密GitHub主机返回的信息
+5、客户端把解密后的信息返回给GitHub主机
+6、GitHub主机对比客户端返回的解密信息和原始信息，符合则说明本地计算机拥有私匙，即验证了客户端的身份。
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/git/github/github_ssh_verification.png&quot; title=&quot;github ssh验证原理&quot; alt=&quot;github ssh验证原理&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;采用这个流程进行验证还有一个疑问：GitHub允许用户在Account Setting中加入多个公匙，那么在第2步和第5步中，GitHub主机采用哪一个公匙 来进行加密\解密呢？ 前面我们讲到公匙和私匙都保留在本地计算机的.ssh目录下，本地计算机登录时可以把自己的公匙和用户名一起发到GitHub主机。GitHub主机在用户Account Setting的所有公匙中查找本地计算机发过来的公匙。如果存在该公匙，则用该公匙生成加密信息，返回给客户端。&lt;/p&gt;
+
+&lt;p&gt;   如果使用该认证机制，还有一个明显的缺陷，不能在多人公用的开发机上使用，因为只要任何人登录这一台保存有私匙的电脑，都可以使用对GitHub代码库进行修改。我想这应该是可以避免的，在下一篇文章GitHub的认证过程（二）中，我们对这一个问题再进行进一步的讨论。&lt;/p&gt;
 
    </content>
  </entry>
@@ -2032,7 +2094,7 @@ Luckily, there is a script developed by Richard Lloyd, that automatically downlo
 
 &lt;p&gt;Sample Output
 Google Chrome Installer 2.00 on the i686 platform
-(C) Richard K. Lloyd 2013 &lt;a href=&quot;&amp;#109;&amp;#x61;&amp;#105;&amp;#108;&amp;#116;&amp;#111;&amp;#x3a;&amp;#114;&amp;#x6b;&amp;#108;&amp;#x6c;&amp;#111;&amp;#x79;&amp;#100;&amp;#x40;&amp;#103;&amp;#x6d;&amp;#x61;&amp;#105;&amp;#x6c;&amp;#46;&amp;#x63;&amp;#x6f;&amp;#x6d;&quot;&gt;&amp;#114;&amp;#x6b;&amp;#x6c;&amp;#x6c;&amp;#x6f;&amp;#121;&amp;#100;&amp;#64;&amp;#x67;&amp;#109;&amp;#97;&amp;#105;&amp;#x6c;&amp;#x2e;&amp;#99;&amp;#111;&amp;#109;&lt;/a&gt;&lt;/p&gt;
+(C) Richard K. Lloyd 2013 &lt;a href=&quot;&amp;#x6d;&amp;#x61;&amp;#x69;&amp;#108;&amp;#116;&amp;#x6f;&amp;#x3a;&amp;#x72;&amp;#107;&amp;#x6c;&amp;#x6c;&amp;#x6f;&amp;#121;&amp;#x64;&amp;#x40;&amp;#x67;&amp;#x6d;&amp;#97;&amp;#105;&amp;#108;&amp;#46;&amp;#99;&amp;#111;&amp;#x6d;&quot;&gt;&amp;#x72;&amp;#107;&amp;#108;&amp;#x6c;&amp;#x6f;&amp;#x79;&amp;#x64;&amp;#64;&amp;#x67;&amp;#109;&amp;#97;&amp;#x69;&amp;#x6c;&amp;#46;&amp;#99;&amp;#x6f;&amp;#x6d;&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;*** Checking for an update to install_chrome.sh ...&lt;/p&gt;
 

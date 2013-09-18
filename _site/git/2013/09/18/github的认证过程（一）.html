@@ -4,8 +4,8 @@
 <html lang="zh-CN" xmlns:wb="http://open.weibo.com/wb">
   <head profile="http://gmpg.org/xfn/11">
     <meta charset="utf-8">
-    <title>github生成jekyll博客的各软件和插件的版本</title>
-    <meta name="description" content="github上维护的博客应该使用的各软件和插件的版本">
+    <title>GitHub的认证过程（一）</title>
+    <meta name="description" content="GitHub的ssh认证">
     
     <meta name="author" content="STUDY LEARN">
     <link rel="alternate" title="STUDY LEARN" href="/atom.xml" type="application/rss+xml" />
@@ -16,10 +16,10 @@
     
     <link rel="index" title="STUDY LEARN" href="/" />
     
-    <link rel="prev" href="//2013/09/17/%E9%A3%8E%E9%99%A9%E6%8A%95%E8%B5%84%E8%80%85%E6%9C%89%E6%9C%9B%E4%BB%8E%E6%8E%A8%E7%89%B9ipo%E4%B8%AD%E8%8E%B7%E7%9B%8A.html" title="风险投资者有望从推特IPO中获益" />
+    <link rel="prev" href="//jekyll/2013/09/18/github%E7%94%9F%E6%88%90jekyll%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%90%84%E8%BD%AF%E4%BB%B6%E5%92%8C%E6%8F%92%E4%BB%B6%E7%9A%84%E7%89%88%E6%9C%AC.html" title="github生成jekyll博客的各软件和插件的版本" />
     
     
-    <link rel="next" href="//git/2013/09/18/github%E7%9A%84%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B%EF%BC%88%E4%B8%80%EF%BC%89.html" title="GitHub的认证过程（一）" />
+    <link rel="next" href="//ssh/2013/09/18/github%E7%9A%84%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B%EF%BC%88%E4%BA%8C%EF%BC%89.html" title="GitHub的认证过程（二）" />
     
     
   </head>
@@ -54,51 +54,48 @@
     <link href="/assets/css/jquery.tocify.css" rel="stylesheet">
 
 <div class="page-header">
-  <h1>github生成jekyll博客的各软件和插件的版本 <small></small></h1>
+  <h1>GitHub的认证过程（一） <small></small></h1>
 </div>
 <div class="row-fluid">
   <div class="span8">  
     <div id="article">
-    <p><a href="https://github.com/github/pages-gem/blob/master/github-pages.gemspec#L16">原文</a></p>
+    <p><a href="http://blog.csdn.net/zhaohuabing/article/details/7271889">原文</a><br/>
+GitHub采用SSH来对客户端进行认证。首先需要设置密匙。设置密匙的操作步骤如下：</p>
 
-<div class="highlight"><pre><code class="text">Gem::Specification.new do |s|
-  s.required_ruby_version = &quot;&gt;= 1.9.3&quot;
- 
-  s.name                  = &quot;github-pages&quot;
-  s.version               = &quot;5&quot;
-  s.summary               = &quot;Track GitHub Pages dependencies.&quot;
-  s.description           = &quot;Bootstrap the GitHub Pages Jekyll environment locally.&quot;
-  s.authors               = &quot;GitHub, Inc.&quot;
-  s.email                 = &quot;support@github.com&quot;
-  s.homepage              = &quot;https://github.com/github/pages-gem&quot;
-  s.license               = &quot;MIT&quot;
- 
-  # Jekyll and related dependency versions as used by GitHub Pages.
-  # For more information see:
-  # https://help.github.com/articles/using-jekyll-with-pages
- 
- 
-  s.add_dependency(&quot;RedCloth&quot;,   &quot;= 4.2.9&quot;)
-  s.add_dependency(&quot;jekyll&quot;,     &quot;= 1.2.1&quot;)
-  s.add_dependency(&quot;kramdown&quot;,   &quot;= 1.0.2&quot;)
-  s.add_dependency(&quot;liquid&quot;,     &quot;= 2.5.2&quot;)
-  s.add_dependency(&quot;maruku&quot;,     &quot;= 0.6.1&quot;)
-  s.add_dependency(&quot;rdiscount&quot;,  &quot;= 1.6.8&quot;)
-  s.add_dependency(&quot;redcarpet&quot;,  &quot;= 2.3.0&quot;)
-end
-</code></pre></div>
+<pre><code>在客户端生成密钥对
+$ ssh-keygen -t rsa -C zhaohuabing@gmail.com
+生成的密钥对保存在本地根目录的.ssh目录下的两个文件中
+私钥：id_rsa  
+公钥：id_rsa.pub
+2、将公钥的内容添加到GitHub的Account Settings-&gt;SSH Keys中
+3、然后就可以对GitHub进行提交代码、更新代码等操作了。
+</code></pre>
 
+<p>   GitHub在用户认证过程中采用了双匙机制，在双匙加密机制中，只有合法用户才拥有私匙，只要GitHub在收到请求时可以证明提交请求的客户端上拥有该私匙，即可以确认该操作是由合法用户发起的。</p>
 
+<pre><code>GitHub如何能够确认提交请求的客户端计算机上拥有该私匙呢？我推测可能是这样一个过程：
+1、客户端向GitHub主机发起请求，请求中包含了GitHub用户名
+2、GitHub主机通过用户名查找到该用户在Account Settings中设置的公匙
+3、GitHub主机生成一段随机信息， 使用用户的公匙加密后返回给客户端
+4、客户端使用私匙解密GitHub主机返回的信息
+5、客户端把解密后的信息返回给GitHub主机
+6、GitHub主机对比客户端返回的解密信息和原始信息，符合则说明本地计算机拥有私匙，即验证了客户端的身份。
+</code></pre>
 
+<p><img src="/assets/images/git/github/github_ssh_verification.png" title="github ssh验证原理" alt="github ssh验证原理" /></p>
+
+<p>采用这个流程进行验证还有一个疑问：GitHub允许用户在Account Setting中加入多个公匙，那么在第2步和第5步中，GitHub主机采用哪一个公匙 来进行加密\解密呢？ 前面我们讲到公匙和私匙都保留在本地计算机的.ssh目录下，本地计算机登录时可以把自己的公匙和用户名一起发到GitHub主机。GitHub主机在用户Account Setting的所有公匙中查找本地计算机发过来的公匙。如果存在该公匙，则用该公匙生成加密信息，返回给客户端。</p>
+
+<p>   如果使用该认证机制，还有一个明显的缺陷，不能在多人公用的开发机上使用，因为只要任何人登录这一台保存有私匙的电脑，都可以使用对GitHub代码库进行修改。我想这应该是可以避免的，在下一篇文章GitHub的认证过程（二）中，我们对这一个问题再进行进一步的讨论。</p>
     
     </div>  
     <div>
 		   
-			   上一篇： <a href="/2013/09/17/%E9%A3%8E%E9%99%A9%E6%8A%95%E8%B5%84%E8%80%85%E6%9C%89%E6%9C%9B%E4%BB%8E%E6%8E%A8%E7%89%B9ipo%E4%B8%AD%E8%8E%B7%E7%9B%8A.html">风险投资者有望从推特IPO中获益</a><br/>
+			   上一篇： <a href="/jekyll/2013/09/18/github%E7%94%9F%E6%88%90jekyll%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%90%84%E8%BD%AF%E4%BB%B6%E5%92%8C%E6%8F%92%E4%BB%B6%E7%9A%84%E7%89%88%E6%9C%AC.html">github生成jekyll博客的各软件和插件的版本</a><br/>
 		   
 			    
 			 
-				下一篇： <a href="/git/2013/09/18/github%E7%9A%84%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B%EF%BC%88%E4%B8%80%EF%BC%89.html">GitHub的认证过程（一）</a>
+				下一篇： <a href="/ssh/2013/09/18/github%E7%9A%84%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B%EF%BC%88%E4%BA%8C%EF%BC%89.html">GitHub的认证过程（二）</a>
 			 
 	  </div>
     <hr/>
