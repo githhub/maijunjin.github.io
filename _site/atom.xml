@@ -4,7 +4,7 @@
  <title>STUDY LEARN</title>
  <link href="/atom.xml" rel="self"/>
  <link href=""/>
- <updated>2013-09-18T16:16:54+08:00</updated>
+ <updated>2013-09-18T16:44:50+08:00</updated>
  <id></id>
  <author>
    <name>STUDY LEARN</name>
@@ -1056,6 +1056,87 @@ To use many cycle in one template, you must use named groups for predictable res
  </entry>
  
  <entry>
+   <title>git一行代码提交所有的更新修改添加</title>
+   <link href="/git/2013/09/16/%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81%E6%8F%90%E4%BA%A4%E6%89%80%E6%9C%89%E7%9A%84git.html"/>
+   <updated>2013-09-16T00:00:00+08:00</updated>
+   <id>/git/2013/09/16/一行代码提交所有的git</id>
+   <content type="html">
+   	&lt;h2&gt;&lt;a href=&quot;https://coderwall.com/p/vej4iw&quot;&gt;Quicker Git Add Commit Push&lt;/a&gt;&lt;/h2&gt;
+
+&lt;p&gt; Add this to your .bash_profile:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;function gcp () {
+    if [ -z &quot;$1&quot; ]
+    then
+        read -p &quot;Commit Message:&quot; MSG
+    else
+        MSG=&quot;$1&quot;
+    fi
+    git add .
+    git commit -am &quot;$MSG&quot;
+    git push
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;now whenever you want to commit and push just execute&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;gcp &quot;This is the comment&quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;if you don&#39;t supply a commit message it will prompt you for one.&lt;/p&gt;
+
+&lt;p&gt;If you&#39;d rather git open your default editor to comment, use this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;function gcp () {
+    git add .
+    git commit -a
+    git push
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;but you can get the best of both worlds, one-liner messages, OR editor messages with something like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;function gcp() {
+    git add .
+    if [ -z &quot;$1&quot; ]
+    then
+        git commit -a
+    else
+        git commit -am &quot;$1&quot;
+    fi
+    git push
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2&gt;git commit -a命令的研究&lt;/h2&gt;
+
+&lt;p&gt;git commit -a的作用是提交所有已经提交到git的文件到本地库(就是只会更新修改，删除)&lt;br/&gt;
+git commit帮助文档中如下说：&lt;br/&gt;
+Tell the command to automatically stage files that have been modified and deleted, but new files you have not told git about are not affected.&lt;br/&gt;
+有一个文件修改了:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;git commit -am &quot;a&quot;
+[master 5ea27a3] a
+1 file changed, 8 insertions(+)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;没有修改，添加了新文件：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;git commit -am &quot;a&quot;
+# On branch master
+# Untracked files:
+#   (use &quot;git add &amp;lt;file&amp;gt;...&quot; to include in what will be committed)
+#
+#   &quot;_posts/english/2013-09-17-\351\243\216\351\231\251\346\212\225\350\265\204\350\200\205\346\234\211\346\234\233\344\273\216\346\216\250\347\211\271ipo\344\270\255\350\216\267\347\233\212.md&quot;
+nothing added to commit but untracked files present (use &quot;git add&quot; to track)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;可以看到新添加的文件并不会提交上去&lt;/p&gt;
+
+   </content>
+ </entry>
+ 
+ <entry>
    <title>Using Themes</title>
    <link href="/jekyll/2013/09/16/using-themes.html"/>
    <updated>2013-09-16T00:00:00+08:00</updated>
@@ -1518,81 +1599,6 @@ task :post do
 &lt;p&gt;Traditional Hollywood, afraid of rocking the boat with the theater owners, has so far resisted this kind of change. But the town may not have a choice for much longer. Men like Shell and Tsujihara were put in charge to squeeze every possible penny out of each studio’s intellectual property. That might not mean better movies but it’s sure to mean smarter business.&lt;/p&gt;
 
 &lt;p&gt;传统好莱坞害怕破坏与影院老板们的关系，目前仍抵制这种改变。但再过一段时间，好莱坞可能会别无选择。让希尔和特苏哈拉等人来执掌电影公司就是为了充分挖掘每家公司知识产权的盈利潜能。这可能不意味着会有更好的电影，但一定意味着会有更精明的业务。&lt;/p&gt;
-
-   </content>
- </entry>
- 
- <entry>
-   <title>Git</title>
-   <link href="/git/2013/09/16/git.html"/>
-   <updated>2013-09-16T00:00:00+08:00</updated>
-   <id>/git/2013/09/16/git</id>
-   <content type="html">
-   	&lt;p&gt;&lt;a href=&quot;https://coderwall.com/p/vej4iw&quot;&gt;Quicker Git Add Commit Push&lt;/a&gt;&lt;br/&gt;
- Add this to your .bash_profile:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;function gcp () {
-    if [ -z &quot;$1&quot; ]
-    then
-        read -p &quot;Commit Message:&quot; MSG
-    else
-        MSG=&quot;$1&quot;
-    fi
-    git add .
-    git commit -am &quot;$MSG&quot;
-    git push
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;now whenever you want to commit and push just execute&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;gcp &quot;This is the comment&quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;if you don&#39;t supply a commit message it will prompt you for one.&lt;/p&gt;
-
-&lt;p&gt;If you&#39;d rather git open your default editor to comment, use this:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;function gcp () {
-    git add .
-    git commit -a
-    git push
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;but you can get the best of both worlds, one-liner messages, OR editor messages with something like this:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;function gcp() {
-    git add .
-    if [ -z &quot;$1&quot; ]
-    then
-        git commit -a
-    else
-        git commit -am &quot;$1&quot;
-    fi
-    git push
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;git commit -a的作用是提交所有已经提交到git的文件到本地库&lt;br/&gt;
-git commit帮助文档中如下说：&lt;br/&gt;
-Tell the command to automatically stage files that have been modified and deleted, but new files you have not told git about are not affected.
-有一个文件修改了:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;git commit -am &quot;a&quot;
-[master 5ea27a3] a
-1 file changed, 8 insertions(+)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;没有修改，添加了新文件：&lt;br/&gt;
-    git commit -am &quot;a&quot;
-    # On branch master
-    # Untracked files:
-    #   (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
-    #
-    #   &quot;_posts/english/2013-09-17-\351\243\216\351\231\251\346\212\225\350\265\204\350\200\205\346\234\211\346\234\233\344\273\216\346\216\250\347\211\271ipo\344\270\255\350\216\267\347\233\212.md&quot;
-    nothing added to commit but untracked files present (use &quot;git add&quot; to track)
-可以看到新添加的文件并不会提交上去&lt;/p&gt;
 
    </content>
  </entry>
@@ -2094,7 +2100,7 @@ Luckily, there is a script developed by Richard Lloyd, that automatically downlo
 
 &lt;p&gt;Sample Output
 Google Chrome Installer 2.00 on the i686 platform
-(C) Richard K. Lloyd 2013 &lt;a href=&quot;&amp;#109;&amp;#x61;&amp;#x69;&amp;#x6c;&amp;#x74;&amp;#111;&amp;#x3a;&amp;#x72;&amp;#x6b;&amp;#x6c;&amp;#x6c;&amp;#111;&amp;#121;&amp;#100;&amp;#x40;&amp;#x67;&amp;#109;&amp;#x61;&amp;#105;&amp;#108;&amp;#x2e;&amp;#99;&amp;#111;&amp;#109;&quot;&gt;&amp;#x72;&amp;#x6b;&amp;#108;&amp;#x6c;&amp;#x6f;&amp;#121;&amp;#x64;&amp;#x40;&amp;#x67;&amp;#109;&amp;#97;&amp;#x69;&amp;#108;&amp;#46;&amp;#99;&amp;#x6f;&amp;#x6d;&lt;/a&gt;&lt;/p&gt;
+(C) Richard K. Lloyd 2013 &lt;a href=&quot;&amp;#109;&amp;#x61;&amp;#105;&amp;#x6c;&amp;#x74;&amp;#111;&amp;#x3a;&amp;#114;&amp;#107;&amp;#108;&amp;#108;&amp;#111;&amp;#x79;&amp;#100;&amp;#64;&amp;#103;&amp;#109;&amp;#x61;&amp;#105;&amp;#108;&amp;#46;&amp;#x63;&amp;#111;&amp;#109;&quot;&gt;&amp;#114;&amp;#x6b;&amp;#108;&amp;#108;&amp;#111;&amp;#x79;&amp;#x64;&amp;#x40;&amp;#103;&amp;#109;&amp;#97;&amp;#x69;&amp;#108;&amp;#x2e;&amp;#x63;&amp;#111;&amp;#109;&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;*** Checking for an update to install_chrome.sh ...&lt;/p&gt;
 
