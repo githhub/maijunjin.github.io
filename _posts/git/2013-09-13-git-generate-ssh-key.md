@@ -12,7 +12,7 @@ tags: [Centos,git,ssh]
     [user@localhost test]$ git remote set-url origin ssh://git@github.com/username/repository.git
     [user@localhost test]$ git push
     The authenticity of host 'github.com (192.30.252.130)' can't be established.
-    RSA key fingerprint is 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48.
+    RSA key fingerprint is xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
     Are you sure you want to continue connecting (yes/no)? yes
     Warning: Permanently added 'github.com,192.30.252.130' (RSA) to the list of known hosts.
     Permission denied (publickey).
@@ -87,7 +87,7 @@ To generate a new SSH key, enter the code below. We want the default settings so
 
 Now you need to enter a passphrase.
 
-    # Enter passphrase (empty for no passphrase): [Type a passphrase]
+    # Enter passphrase (empty for no passphrase): [Type a passphrase]如果不设置，私钥是以明文的方式存放的，没有口令的保护(本机保存的是私钥)
     # Enter same passphrase again: [Type passphrase again]
 Which should give you something like this:
 
